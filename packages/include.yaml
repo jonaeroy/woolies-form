@@ -1,0 +1,14 @@
+- url: /ng-routes
+  static_dir: angular-app/routes
+
+
+- url: /ng-service
+  static_dir: angular-app/providers
+
+
+- url: /ng-controller
+  static_dir: angular-app/controllers
+
+
+- url: /ng-templates
+  static_dir: angular-app/templates
