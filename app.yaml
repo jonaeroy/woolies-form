@@ -13,6 +13,10 @@ builtins:
 - remote_api: on
 #- appstats: on
 
+
+includes:
+- packages/include.yaml
+
 libraries:
 - name: jinja2
   version: latest
