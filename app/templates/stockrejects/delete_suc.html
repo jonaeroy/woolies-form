@@ -1,0 +1,27 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+{% endblock %}
+
+{% block layout_page_buttons %}
+
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Communication link between the warehouse (DC) for them to enter info on a product on a delivery that is being rejected, issues with the delivery, which goes to replenishment sr mgmt team, there is a tick box to indicate who this is sent to. behind the tick box are distribution lists</p>
+    </div>
+    <div class="well">
+        <fieldset>
+            <br><br><br><br>
+            <center><h3>Form request has been cancelled! Back to <a href="/stockrejects?key={{frmkey}}">list.</a></h3></center>
+        </fieldset>
+    </div>
+{% endblock %}

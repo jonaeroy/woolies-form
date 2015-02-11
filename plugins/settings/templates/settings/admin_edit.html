@@ -1,0 +1,7 @@
+{% extends "scaffolding/edit.html" %}
+
+{% block layout_content %}
+    <h3>{{settings_class._name}}</h3>
+    <p>{{settings_class._description}}</p>
+    {{super()}}
+{% endblock %}

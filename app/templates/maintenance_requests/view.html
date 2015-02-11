@@ -1,0 +1,80 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+<script type='text/javascript' src='/js/utils.js'></script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+DC Maintenance Request View
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->  
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Maintenance request form. Used to capture work requests in a DC. It has urgency levels and can attach additional information.</p>
+</div>
+<div class="well">
+    <fieldset>
+        {% import "scaffolding/macros.html" as scaffold with context %}
+        {% import 'macros/search.html' as search with context %}
+        <table class="table table-striped">
+            <tr>
+                <td>DC:</td>
+                <td>{{dc}}</td>
+            </tr>
+            <tr>
+                <td>To:</td>
+                <td>{{to}}</td>
+            </tr>
+            <tr>
+                <td>CC:</td>
+                <td>{{cc}}</td>
+            </tr>
+            <!--<tr>
+                <td>Warehouse Location:</td>
+                <td>[OBSOLETE]</td>
+            </tr>-->
+            <tr>
+                <td>Name of Requestor:</td>
+                <td>{{requestor_name}}</td>
+            </tr>
+            <tr>
+                <td>Priority:</td>
+                <td>{{priority}}</td>
+            </tr>
+            <tr>
+                <td>Date Time:</td>
+                <td>{{date_time}}</td>
+            </tr>
+            <tr>
+                <td>Department:</td>
+                <td>{{department}}</td>
+            </tr>
+            <tr>
+                <td>Description of Fault/Defect/Task/Equipment:</td>
+                <td>{{notes}}</td>
+            </tr>
+            <tr>
+                <td>Attachment:</td>
+                <td>{{download_link}}</td>
+            </tr>
+            
+        </table>
+    </fieldset>
+     <div class="row-fluid">
+        <div class="pull-right">
+            {% if form_status == 1 and is_creator == True %}
+            <a href="/maintenance_requests/page/edit/{{keyid}}/{{frmkey}}" class="btn btn-primary">Edit</a>
+            {% endif %}
+            <a href="{{this.uri('maintenance_requests:list', key=frmkey)}}" class="btn btn-primary">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

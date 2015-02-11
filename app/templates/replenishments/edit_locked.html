@@ -1,0 +1,24 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+{% endblock %}
+
+{% block layout_page_buttons %}
+
+{% endblock %}
+
+{% block layout_content %}
+    <div class="well">
+        <fieldset>
+            <br><br><br><br>
+            <center><h3>Editing is no longer possible because the request has already been approved/rejected. Back to <a href="/replenishments?key={{key}}">list.</a></h3></center>
+        </fieldset>
+    </div>
+{% endblock %}

@@ -1,0 +1,342 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<script type='text/javascript' src='/js/utils.js'></script>
+
+<style>
+
+.forloop-items {
+    border-bottom: 1px solid #d3d3d3;
+    margin-bottom: 10px;
+}
+</style>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Title Here
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Currently filling out paper form for travel requests, we're trying to launch the process in Outlook but were only in UAT phase.</p>
+</div>
+<div class="well">
+    <fieldset>
+        {% import "scaffolding/macros.html" as scaffold with context %}
+        {% import 'macros/search.html' as search with context %}
+        <table class="table margintop40">
+            <tr>
+                <td colspan="2"><h3>Passenger Details</h3></td>
+            </tr>
+            <tr>
+                <td width="40%"><b>Surname</b>:</td>
+                <td>{{PD_Surname}}</td>
+            </tr>
+            <tr>
+                <td><b>First Name(s)</b>:</td>
+                <td>{{PD_Name}}</td>
+            </tr>
+            <tr>
+                <td><b>Job Titles</b>:</td>
+                <td>{{PD_Job_Title}}</td>
+            </tr>
+            <tr>
+                <td><b>Traveller Employee Number</b>:</td>
+                <td>{{PD_EmpNumber}}</td>
+            </tr>
+            <tr>
+                <td><b>Business Unit</b>:</td>
+                <td>{{PD_Business_Unit}}</td>
+            </tr>
+            <tr>
+                <td><b>Charge Cost Center or Project Code</b>:</td>
+                <td>{{PD_Charge_CCNum_ProjCode}}</td>
+            </tr>
+            <tr>
+                <td><b>Travellers Mobile Number</b>:</td>
+                <td>{{PD_Mobile}}</td>
+            </tr>
+            <tr>
+                <td><b>Frequent Flyer Number</b>:</td>
+                <td>{{PD_Frequent_Flyer_number}}</td>
+            </tr>
+            <tr>
+                <td><b>Travellers Email Address</b>:</td>
+                <td>{{PD_Email}}</td>
+            </tr>
+            <tr>
+                <td><b>Date of Form Completion</b>:</td>
+                <td>{{PD_Date_Completed}}</td>
+            </tr>
+            <tr>
+                <td><b>Charge Account Number</b>:</td>
+                <td>{{PD_Charge_account_number}}</td>
+            </tr>
+            <tr>
+                <td><b>Division</b>:</td>
+                <td>{{PD_Division}}</td>
+            </tr>
+
+            <!-- FLIGHT DETAILS -->
+            <tr>
+                <td colspan="2"><h3 style="margin-top: 40px;">Flight Details</h3><hr/></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    {% for detail in FD_Details %}
+                    <div class="forloop-items">
+                        <p><strong class="text-info">Date: </strong> {{ detail.fd_date }}</p>
+                        <p><strong class="text-info">From: </strong> {{ detail.fd_from }}</p>
+                        <p><strong class="text-info">To: </strong> {{ detail.fd_to }}</p>
+                        <p><strong class="text-info">Requested Departure Time: </strong> {{ detail.fd_req_dep_time }}</p>
+                        <p><strong class="text-info">Earliest and Latest Departure Time: </strong> {{ detail.fd_earliest_dep_time }} and {{ detail.fd_lastest_dep_time }}</p>
+                        <p><strong class="text-info">Latest Convenient Arrival Time: </strong> {{ detail.fd_latest_conv_arrival_time }}</p>
+                        <p><strong class="text-info">Fare Type: </strong> {{ detail.fd_fare_type }}</p>
+                        <p><strong class="text-info">Indicative Cost: </strong> {{ detail.fd_indicative_cost }}</p>
+                    </div>
+                    {% endfor %}
+                    <br><br>
+                    <p>Total: <b>{{FD_Total}}</b></p>
+                    <p>Do you require check in luggage: {{FD_Checked_Baggage}}</p>
+                    <p>Special Instructions: {{FD_Special_Instructions}}</p>
+                </td>
+            </tr>
+
+            <!-- HOTEL DETAILS -->
+            <tr>
+                <td colspan="2"><h3 style="margin-top: 40px;">Hotel Details</h3><hr/></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                {% for detail in HD_Details %}
+                <div class="forloop-items">
+                    <p><strong class="text-info">City/Town: </strong> {{ detail.hd_city_town }}</p>
+                    <p><strong class="text-info">Area: </strong> {{ detail.hd_area }}</p>
+                    <p><strong class="text-info">Date In: </strong> {{ detail.hd_date_in }}</p>
+                    <p><strong class="text-info">Date Out: </strong> {{ detail.hd_date_out }}</p>
+                    <p><strong class="text-info">Indicative Cost: </strong> {{ detail.hd_indicative_cost }}</p>
+                </div>
+                {% endfor %}
+                <br><br>
+                <p>Total: <b>{{HD_Total}}</b></p>
+                <!-- <p>Does the traveller hold a Woolworths Corporate Master Card: {{HD_Corporate_Card}}</p> -->
+                <p>Special Instructions: {{HD_Special_Instructions}}</p>
+                </td>
+            </tr>
+
+            <!-- CAR RENTAL DETAILS -->
+            <tr>
+                <td colspan="2"><h3 style="margin-top: 40px;">Car Rental Details</h3><hr/></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                {% for detail in CD_Details %}
+                <div class="forloop-items">
+                    <p><strong class="text-info">Pick Up Location: </strong> {{ detail.cd_pickup_location }}</p>
+                    <p><strong class="text-info">Pick Up Date: </strong> {{ detail.cd_pick_up_date }}</p>
+                    <p><strong class="text-info">Pick Up Time: </strong> {{ detail.cd_pickup_time }}</p>
+                    <p><strong class="text-info">Drop Off Location: </strong> {{ detail.cd_drop_off_location }}</p>
+                    <p><strong class="text-info">Drop Off Date: </strong> {{ detail.cd_drop_off_date }}</p>
+                    <p><strong class="text-info">Drop Off Time: </strong> {{ detail.cd_drop_off_time }}</p>
+                    <p><strong class="text-info">Indicative Cost: </strong> {{ detail.cd_indicative_cost }}</p>
+                </div>
+                {% endfor %}
+                <br><br>
+                <p>Total: <b>{{CD_Total}}</b></p>
+                <p>Do you Budget fastbreak number: {{CD_Fastbreak_Number}}</p>
+                <p>Special Instructions: {{CD_Special_Instructions}}</p>
+                </td>
+            </tr>
+
+            <!-- CAB CHARGE -->
+            <tr>
+                <td colspan="2"><h3 style="margin-top: 40px;">Cab Charge</h3><hr/></td>
+            </tr>
+            <tr>
+                <td><b>Number of Vouchers Required</b>:</td>
+                <td>{{Cab_Charge_Number}}</td>
+            </tr>
+
+            <!-- MISCELLANEOUS EXPENSES -->
+            <tr>
+                <td colspan="2"><h3 style="margin-top: 40px;">Miscellaneous Expenses</h3><hr/></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table class="table">
+                        <thead>
+                            <th>Expense Item</th>
+                            <th>Approximate Cost per Day</th>
+                            <th>Number of Travellers</th>
+                            <th>Number of Days</th>
+                            <th>Indicative Cost</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Airport Parking</td>
+                                <td>$35.00</td>
+                                <td>{{ME_AP_Num_of_Travellers}}</td>
+                                <td>{{ME_AP_Number_of_Days}}</td>
+                                <td>{{ME_AP_Indicative_Cost}}</td>
+                            </tr>
+                            <tr>
+                                <td>Meal Allowance - Breakfast</td>
+                                <td>$30.00</td>
+                                <td>{{ME_B_Num_of_Travellers}}</td>
+                                <td>{{ME_B_Number_of_Days}}</td>
+                                <td>{{ME_B_Indicative_Cost}}</td>
+                            </tr>
+                            <tr>
+                                <td>Meal Allowance - Dinner</td>
+                                <td>$60.00</td>
+                                <td>{{ME_D_Num_of_Travellers}}</td>
+                                <td>{{ME_D_Number_of_Days}}</td>
+                                <td>{{ME_D_Indicative_Cost}}</td>
+                            </tr>
+                            <tr>
+                                <td colspan="3">&nbsp;</td>
+                                <td><b>Total</b></td>
+                                <td><b>{{ME_Total}}</b></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- REQUIREMENTS PRIOR TO DEPARTURE -->
+            <tr>
+                <td colspan="2"><h3 style="margin-top: 40px;">Requirements Prior to Departure</h3><hr/></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table class="table">
+                        <thead>
+                            <th>&nbsp;</th>
+                            <th>Type of Currency</th>
+                            <th>Number of Days Overseas</th>
+                            <th>Total Amount Required</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Currency 1</td>
+                                <td>{{FC1_Type_of_Currency}}</td>
+                                <td>{{FC1_Num_of_Days_Overseas}}</td>
+                                <td>{{FC1_Total_Amount_Requiredy}}</td>
+                            </tr>
+                            <tr>
+                                <td>Currency 2</td>
+                                <td>{{FC2_Type_of_Currency}}</td>
+                                <td>{{FC2_Num_of_Days_Overseas}}</td>
+                                <td>{{FC2_Total_Amount_Requiredy}}</td>
+                            </tr>
+                            <tr>
+                                <td>Currency 3</td>
+                                <td>{{FC3_Type_of_Currency}}</td>
+                                <td>{{FC3_Num_of_Days_Overseas}}</td>
+                                <td>{{FC3_Total_Amount_Requiredy}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <!-- AUTHORISATION -->
+            <tr>
+                <td colspan="2"><h3 style="margin-top: 40px;">AUTHORISATION</h3></td>
+            </tr>
+            <tr>
+                <td>Purpose of Travel</td>
+                <td>{{AUT_Purpose_of_Travel}}</td>
+            </tr>
+            <tr>
+                <td>Total</td>
+                <td>{{AUT_Total}}</td>
+            </tr>
+            <tr>
+                <td>Travel Authorisation</td>
+                <td>{{AUT_Travel_Authorisation}}</td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table class="table">
+                        <thead>
+                            <th>&nbsp;</th>
+                            <th>Name</th>
+                            <th>Position</th>
+                            <th>Date</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Requested/Form Completed By</td>
+                                <td>{{AUT_ComBy_Name}}</td>
+                                <td>{{AUT_ComBy_Position}}</td>
+                                <td>{{AUT_ComBy_Date}}</td>
+                            </tr>
+                            <tr>
+                                <td>Authorised By</td>
+                                <td>{{AUT_AuthBy_Name}}</td>
+                                <td>{{AUT_AuthBy_Position}}</td>
+                                <td>{{AUT_AuthBy_Date}}</td>
+                            </tr>
+                            <tr>
+                                <td>Executive Approval</td>
+                                <td>{{AUT_Exec_Name}}</td>
+                                <td>{{AUT_Exec_Position}}</td>
+                                <td>{{AUT_Exec_Date}}</td>
+                            </tr>
+                            <!-- <tr>
+                                <td>International or SMG Approval</td>
+                                <td>{{AUT_SMG_Name}}</td>
+                                <td>{{AUT_SMG_Position}}</td>
+                                <td>{{AUT_SMG_Date}}</td>
+                            </tr> -->
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <table class="table">
+                        <thead>
+                            <th>&nbsp;</th>
+                            <th>Name</th>
+                            <th>Email Address</th>
+                            <th>Phone</th>
+                            <th>Date</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Itinerary to be returned to</td>
+                                <td>{{AUT_Itin_Name}}</td>
+                                <td>{{AUT_Itin_Email}}</td>
+                                <td>{{AUT_Itin_Phone}}</td>
+                                <td>{{AUT_Itin_Date}}</td>
+                            </tr>
+                            <tr>
+                                <td>Second nominated Itinerary to be returned to</td>
+                                <td>{{AUT_SecItin_Name}}</td>
+                                <td>{{AUT_SecItin_Email}}</td>
+                                <td>{{AUT_SecItin_Phone}}</td>
+                                <td>{{AUT_SecItin_Date}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </fieldset>
+     <div class="row-fluid">
+        <div class="pull-right">
+            {% if item.status == 1 and is_creator == True %}
+            <a href="{{this.uri('travel_authorisations:update', key=item.key.urlsafe(), frmkey=frmkey)}}" class="btn btn-primary">Edit</a>
+            {% endif %}
+            <a href="{{this.uri('travel_authorisations:list', key=frmkey)}}" class="btn btn-primary">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

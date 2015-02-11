@@ -1,0 +1,23 @@
+{% import 'scaffolding/macros.html' as s with context %}
+
+<div>
+    <ul class="nav nav-pills nav-stacked">
+        <li class="nav-header">
+            {% block title %}
+                {{scaffolding.title}}
+            {% endblock %}
+        </li>
+
+
+        {% set item = context[scaffolding.singularized] %}
+        {% if item %}
+            {{s.nav_link('View', 'view', 'icon-search', id=scaffolding.url_id_for(item))}}
+            {{s.nav_link('Edit', 'edit', 'icon-pencil', id=scaffolding.url_id_for(item))}}
+        {% endif %}
+
+        {% block links %}
+            {{s.nav_link('List', 'list', 'icon-list')}}
+            {{s.nav_link('Add', 'add', 'icon-plus')}}
+        {% endblock %}
+    <ul>
+</div>

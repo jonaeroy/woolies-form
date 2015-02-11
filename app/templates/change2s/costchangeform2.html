@@ -1,0 +1,35 @@
+{% extends "layouts/costchangeformmain.html" %}
+{% import "scaffolding/macros.html" as scaffold with context %}
+
+{% block layout_content %}
+<form class="form-horizontal" action="" method="post">
+    <div class="well">
+        <fieldset>
+            <legend>
+                <h3>Merchandise Manager's Approval</h3>
+            </legend>
+            <table align="center" width="70%">
+                <tr>
+                    <td>[Approval Text]</td>
+                    <td><input type="button" class="btn btn-block btn-primary" value="Approve"></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>[Reject Text]</td>
+                    <td><input type="button" class="btn btn-block btn-primary" value="Reject"></td>
+                </tr>
+            </table>
+            <br/>
+            <div class="control-group">
+                <label class="control-label" for="merchManger">Comments:</label>
+                <div class="controls">
+                    <textarea class="span8" rows="5" name="comments" style="resize:none"></textarea>
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</form>
+{% endblock %}

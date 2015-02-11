@@ -1,0 +1,12 @@
+{% import 'scaffolding/macros.html' as s with context %}
+{% import "macros/search.html" as search with context %}
+{% extends s.admin_or_default() %}
+
+
+{% block layout_content %}
+    {{search.filter(this.uri(action=this.route.action))}}
+    {{search.info()}}
+    {% for user in users %}
+    {% include "users/item.html" with context %}
+    {% endfor %}
+{% endblock %}

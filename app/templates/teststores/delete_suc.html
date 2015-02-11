@@ -1,0 +1,27 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+{% endblock %}
+
+{% block layout_page_buttons %}
+
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Stores Test Lab - Anyone that wants to book a store for testing new system/process they will use this form to fill out details and goes to the specific mailbox to allocate a store and send form back with store information.</p>
+    </div>
+    <div class="well">
+        <fieldset>
+            <br><br><br><br>
+            <center><h3>Form request has been cancelled! Back to <a href="/teststores?key={{frmkey}}">list.</a></h3></center>
+        </fieldset>
+    </div>
+{% endblock %}

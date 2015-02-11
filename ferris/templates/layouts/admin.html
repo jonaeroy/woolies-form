@@ -1,0 +1,62 @@
+{% import 'scaffolding/macros.html' as s with context %}
+<!doctype html>
+<html>
+<head>
+    <title>Admin - 
+        {% block layout_head_title %}
+            {% if scaffolding %}{{scaffolding.title}}{% endif %}
+            {{inflector.humanize(this.route.action)}}
+        {% endblock %}
+    </title>
+
+    <link rel="stylesheet" type="text/css" href="/ferris/css/bootstrap.admin.min.css">
+    <script src="//www.google.com/jsapi"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    {% include 'elements/jquery-ui.html' %}
+    <script type="text/javascript" src="/ferris/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+    $(function(){$('body').tooltip({selector: "a[rel=tooltip], *[data-tooltip]"})});
+    </script>
+
+    {% include 'elements/admin/fancybox.html' %}
+
+    {% block layout_head %}
+    {% endblock %}
+</head>
+
+<body>
+
+{% block layout_body %}
+    {% block layout_before_content %}{% endblock %}
+
+    {% block layout_nav_bar %}
+        {% include 'elements/admin/navbar.html' %}
+    {% endblock %}
+
+    <div class="container-fluid">
+        {% block layout_wrapper %}
+            <div>
+                {% block layout_header %}
+                    {% include 'elements/admin/breadcrumb.html' %}
+                {% endblock %}
+            </div>
+
+            <div class='row-fluid'>
+                <div class='span2'>
+                    {% block layout_sidebar %}
+                        {{ s.override_include('nav.html') }}
+                    {% endblock %}
+                </div>
+                <div class='span10'>
+                    {% include "elements/flash_messages.html" with context %}
+                    {%block layout_content %}{% endblock %}
+                </div>
+            </div>
+        {% endblock %}
+    </div>
+
+    {% block layout_after_content %}{% endblock %}
+{% endblock %}
+{% include 'elements/debug/toolbox.html' %}
+</body>
+</html>

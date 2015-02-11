@@ -1,0 +1,210 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+    {{ super() }}
+    <script type='text/javascript' src='/js/angular/angular.js'></script>
+    <script type='text/javascript' src='/js/main.js'></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            var rowCount = {{details|length}};
+
+            $('.btn-update').click(function(){
+                $.ajax({
+                    url: '/director_requests/fetch_request_status/{{key}}'
+                }).done(function(data){
+                    if(data == 1){
+                        $('#update-request-button').click();
+                    }else{
+                        window.location.href = '/director_requests/edit_locked?frmkey={{frmkey}}';
+                    }
+                });
+            });
+
+            if({{details|length}} <= 1)
+                $('.removeRow, .action').hide();
+
+            $('#addRow').on('click', function(){
+                /* $("#tblDetails >tbody tr:first").clone().find("input").each(function(){
+                    $(this).val('');
+                }).end().appendTo("#tblDetails >tbody"); */
+
+                var clone = $("#tblDetails >tbody tr:first").clone();
+
+                clone.find("input").each(function(){
+                    $(this).val('');
+                });
+
+                clone.find("select").each(function(){
+                    $(this).prop('selectedIndex', 0);
+                });
+
+                clone.appendTo("#tblDetails >tbody");
+
+                /*
+                clone.find('.global-address-email-container').remove();
+                var rand_id = "gA_" + Math.floor((Math.random()*1000)+1);
+                clone.find('.global-address').attr('id', rand_id).show();
+
+                clone.appendTo("#tblDetails >tbody");
+
+                $.each($('.global-address'), function() {
+                    var obj = $(this);
+                    if(obj.next().hasClass('global-address-email-container'))   {
+
+                    }   else {
+                        globalAddress.changeInput(this);
+                        globalAddress.bindDom();
+                    }
+                });
+                */
+                
+                rowCount++;
+                
+                if(rowCount > 1){
+                    $('.removeRow').show();
+                    $('.action').show();
+                }
+            });
+
+            $('#tblDetails').on('click', '.removeRow', function(){
+                $(this).parent().parent().remove();
+                
+                rowCount--;
+                
+                if(rowCount < 2){
+                    $('.removeRow').hide();
+                    $('.action').hide();
+                }
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Test Director Request Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>No description.</p>
+</div>
+    <form class="well form-horizontal" method="post" action="/director_requests/edit_data">
+        <input type="hidden" id="details" name="details" value="[]">
+        <div class="control-group">
+            <label class="control-label" for="subject">Subject</label>
+             <div class="controls">
+                <input type="text" id="subject" name="subject" value='{{item.subject}}' class="span6" required>
+                <input type="hidden" id="status" name="status" value='{{item.status}}' class="span6" required>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="domain_name">Domain Name</label>
+             <div class="controls">
+                <input type="text" id="domain_name" name="domain_name" value='{{item.domain_name}}' class="span6" required>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="project_number_name">Project Number-Name</label>
+             <div class="controls">
+                <input type="text" id="project_number_name" name="project_number_name" value='{{item.project_number_name}}' class="span6" required>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="cc">CC</label>
+             <div class="controls">
+                <input type="text" id="cc" name="cc" class="span6 global-address" value='{{item.cc}}' required>
+            </div>
+        </div>
+
+        <fieldset>
+            <legend>User Details</legend>
+
+            <!-- <div ng-app id="dynamicRowWrapper">
+                <div ng-controller="DRFCtrl"> -->
+            <div>
+                <div>
+                    <table id="tblDetails" class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Username (Full Name)</th>
+                                <th>Email Address</th>
+                                <th>Role</th>
+                                <th>Activity</th>
+                                <th>Comments</th>
+                                <!-- <th ng-show="counter > 1">Action</th> -->
+                                <th class="action">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for data in details %}
+                            <!-- <tr ng-repeat="item in items"> -->
+                            <tr>
+                                <td><input type="text" name="username[]" value='{{data.username}}' class="span9 txbox" required></td>
+                                <td><input type="text" name="email_address[]" value='{{data.email_address}}' class="span9 txbox" required></td>
+                                <td>
+                                    <select name="role[]" id='role' class="ddown span10" required>
+                                        <option value="">Select Role</option>
+                                        <option {{ 'selected' if data.role == 'WOW_Developer' else '' }} value="WOW_Developer">WOW_Developer</option>
+                                        <option {{ 'selected' if data.role == 'WOW_Project_Manager' else '' }} value="WOW_Project_Manager">WOW_Project_Manager</option>
+                                        <option {{ 'selected' if data.role == 'WOW_Test_Analyst' else '' }} value="WOW_Test_Analyst">WOW_Test_Analyst</option>
+                                        <option {{ 'selected' if data.role == 'WOW_Test_Lead' else '' }} value="WOW_Test_Lead">WOW_Test_Lead</option>
+                                        <option {{ 'selected' if data.role == 'WOW_SME' else '' }} value="WOW_SME">WOW_SME</option>
+                                        <option {{ 'selected' if data.role == 'WOW_UAT_Test' else '' }} value="WOW_UAT_Test">WOW_UAT_Test</option>
+                                        <option {{ 'selected' if data.role == 'WOW_Fix_and_Test' else '' }} value="WOW_Fix_and_Test">WOW_Fix_and_Test</option>
+                                        <option {{ 'selected' if data.role == 'WOW_Fix' else '' }} value="WOW_Fix">WOW_Fix</option>
+                                    </select>
+                                </td>
+                                <td>
+                                    <select name="activity[]" id='activity' class="ddown span11" required>
+                                        <option value="">Select Activity</option>
+                                        <option {{ 'selected' if data.activity == 'Add' else '' }} value="Add">Add</option>
+                                        <option {{ 'selected' if data.activity == 'Update' else '' }} value="Update">Update</option>
+                                        <option {{ 'selected' if data.activity == 'Delete' else '' }} value="Delete">Delete</option>
+                                        <option {{ 'selected' if data.activity == 'Create' else '' }} value="Create">Create</option>
+                                        <option {{ 'selected' if data.activity == 'Other' else '' }} value="Other">Other</option>
+                                    </select>
+                                </td>
+                                <td><input type="text" name="comment[]" value='{{data.comment}}' class="span9 txbox" required></td>
+                                <!-- <td ng-show="counter > 1"><button type="button" class="btn" ng-click="removeRow($index)">Remove</button></td> -->
+                                <td class="action"><button type="button" class="btn removeRow">Remove</button></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <!-- <button type="button" class="btn" ng-click="addRow(item)">Add Row</button> -->
+                    <button id="addRow" type="button" class="btn">Add Row</button>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Special Request</legend>
+
+            <div class="control-group">
+             <div class="controls">
+                <textarea rows="8" id="special_request" name="special_request" class="span8">{{item.special_request}}</textarea>
+            </div>
+        </div>
+        </fieldset>
+
+        <div class="row-fluid">
+            <div class="pull-right">
+                <input type="button" class="btn-update btn btn-primary" value="Update Request">
+                <input id="update-request-button" type="submit" class="btn btn-primary" style="display: none;" />
+                <input type="hidden" name="entity_key" value="{{item.key.urlsafe()}}">
+                <input type="hidden" name="frmkey" value="{{frmkey}}">
+                <a href="{{this.uri('director_requests:list', key=frmkey)}}" class="btn">Cancel</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}

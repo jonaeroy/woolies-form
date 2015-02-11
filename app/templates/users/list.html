@@ -1,0 +1,56 @@
+{% import 'scaffolding/list.html' as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+{% endblock %}
+
+
+{% block layout_page_title %}
+<!-- page title here -->
+Manage Users
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+<a class="btn-flat primary " href="/users/add"><i class="icon-plus"></i> Add New User</a>	
+{% endblock %}
+
+{% block layout_content %}
+
+	
+	{% set list = scaffolding_plural %}
+	<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Role</th>
+            <th>Group</th>
+            <th><span class="hide">Actions</span></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in data %}
+        <tr>
+            <td>
+                {{item.fullname}}<br>
+                <small class="muted">{{item.email}}</small>
+            </td>
+            <td>
+                {{item.role}}
+            </td>
+            <td>
+                {{s.print_value(item.group)}}
+            </td>
+            <td class="span2">
+                {% block item_action_buttons scoped %}
+                    {{s.action_buttons(item)}}
+                {% endblock %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<!-- {% include 'elements/debug/toolbox.html' %} -->
+{% endblock %}

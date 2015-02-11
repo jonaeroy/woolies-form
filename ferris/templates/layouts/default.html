@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+    <title>{% block layout_head_title %}
+            {% if scaffolding %}{{scaffolding.title}}{% endif %}
+            {{inflector.humanize(this.route.action)}}
+        {% endblock %}</title>
+
+    <link rel="stylesheet" type="text/css" href="/ferris/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/ferris/css/bootstrap-responsive.min.css">
+    <script src="//www.google.com/jsapi"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/ferris/js/bootstrap.min.js"></script>
+
+    {% block layout_head %}
+    {% endblock %}
+
+</head>
+<body>
+{% block layout_body %}
+    {% block layout_before_content %}{% endblock %}
+    <div class="container">
+        {% include "elements/flash_messages.html" with context %}
+        {% block layout_content %}
+        {% endblock %}
+    </div>
+    {% include 'elements/debug/toolbox.html' %}
+    {% block layout_after_content %}{% endblock %}
+{% endblock %}
+</body>
+</html>

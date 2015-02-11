@@ -1,0 +1,127 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+    {{ super() }}
+    <script type='text/javascript' src='/js/angular/angular.js'></script>
+    <script type='text/javascript' src='/js/main.js'></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Test Director Request Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>No description.</p>
+    </div>
+    {% if user_fullname == None %}
+        {% set user_fullname = '' %}
+    {% endif %}
+	<form class="well form-horizontal" method="post" action="/director_requests/add">
+		<input type="hidden" id="details" name="details" value="[]">
+		<div class="control-group">
+			<label class="control-label" for="subject">Subject</label>
+			 <div class="controls">
+				<input type="text" id="subject" name="subject" class="span6" required>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="domain_name">Domain Name</label>
+			 <div class="controls">
+				<input type="text" id="domain_name" name="domain_name" class="span6" required>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="project_number_name">Project Number-Name</label>
+			 <div class="controls">
+				<input type="text" id="project_number_name" name="project_number_name" class="span6" required>
+			</div>
+		</div>
+
+		<div class="control-group">
+			<label class="control-label" for="cc">CC</label>
+			 <div class="controls">
+				<input type="text" id="cc" name="cc" class="span6 global-address" required>
+			</div>
+		</div>
+
+		<fieldset>
+      		<legend>User Details</legend>
+
+      		<div ng-app id="dynamicRowWrapper">
+	      		<div ng-controller="DRFCtrl">
+	          		<table id="tblDetails" class="table table-condensed">
+					    <thead>
+					        <tr>
+					            <th>Username (Full Name)</th>
+					            <th>Email Address</th>
+					            <th>Role</th>
+					            <th>Activity</th>
+					            <th>Comments</th>
+					            <th ng-show="counter > 1">Action</th>
+					        </tr>
+					    </thead>
+					    <tbody>
+					        <tr ng-repeat="item in items">
+					            <td><input type="text" name="username[]" class="span9 txbox" required></td>
+					            <td><input type="email" name="email_address[]" class="span9 txbox" required></td>
+					            <td>
+						            <select name="role[]" class="ddown span10" required>
+						            	<option value="">Select Role</option>
+						            	<option value="WOW_Developer">WOW_Developer</option>
+						            	<option value="WOW_Project_Manager">WOW_Project_Manager</option>
+						            	<option value="WOW_Test_Analyst">WOW_Test_Analyst</option>
+						            	<option value="WOW_Test_Lead">WOW_Test_Lead</option>
+						            	<option value="WOW_SME">WOW_SME</option>
+						            	<option value="WOW_UAT_Test">WOW_UAT_Test</option>
+						            	<option value="WOW_Fix_and_Test">WOW_Fix_and_Test</option>
+						            	<option value="WOW_Fix">WOW_Fix</option>
+					            	</select>
+								</td>
+					            <td>
+					            	<select name="activity[]" class="ddown span11" required>
+					            		<option value="">Select Activity</option>
+					            		<option value="Add">Add</option>
+					            		<option value="Update">Update</option>
+					            		<option value="Delete">Delete</option>
+					            		<option value="Create">Create</option>
+					            		<option value="Other">Other</option>
+					            	</select>
+					            </td>
+					            <td><input type="text" name="comment[]" class="span9 txbox" required></td>
+					            <td ng-show="counter > 1"><button type="button" class="btn" ng-click="removeRow($index)">Remove</button></td>
+					        </tr>
+					    </tbody>
+					</table>
+
+					<button type="button" class="btn" ng-click="addRow(item)" id="addRow">Add Row</button>
+				</div>
+			</div>
+      	</fieldset>
+
+      	<fieldset>
+      		<legend>Special Request</legend>
+
+      		<div class="control-group">
+			 <div class="controls">
+				<textarea rows="8" id="special_request" name="special_request" class="span8"></textarea>
+			</div>
+		</div>
+      	</fieldset>
+
+		<div class="row-fluid">
+			<div class="pull-right">
+		      	<button type="submit" class="btn btn-primary">Send</button>
+		      	<button id="backHistory" type="button" class="btn">Cancel</button>
+			</div>
+		</div>
+	</form>
+{% endblock %}

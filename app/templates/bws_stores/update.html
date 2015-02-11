@@ -1,0 +1,466 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+    {{super}}
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            var dateString = '{{item.effective_date}}';
+            var dateChunks = dateString.split("-"); // dd-mm-yy
+            var dateVal = new Date(String(dateChunks[2]) + '-' + String(dateChunks[1]) + '-' + String(dateChunks[0]));
+
+            $('input:radio[name="new_changes_closures"]').filter('[value="{{item.new_changes_closures}}"]').attr('checked', true);
+            $("#state option[value='{{item.state}}']").attr("selected", "selected");
+            $("#banner option[value='{{item.banner}}']").attr("selected", "selected");
+            $("#area option[value='{{item.area}}']").attr("selected", "selected");
+
+            $("#trading_hour_monday_open option[value='{{item.trading_hour_monday_open}}']").attr("selected", "selected");
+            $("#trading_hour_tuesday_open option[value='{{item.trading_hour_tuesday_open}}']").attr("selected", "selected");
+            $("#trading_hour_wednesday_open option[value='{{item.trading_hour_wednesday_open}}']").attr("selected", "selected");
+            $("#trading_hour_thursday_open option[value='{{item.trading_hour_thursday_open}}']").attr("selected", "selected");
+            $("#trading_hour_friday_open option[value='{{item.trading_hour_friday_open}}']").attr("selected", "selected");
+            $("#trading_hour_saturday_open option[value='{{item.trading_hour_saturday_open}}']").attr("selected", "selected");
+            $("#trading_hour_sunday_open option[value='{{item.trading_hour_sunday_open}}']").attr("selected", "selected");
+
+            $("#trading_hour_monday_close option[value='{{item.trading_hour_monday_close}}']").attr("selected", "selected");
+            $("#trading_hour_tuesday_close option[value='{{item.trading_hour_tuesday_close}}']").attr("selected", "selected");
+            $("#trading_hour_wednesday_close option[value='{{item.trading_hour_wednesday_close}}']").attr("selected", "selected");
+            $("#trading_hour_thursday_close option[value='{{item.trading_hour_thursday_close}}']").attr("selected", "selected");
+            $("#trading_hour_friday_close option[value='{{item.trading_hour_friday_close}}']").attr("selected", "selected");
+            $("#trading_hour_saturday_close option[value='{{item.trading_hour_saturday_close}}']").attr("selected", "selected");
+            $("#trading_hour_sunday_close option[value='{{item.trading_hour_sunday_close}}']").attr("selected", "selected");
+
+            $("#channel option[value='{{item.channel}}']").attr("selected", "selected");
+            $("#merch_state option[value='{{item.merch_state}}']").attr("selected", "selected");
+            $("#company option[value='{{item.company}}']").attr("selected", "selected");
+            $("#area option[value='{{item.area}}']").attr("selected", "selected");
+
+            $('.date_pickr').datepicker({ dateFormat: 'dd-mm-yy', minDate: dateVal });
+            
+            $('#effective_date').keyup(function(){
+                re = /^\d{1,2}-\d{1,2}-\d{4}$/
+
+                if(!($(this).val()).match(re)){
+                    $(this).val('');
+                }
+            });
+
+            $('.btn-update').click(function(){
+                    $.ajax({
+                        url: '/bws_stores/fetch_request_status/{{key}}'
+                    }).done(function(data){
+                        if(data == 1){
+                            $('#update-request-button').click();
+                        }else{
+                            window.location.href = '/bws_stores/edit_locked?frmkey={{frmkey}}';
+                        }
+                    });
+                });
+            });
+    </script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+BWS Store Information Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>New store added or store changes, or closes they information for the store is communicated via this form.</p>
+</div>
+<form class="well form-horizontal" action="/bws_stores/edit_data" method="post">
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="control-group">
+                <label class="radio inline">
+                    <input type="radio" name="new_changes_closures" id="optionNew" value="new" required checked="true">
+                    <input type="hidden" name="status" id="status" value="{{item.status}}" >
+                    New
+                </label>
+                <label class="radio inline">
+                    <input type="radio" name="new_changes_closures" id="optionChanges" value="changes" required>
+                    Changes
+                </label>
+                <label class="radio inline">
+                    <input type="radio" name="new_changes_closures" id="optionsClosure" value="closures" required>
+                    Closures
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="store_number">Store Number</label>
+                <div class="controls">
+                    <input class="span11 numbersOnly" type="text" id="store_number" name="store_number" value='{{item.store_number}}' required>
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="effective_date">Effective Date</label>
+                <div class="controls">
+                    <input class="span6 date_pickr" type="text" id="effective_date" name="effective_date" placeholder="dd-mm-yyyy" value='{{item.effective_date}}' required>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="store_name">Store Name</label>
+                <div class="controls">
+                    <input class="span11" type="text" id="store_name" name="store_name" value='{{item.store_name}}' required>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="state">State</label>
+                <div class="controls">
+                    <select id="state" name="state" class="span11" required>
+                        <option value=""></option>
+                        <option value="Australian Capital Territory">ACT</option>
+                        <option value="New South Wales">NSW</option>
+                        <option value="Nothern Territory">NT</option>
+                        <option value="Queensland">QLD</option>
+                        <option value="South Australia">SA</option>
+                        <option value="Tasmania">TAS</option>
+                        <option value="Victoria">VIC</option>
+                        <option value="Western Australia">WA</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="banner">Banner</label>
+                <div class="controls">
+                    <select id="banner" name="banner" class="span11">
+                        <option value=""></option>
+                        <option value="BWS SMKT">BWS SMKT</option>
+                        <option value="BWS">BWS</option>
+                        <option value="UNBRANDED">UNBRANDED</option>
+                        <option value="WOW">WOW</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="area">Area</label>
+                <div class="controls">
+                    <select id="area" name="area" class="span11" required>
+                        <option value=""></option>
+                        <option value="NSW-1">NSW-1</option>
+                        <option value="NSW-2">NSW-2</option>
+                        <option value="NSW-3">NSW-3</option>
+                        <option value="NSW-4">NSW-4</option>
+                        <option value="NSW-5">NSW-5</option>
+                        <option value="NSW-6">NSW-6</option>
+                        <option value="NSW-7">NSW-7</option>
+                        <option value="NSW-8">NSW-8</option>
+                        <option value="NSW-9">NSW-9</option>
+                        <option value="NSW-10">NSW-10</option>
+                        <option value="QLD-1">QLD-1</option>
+                        <option value="QLD-2">QLD-2</option>
+                        <option value="QLD-3">QLD-3</option>
+                        <option value="QLD-4">QLD-4</option>
+                        <option value="QLD-5">QLD-5</option>
+                        <option value="QLD-6">QLD-6</option>
+                        <option value="QLD-7">QLD-7</option>
+                        <option value="QLD-8">QLD-8</option>
+                        <option value="QLD-9">QLD-9</option>
+                        <option value="QLD-10">QLD-10</option>
+                        <option value="QLD-11">QLD-11</option>
+                        <option value="QLD-12">QLD-12</option>
+                        <option value="SA-1">SA-1</option>
+                        <option value="SA-2">SA-2</option>
+                        <option value="SA-3">SA-3</option>
+                        <option value="VIC-1">VIC-1</option>
+                        <option value="VIC-2">VIC-2</option>
+                        <option value="VIC-3">VIC-3</option>
+                        <option value="VIC-4">VIC-4</option>
+                        <option value="VIC-5">VIC-5</option>
+                        <option value="VIC-6">VIC-6</option>
+                        <option value="VIC-7">VIC-7</option>
+                        <option value="VIC-8">VIC-8</option>
+                        <option value="VIC-9">VIC-9</option>
+                        <option value="VIC-10">VIC-10</option>
+                        <option value="WA-1">WA-1</option>
+                        <option value="WA-2">WA-2</option>
+                        <option value="WA-3">WA-3</option>
+                        <option value="WA-4">WA-4</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="address">Address</label>
+                <div class="controls">
+                    <input class="span11" type="text" id="address" name="address" value='{{item.address}}'>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="phone_number">Phone Number</label>
+                <div class="controls">
+                    <input type="text" id="phone_number" name="phone_number" class="span11 numbersOnly" value='{{item.phone_number}}'>
+                </div>
+            </div>
+        </div>
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="fax_number">Fax Number</label>
+                <div class="controls">
+                    <input type="text" id="fax_number" name="fax_number" class="span6 numbersOnly" value='{{item.fax_number}}'>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="manager_name">Manager's Name</label>
+                <div class="controls">
+                    <input class="span11" type="text" id="manager_name" name="manager_name" value='{{item.manager_name}}'>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <legend>Trading Hours</legend>
+
+    <div class="row-fluid">
+        <table class="table table-condensed">
+            <thead>
+                <tr>
+                    <th width="9%">&nbsp;</th>
+                    <th width="13%">Monday</th>
+                    <th width="13%">Tuesday</th>
+                    <th width="13%">Wednesday</th>
+                    <th width="13%">Thursday</th>
+                    <th width="13%">Friday</th>
+                    <th width="13%">Saturday</th>
+                    <th width="13%">Sunday</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Open</strong></td>
+                    <td>
+                        <select id="trading_hour_monday_open" name="trading_hour_monday_open" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} AM">{{ hour }} AM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_tuesday_open" name="trading_hour_tuesday_open" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} AM">{{ hour }} AM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_wednesday_open" name="trading_hour_wednesday_open" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} AM">{{ hour }} AM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_thursday_open" name="trading_hour_thursday_open" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} AM">{{ hour }} AM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_friday_open" name="trading_hour_friday_open" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} AM">{{ hour }} AM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_saturday_open" name="trading_hour_saturday_open" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} AM">{{ hour }} AM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_sunday_open" name="trading_hour_sunday_open" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} AM">{{ hour }} AM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>Close</strong></td>
+                    <td>
+                        <select id="trading_hour_monday_close" name="trading_hour_monday_close" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} PM">{{ hour }} PM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_tuesday_close" name="trading_hour_tuesday_close" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} PM">{{ hour }} PM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_wednesday_close" name="trading_hour_wednesday_close" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} PM">{{ hour }} PM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_thursday_close" name="trading_hour_thursday_close" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} PM">{{ hour }} PM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_friday_close" name="trading_hour_friday_close" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} PM">{{ hour }} PM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_saturday_close" name="trading_hour_saturday_close" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} PM">{{ hour }} PM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select id="trading_hour_sunday_close" name="trading_hour_sunday_close" class="span8">
+                            <option value=""></option>
+                            {% for hour in trading_hours%}
+                            <option value="{{ hour }} PM">{{ hour }} PM</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <legend>Attributes</legend>
+
+    <div class="row-fluid">
+        <div class="control-group">
+            <div class="span6">
+                <label class="control-label" for="channel">Channel</label>
+                <div class="controls">
+                    <select name="channel" id="channel" class="span11">
+                        <option value=""></option>
+                        <option value="DBS">DBS</option>
+                        <option value="STORE">STORE</option>
+                        <option value="WALK IN">WALK IN</option>
+                        <option value="WOW">WOW</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="merch_state">Merch State</label>
+                <div class="controls">
+                    <select name="merch_state" id="merch_state" class="span11">
+                        <option value=""></option>
+                        <option value="Australian Capital Territory">ACT</option>
+                        <option value="New South Wales">NSW</option>
+                        <option value="Nothern Territory">NT</option>
+                        <option value="Queensland">QLD</option>
+                        <option value="South Australia">SA</option>
+                        <option value="Tasmania">TAS</option>
+                        <option value="Victoria">VIC</option>
+                        <option value="Western Australia">WA</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span6">
+            <div class="control-group">
+                <label class="control-label" for="company">Company</label>
+                <div class="controls">
+                    <select name="company" id="company" class="span11">
+                        <option value=""></option>
+                        <option value="Attached (Supermarket)">Attached (Supermarket)</option>
+                        <option value="Drive">Drive</option>
+                        <option value="FreeStanding">FreeStanding</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <legend>Other</legend>
+    <div class="row-fluid">
+        <div class="control-group">
+            <div class="controls">
+                <textarea id="other" name="other" rows="10" class="span9">{{item.other}}</textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="pull-right">
+            <input type="button" class="btn-update btn btn-primary" value="Update Request">
+            <input id="update-request-button" type="submit" class="btn btn-primary" style="display: none;" />
+            <input type="hidden" name="entity_key" value="{{item.key.urlsafe()}}">
+            <input type="hidden" name="frmkey" value="{{frmkey}}">
+            <a href="{{this.uri('bws_stores:list', key=frmkey)}}" class="btn">Cancel</a>
+        </div>
+    </div>
+</form>
+{% endblock %}

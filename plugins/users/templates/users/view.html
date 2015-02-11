@@ -1,0 +1,19 @@
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends s.admin_or_default() %}
+
+{% block layout_content %}
+
+
+<div class="contact media">
+  <img class="media-object pull-left" src="{{this.uri('users:picture', key=user.key.urlsafe())}}">
+
+  <div class="media-body">
+    <h4 class="media-heading">{{user.name}}</h4>
+    <dl class="meta">
+      <dt>Email</dt>
+      <dd><a href='mailto:{{user.user.email()}}'>{{user.user.email()}}</a></dd>
+    </dl>
+  </div>
+</div>
+
+{% endblock %}

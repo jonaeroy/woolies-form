@@ -1,0 +1,238 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+    {{super}}
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script type="text/javascript" src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type="text/javascript" src="/js/utils.js"></script>
+    <script type="text/javascript">
+        function arrayMerge(array1, array2){
+            list = new Array();
+            for(x in array1){
+                list.push(array1[x])
+            }
+
+            for (i = 0; i < array2.length; ++i) {
+                index = list.indexOf(array2[i]);
+                if (index === -1) {
+                    // Add the element to array1 if it's unique
+                    list.push(array2[i]);
+                } else {
+                    // Remove it if it already exists
+                    list.splice(index,1);
+                }
+            }
+
+            return list
+        }
+
+        function unique(list){
+            var result = [];
+            $.each(list, function(i, e) {
+                if ($.inArray(e, result) == -1) result.push(e);
+            });
+            return result;
+        }
+
+        $(document).ready(function(){
+
+            var previous_selected_email = new Array();
+            var previous_email_list = new Array();
+
+            {% if item.to != '' %}
+            var ndb_emails = '{{item.to}}'
+            previous_email_list = ndb_emails.split(';');
+            {% endif %}
+
+            $('#dc').focus(function(){
+                var dc_name = $(this).val();
+
+                if(dc_name != ''){
+                    $.ajax({
+                        url: '/maintenance_requests/retrieve/' + dc_name
+                    }).done(function(data){
+                        if(data != ''){
+                            previous_selected_email = data.split(';');
+                        }
+                    });
+                }
+            }).change(function(){
+                var dc_name = $(this).val();
+                
+                if(dc_name != ''){
+                    $.ajax({
+                        url: '/maintenance_requests/retrieve/' + dc_name
+                    }).done(function(data){
+                        if(data != ''){
+                            previous_email_list = $('#to').val().split(';')                          
+
+                            var new_list = arrayMerge(previous_selected_email, previous_email_list);
+                            new_list.push(data);
+                            var unq = unique(new_list);
+
+                            $('#to').val(unq.join(';'))
+                            
+                            $('.global-address-emailInput').each(function(){
+                                var obj = $(this);
+                                var span_obj = obj.find("span");
+                                span_obj.parent().remove();
+                            });
+                            previous_selected_email = data.split(';');
+                            globalAddress.load_exist();
+                        }
+                    });
+                }else{
+                    $('#to').val('');
+                }
+            });
+
+            /* 
+            To use this checker it is mandatory that the 'update' button should have 'btn-update' class and
+            the form should have a hidden submit button with an ID of 'update-request-button'
+            */
+            $('.btn-update').click(function(){
+                $.ajax({
+                    url: '/maintenance_requests/fetch_request_status/{{key}}'
+                }).done(function(data){
+                    if(data == 1){
+                        $('#update-request-button').click();
+                    }else{
+                        window.location.href = '/maintenance_requests/edit_locked?frmkey={{frmkey}}';
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+DC Maintenance Request Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+<!-- the page main content should be here -->
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Maintenance request form. Used to capture work requests in a DC. It has urgency levels and can attach additional information.</p>
+</div>
+<div class="well">
+<form class="form-horizontal" action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+    <div class="row-fluid">
+        <div class="control-group">
+            <label class="control-label" for="dc">DC</label>
+            <div class="controls">
+                <select id="dc" name="dc" required class="span10">
+                    <option value=""></option>
+                    {% for info in dc_warehouse_info %}
+                    <option {{ 'selected' if item.dc == info.dc_name else '' }} value="{{info.dc_name}}">{{info.dc_name}}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="to">To</label>
+            <div class="controls">
+                <input value='{{item.to}}' type="text" id="to" name="to" class="span10 global-address" required>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="cc">CC</label>
+            <div class="controls">
+                <input value='{{item.cc}}' type="text" id="cc" name="cc" class="span10 global-address">
+            </div>
+        </div>
+        <!--<div class="control-group">
+            <label class="control-label" for="warehouse_location">Warehouse Location</label>
+            <div class="controls">
+                <select id="warehouse_location" name="warehouse_location" required class="span10">
+                    <option value=""></option>
+                    <option value="ARDC">ARDC</option>
+                    <option value="MLDC">MLDC</option>
+                    <option value="MNDC">MNDC</option>
+                    <option value="TRDC">TRDC</option>
+                    <option value="TRDC">Wyong</option>
+                    <option value="TRDC">Wodonga MRDC</option>
+                </select>
+            </div>
+        </div>-->
+        <div class="control-group">
+            <label class="control-label" for="requestor_name">Name of Requestor</label>
+            <div class="controls">
+                <input value="{{item.requestor_name}}" class="span10" type="text" id="requestor_name" name="requestor_name" required>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="priority">Priority</label>
+            <div class="controls">
+                <select id="priority" name="priority" required class="span10">
+                    <option value=""></option>
+                    <option {{ 'selected' if item.priority == "Urgent" else '' }} value="Urgent">Urgent</option>
+                    <option {{ 'selected' if item.priority == "ASAP" else '' }} value="ASAP">ASAP</option>
+                    <option {{ 'selected' if item.priority == "Routine" else '' }} value="Routine">Routine</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="date_time">Date/Time</label>
+            <div class="controls">
+                <input class="span10" type="text" id="date_time" name="date_time" value="{{item.date_time}}" readonly="readonly">
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="department">Department</label>
+            <div class="controls">
+                <select id="department" name="department" required class="span10">
+                    <option value=""></option>
+                    <option {{ 'selected' if item.department == "Admin" else '' }} value="Admin">Admin</option>
+                    <option {{ 'selected' if item.department == "Produce" else '' }} value="Produce">Produce</option>
+                    <option {{ 'selected' if item.department == "Recycling" else '' }} value="Recycling">Recycling</option>
+                    <option {{ 'selected' if item.department == "Security" else '' }} value="Security">Security</option>
+                    <option {{ 'selected' if item.department == "Transport" else '' }} value="Transport">Transport</option>
+                    <option {{ 'selected' if item.department == "Safety" else '' }} value="Safety">Safety</option>
+                    <option {{ 'selected' if item.department == "Operations" else '' }} value="Operations">Operations</option>
+                    <option {{ 'selected' if item.department == "Chilled" else '' }} value="Chilled">Chilled</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="notes">Description of Fault/Defect/ <br> Task/Equipment</label>
+            <div class="controls">
+                <textarea id="notes" name="notes" rows="10" class="span10" required>{{item.notes}}</textarea>
+            </div>
+        </div>
+
+        {% if attachment != None %}
+        <div class="row-fluid">
+            <div class="control-group">
+                <label class="control-label">Previous Attachment</label>
+                <div class="controls">{{attachment}}</div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="control-group">
+            <label class="control-label" for="attachment">Attach Document if Required</label>
+            <div class="control-group">
+                <div class="controls">
+                    <input class="span6 field-type-blob-key-field" id="attachment" name="attachment" type="file">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="pull-right">
+            <button id="submit" type="button" class="btn-update btn btn-primary">Update Request</button>
+            <input id="update-request-button" type="submit" class="btn btn-primary" style="display: none;" />
+            <a href="{{this.uri('maintenance_requests:list', key=frmkey)}}" class="btn">Cancel</a>
+        </div>
+    </div>
+    
+</form>
+</div>
+{% include "includes/global_address_modal.html" %}
+{% endblock %}

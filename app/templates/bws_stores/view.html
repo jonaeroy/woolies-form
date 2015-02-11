@@ -1,0 +1,180 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+<script type='text/javascript' src='/js/utils.js'></script>
+<script type='text/javascript'>
+    $(document).ready(function(){
+        GLOBAL_url = 'http://{{domain_path}}/bws_stores{{form_key}}'
+    });
+</script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+BWS Stores Information View
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->  
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>New store added or store changes, or closes they information for the store is communicated via this form.</p>
+</div>
+<div class="well">
+    <fieldset>
+        <!-- <legend>
+            <h3>BWS Stores Information Details</h3>
+        </legend> -->
+        {% import "scaffolding/macros.html" as scaffold with context %}
+        {% import 'macros/search.html' as search with context %}
+        <table class="table table-striped">
+            <tr>
+                <td><b>{{new_changes_closures}}</b></td>
+                <td>&nbsp;</td>
+            </tr>
+            {% if status == 'Rejected' or status =='Approved' %}
+            <tr>
+                <td>Status:</td>
+                <td>{{status}} by {{modified_by}} on {{localize_datetime(modified)}}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td>Effective Date:</td>
+                <td>{{effective_date}}</td>
+            </tr>
+            <tr>
+                <td>Store Number:</td>
+                <td>{{store_number}}</td>
+            </tr>
+            <tr>
+                <td>Store Name:</td>
+                <td>{{store_name}}</td>
+            </tr>
+            <tr>
+                <td>State:</td>
+                <td>{{state}}</td>
+            </tr>
+            <!-- <tr>
+                <td>Region:</td>
+                <td>{{region}}</td>
+            </tr> -->
+            <tr>
+                <td>Banner:</td>
+                <td>{{banner}}</td>
+            </tr>
+            <tr>
+                <td>Area:</td>
+                <td>{{area}}</td>
+            </tr>
+            <tr>
+                <td>Address:</td>
+                <td>{{address}}</td>
+            </tr>
+            <tr>
+                <td>Phone Number:</td>
+                <td>{{phone_number}}</td>
+            </tr>
+            <tr>
+                <td>Fax Number:</td>
+                <td>{{fax_number}}</td>
+            </tr>
+            <tr>
+                <td>Manager's Name:</td>
+                <td>{{manager_name}}</td>
+            </tr>
+            <tr>
+                <td><b>Trading Hours</b></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <table class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <td>Day</td>
+                                <td>Open</td>
+                                <td>Close</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Monday</td>
+                                <td>{{trading_hour_monday_open}}</td>
+                                <td>{{trading_hour_monday_close}}</td>
+                            </tr>
+                            <tr>
+                                <td>Tuesday</td>
+                                <td>{{trading_hour_tuesday_open}}</td>
+                                <td>{{trading_hour_tuesday_close}}</td>
+                            </tr>
+                            <tr>
+                                <td>Wednesday</td>
+                                <td>{{trading_hour_wednesday_open}}</td>
+                                <td>{{trading_hour_wednesday_close}}</td>
+                            </tr>
+                            <tr>
+                                <td>Thursday</td>
+                                <td>{{trading_hour_thursday_open}}</td>
+                                <td>{{trading_hour_thursday_close}}</td>
+                            </tr>
+                            <tr>
+                                <td>Friday</td>
+                                <td>{{trading_hour_friday_open}}</td>
+                                <td>{{trading_hour_friday_close}}</td>
+                            </tr>
+                            <tr>
+                                <td>Saturday</td>
+                                <td>{{trading_hour_saturday_open}}</td>
+                                <td>{{trading_hour_saturday_close}}</td>
+                            </tr>
+                            <tr>
+                                <td>Sunday</td>
+                                <td>{{trading_hour_sunday_open}}</td>
+                                <td>{{trading_hour_sunday_close}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td><b>Attributes</b></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>Channel</td>
+                <td>{{channel}}</td>
+            </tr>
+            <tr>
+                <td>Merch State</td>
+                <td>{{merch_state}}</td>
+            </tr>
+            <tr>
+                <td>Company</td>
+                <td>{{company}}</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>Other:</td>
+                <td>{{other}}</td>
+            </tr>
+        </table>
+    </fieldset>
+     <div class="row-fluid">
+        <div class="pull-right">
+            {% if item.status == 1 and is_creator == True %}
+           <a href="{{this.uri('bws_stores:update', key=item.key.urlsafe(), frmkey=frmkey)}}" class="btn btn-primary">Edit</a>
+            {% endif %}
+            <a href="{{this.uri('bws_stores:list', key=frmkey)}}" class="btn btn-primary">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

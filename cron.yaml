@@ -1,0 +1,10 @@
+cron:
+- description: user list update to memcache
+  url: /users/directory/task
+  schedule: every monday 04:00
+  timezone: Australia/NSW
+
+- description: retrieves notifications from google calendar
+  url: /googlecalendar/email/task
+  schedule: every 45 minutes
+  timezone: Asia/Manila

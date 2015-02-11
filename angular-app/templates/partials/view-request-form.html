@@ -1,0 +1,409 @@
+{%raw%}
+<div class="main">
+    <div class="quick-notif quick-notif-fade" ng-show="showSaveFlash">
+        <div class="center-block" ><span>Your changes have been saved!</span></div>
+    </div>
+    <div x-loading="page_loading"></div>
+    <div class="wrapper">
+        <div class="content">
+            <div class="wrapper">
+                <header class="header">
+                    <h1 class="page-title">
+                        <span>Request Details</span>
+                        <span ng-show="model.reference_number">for CAR No. </span>
+                        <span class="text-primary" ng-bind="model.reference_number" ng-show="model.reference_number"></span>
+                    </h1>
+
+                    <span class="label label-primary label-status" ng-if="model.status == 'approved'"><i class="fa fa-check"></i> Approved</span>
+                    <span class="label label-danger label-status" ng-if="model.status == 'rejected'"><i class="fa fa-times"></i> Rejected</span>
+
+                    <p style="margin-top: 20px;" class="alert alert-warning" ng-show="model.status == 'rejected'">
+                        <label>Reason for rejection</label><br>
+                        <span ng-bind="model.reason"></span>
+                    </p>
+
+                    <!-- Time stamps -->
+                    <div class="small text-muted small-list" ng-if="model.status == 'approved'">
+                        <label for="requested_by">Requested By: <span ng-bind="model.requested_by"></span></label>
+                        <label for="creation_date">Creation Date: <span ng-bind="model.created | formatDate"></span></label>
+                        <label for="submission_date">Submission Date: <span ng-bind="model.submission_date | formatDate"></span></label>
+                        <label for="approval_date">Approval Date: <span ng-bind="model.modified | formatDate"></span></label>
+                        <label ng-show="approvers.length">This form was approved by the following approvers:
+                            <div ng-repeat="approver in approvers" ng-bind-template="{{approver.approver}} - {{approver.created | formatDate}}"></div>
+                        </label>
+                    </div>
+                    <!-- Time stamps -->
+
+                    <ul class="nav nav-tabs hidden-print" ng-show="model.status == 'approved'">
+                        <li ng-class="{active: currentTab === 'request'}">
+                            <a href ng-click="viewTab('request')">Request</a>
+                        </li>
+                        <li ng-class="{active: currentTab === 'invoice'}" ng-show="model.status == 'approved'">
+                            <a href ng-click="viewTab('invoice')">Invoices</a>
+                        </li>
+                    </ul>
+                </header>
+                <div class="body form">
+                    <div ng-class="{is_hidden: currentTab !== 'request'}">
+                        <div class="fieldset-group">
+                            <fieldset class="print-column print-column-4" style="border:0">
+                                <legend>General</legend>
+                                <div class="form-group">
+                                    <label>Unit Number</label>
+                                    <span class="form-group-text-short" ng-bind="model.unit_number || '-'"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Unit Name</label>
+                                    <span class="form-group-text-short" ng-bind="model.unit_name || '-'"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Client Name</label>
+                                    <span class="form-group-text-short" ng-bind="model.client_name || '-'"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Unit Province</label><br>
+                                    <span class="form-group-text-short" ng-bind="model.unit_province || '-'"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Sector</label><br>
+                                    <span class="form-group-text-short" ng-bind="model.sector_name || '-'"></span>
+                                </div>
+                            </fieldset>
+                            <fieldset class="print-column print-column-4">
+                                <legend>Budget</legend>
+                                <div class="form-group print-column-block">
+                                    <strong>
+                                        <span ng-bind="model.budget_type || '-'"></span>
+                                    </strong>
+                                </div>
+                                <div ng-hide="model.budget_type == 'Not Budgeted'">
+                                    <div class="form-group">
+                                        <label>Year Budgeted</label>
+                                        <span class="form-group-text-short" ng-bind="model.budget_year || '-'"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Period Budgeted</label>
+                                        <span class="form-group-text-short" ng-bind="model.budget_period || '-'">Period Budget</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Planned Expenditure Date</label>
+                                        <span class="form-group-text-short" ng-bind="model.planned_expenditure_date || '-'"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Amount Budgeted</label>
+                                        <span class="form-group-text-short form-amount-data" ng-bind="(model.budget_amount || 0.0) | currencyType"></span>
+                                    </div>
+                                    <div class="form-group print-column-emphasis" ng-show="model.is_part_of_larger_project">
+                                        <small><i class="fa fa-info-circle fa-lg"></i> This is part of a larger project</small>
+                                    </div>
+                                    <div class="form-group print-column-block print-column-highlight" ng-show="model.is_part_of_larger_project">
+                                        <label>Project Total</label>
+                                        <span class="form-group-text-short form-amount-data" ng-bind="(model.project_total || 0.0) | currencyType"></span>
+                                    </div>
+                                </div>
+                            </fieldset>
+                            <div class="fieldset-group">
+                                <fieldset class="print-column-block">
+                                    <!-- <legend>Expense Breakdown</legend> -->
+                                    <div class="table-responsive">
+                                        <table class="table table-condensed">
+                                            <thead class="table-column-titles">
+                                                <tr>
+                                                    <th>Quantity</th>
+                                                    <th>Description</th>
+                                                    <th>Model#</th>
+                                                    <th>Supplier</th>
+                                                    <th>Tag Assigned <br><small>H.O. use only</small></th>
+                                                    <th>Total Delivered Cost <br><small>(Incl Freight & Inst'n)</small></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr ng-repeat="item in model.items">
+                                                    <td class="text-center"><span ng-bind="item.quantity || 0"></span></td>
+                                                    <td class="text-center"><span ng-bind="item.description || '-'"></span></td>
+                                                    <td class="text-center"><span ng-bind="item.model_number || '-'"></span></td>
+                                                    <td class="text-center"><span ng-show="item.supplier_is_not_existing" tooltips title="This is a Non-Approved Supplier" tooltip-size="large"><i class="fa fa-exclamation-circle" style="color: #a2182b;"></i></span> <span ng-bind="item.supplier.name || '-'" ng-style="{color:item.supplier_is_not_existing?'#a2182b':'#333333'}"></span></td>
+                                                    <td class="text-center"><span ng-bind="item.tag || '-'"></span></td>
+                                                    <td class="text-center"><span class="form-amount-data" ng-bind="(item.total_delivered_cost || 0.0) | currencyType"></span></td>
+                                                </tr>
+                                            </tbody>
+                                            <tfoot class="table-footer-sum">
+                                                <tr>
+                                                    <td colspan="5" class="text-right"><small>SUBTOTAL</small></td>
+                                                    <td colspan="1" class="text-center"><span class="form-amount-data" ng-bind="(subtotal() || 0.0) | currencyType"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="5" class="text-right"><small ng-bind="tax_matrix[model.unit_province][0] || 'GST / HST'"></small></td>
+                                                    <td colspan="1" class="text-center"><span class="form-amount-data" ng-bind="(tax_amount() || 0.0) | currencyType"></span></td>
+                                                </tr>
+                                                <tr ng-show="pst_applies()">
+                                                    <td colspan="5" class="text-right"><small>PST</small></td>
+                                                    <td colspan="1" class="text-center"><span class="form-amount-data" ng-bind="(pst_amount() || 0.0) | currencyType"></span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="5" class="text-right">TOTAL</td>
+                                                    <td colspan="1" class="text-center"><span class="form-amount-data big-amount" ng-bind="(total() || 0.0) | currencyType"></span></td>
+                                                </tr>
+                                            </tfoot>
+                                        </table>
+                                    </div>
+                                </fieldset>
+                            </div>
+                        </div>
+                        <div class="fieldset-group">
+                            <fieldset class="print-column print-column-4">
+                                <legend>Reason for Expenditure</legend>
+                                <div class="form-group">
+                                    <strong>
+                                        <span ng-bind="model.reason_for_expenditure || '-'"></span>
+                                    </strong>
+                                </div>
+                                <div class="form-group hidden-print">
+                                    <label clasng-if="model.reason_for_expenditure == 'New Business'">Link to a copy of approved proforma</label>
+                                    <label ng-if="model.reason_for_expenditure == 'Retention'">Link to a copy of contract and approved proforma</label>
+                                    <label ng-if="model.reason_for_expenditure == 'Maintenance'">Link to a copy of Contractually obligated Captial</label>
+                                    <label ng-if="model.reason_for_expenditure == 'Replacement'">Link to a copy of Disposal request/details of equipment</label>
+                                    <label ng-if="model.reason_for_expenditure == 'Like for Like'">Link to a copy of New Assets</label>
+                                    <label ng-if="model.reason_for_expenditure == 'Billed to Client'">Link to a copy of Client authorization</label>
+                                    <label ng-if="model.reason_for_expenditure == 'Client Investment'">Link to a copy of signed contract</label>
+                                    <label ng-if="model.reason_for_expenditure == 'Lease'">Link to a copy of Lease Agreement</label>
+                                    <label ng-if="model.reason_for_expenditure == 'IT and Infrastructure'">Link to a copy of detailed explanation and/or quote</label>
+                                    <div class="form-group-attachments" ng-show="model.reason_for_expenditure">
+                                        <a target="_self" href="/api/request_forms/:{{model.key.urlsafe}}/file_dl/attachment" target="_blank" ng-if="model.attachment">
+                                            <i class="fa fa-download fa-lg fa-fw"></i>
+                                            <span>Download</span>
+                                        </a>
+                                        <button class="btn btn-xs btn-remove" ng-show="model.attachment && !model.submitted" ng-click="delete_attachment('attachment')"><i class="fa fa-times"></i> Remove</button>
+                                        <span ng-if="!model.attachment">-</span>
+                                    </div>
+                                </div>
+                                <div class="form-group hidden-print" ng-show="model.has_buy_back_agreement && model.buy_back_agreement">
+                                    <label>Link to a copy of the Buy-Back Agreement</label>
+                                    <div class="form-group-attachments">
+                                        <a target="_self" href="/api/request_forms/:{{model.key.urlsafe}}/file_dl/buy_back_agreement" target="_blank">
+                                            <i class="fa fa-download fa-lg fa-fw"></i>
+                                            <span>Download</span>
+                                        </a>
+                                        <button class="btn btn-xs btn-remove"  ng-show="model.buy_back_agreement && !model.submitted" ng-click="delete_attachment('buy_back_agreement')"><i class="fa fa-times"></i> Remove</button>
+                                    </div>
+                                </div>
+                                <div class="form-group" ng-show="model.available_similar_assets">
+                                    <small class="print-column-emphasis"><i class="fa fa-info-circle fa-lg"></i> Similar asset(s) available elsewhere in the Company</small>
+                                </div>
+                                <br>
+                                <div class="form-group">
+                                    <label>Why do this at all?</label>
+                                    <p class="form-group-text-block" ng-bind="model.why_do_this_at_all || '-'"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Why do this now?</label>
+                                    <p class="form-group-text-block" ng-bind="model.why_do_this_now || '-'"></p>
+                                </div>
+                                <div class="form-group">
+                                    <label>Why do it this way?</label>
+                                    <p class="form-group-text-block" ng-bind="model.why_do_it_this_way || '-'"></p>
+                                </div>
+                            </fieldset>
+                            <fieldset class="print-column print-column-4 page-break">
+                                <legend>Projected Financial Impact</legend>
+                                <div class="form-group">
+                                    <label>Revenues</label>
+                                    <span class="form-group-text-short form-amount-data" ng-bind="(model.revenues || 0.0) | currencyType"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>PBO</label>
+                                    <span class="form-group-text-short form-amount-data" ng-bind="(model.pbo || 0.0) | currencyType"></span>
+                                </div>
+                                <div class="form-group">
+                                    <label>Return on Investment <br class="print-only-inline"><small>(Year 1 PBO / Total Cost)</small></label>
+                                    <span class="form-group-text-short" ng-bind="(return_of_investment() || 0.0) | currencyType"></span>
+                                </div>
+                                <br><br class="visible-print-inline">
+                                <p><b>Proposed Amortization Period</b></p>
+                                <div class="form-group print-column-2">
+                                    <label>Start Date <small>(Period/Fiscal Year)</small></label>
+                                    <span class="form-group-text-short" ng-bind="model.amortization_start_date || '-'"></span>
+                                </div>
+                                <div class="form-group print-column-2">
+                                    <label>Amortization Period <small>(Years)</small></label>
+                                    <span class="form-group-text-short" ng-bind="model.amortization_period || '-'"></span>
+                                </div>
+                                <br>
+                                <p><b>Amortization Spread Pattern</b></p>
+                                <div class="form-group print-column-2">
+                                    <span class="form-group-text-short" ng-bind="model.amortization_spread_pattern || '-'"></span>
+                                </div>
+                                <div class="form-group print-column-2" ng-show="model.under_compass_amortization_term_policy">
+                                    <small><i class="fa fa-info-circle fa-lg"></i> Amortization Term is per Compass Policy</small>
+                                </div>
+                            </fieldset>
+                            <fieldset>
+                                <legend>Cash Flow Calculation</legend>
+                                <div class="btn-block">
+                                    <dl class="dl-horizontal">
+                                        <dt>PBO</dt>
+                                        <dd>$<span ng-bind="(model.pbo || 0.0) | currencyType"></span></dd>
+                                        <dt>- Income Tax (@<span ng-bind="(settings.income_tax_rate || 0.0) * 100"></span>%)</dt>
+                                        <dd class="text-danger">($<span ng-bind="(income_tax() || 0.0) | currencyType"></span>)</dd>
+                                        <dt>+ Amortization</dt>
+                                        <dd>$<span ng-bind="(amortization() || 0.0) | currencyType"></span></dd>
+                                        <dt>= Net Cash Flow</dt>
+                                        <dd>$<span ng-bind="(net_cash_flow() || 0.0) | currencyType"></span></dd>
+                                    </dl>
+                                    <dl class="dl-horizontal">
+                                        <dt>Annual Amortization Cost</dt>
+                                        <dd>$<span ng-bind="(amortization() || 0.0) | currencyType"></span></dd>
+                                        <dt>Payback Period</dt>
+                                        <dd><span ng-bind="(payback_pd() || 0.0) | floatType"></span> years</dd>
+                                    </dl>
+                                </div>
+                            </fieldset>
+                            <fieldset class="print-column">
+                                <legend>Permits & Regulatory Approval</legend>
+                                <div class="form-group">
+                                    <span class="form-group-text-short" ng-show="model.install_permit_required"><i class="fa fa-check-square-o"></i> Permits required for construction/installation</span>
+                                    <span class="form-group-text-short" ng-show="model.client_approval_required"><i class="fa fa-check-square-o"></i> Client approval required for construction/installation</span>
+                                </div>
+                            </fieldset>
+                        </div>
+                    </div>
+                    <!-- Request Details -->
+                    <!-- Invoice List -->
+                    <div ng-class="{is_hidden: currentTab !== 'invoice'}">
+                        <div class="form-group-button hidden-print">
+                            <button class="btn btn-primary" type="button" ng-click="show_invoice_modal()"><i class="fa fa-plus"></i> Add invoice</button>
+                        </div>
+                        <div class="list-invoice">
+                            <table class="table table-form-list">
+                                <thead>
+                                    <tr>
+                                        <th><span>Invoice Number</span></th>
+                                        <th><span>Supplier</span></th>
+                                        <th><span>Total Amount</span></th>
+                                        <th><span>Description</span></th>
+                                        <th><span>Attachment</span></th>
+                                        <th class="activity"><span>Last Activity</span></th>
+                                        <th><span>Action</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="invoice in invoices">
+                                        <td><span ng-bind="invoice.number"></span></td>
+                                        <td><span ng-bind="invoice.supplier"></span></td>
+                                        <td><span class="form-amount-data" ng-bind="(invoice.cost || 0.00) | currencyType"></span></td>
+                                        <td><span class="wrap-it" ng-bind="invoice.description || '-'"></span></td>
+                                        <td>
+                                            <a class="hidden-print" target="_self" href="/api/request_forms/invoices/:{{invoice.key.urlsafe}}" target="_blank" ng-show="invoice.file"><i class="fa fa-download fa-lg fa-fw"></i>&nbsp;<span>Download</span></a>
+                                            <span ng-hide="invoice.file">-</span>
+                                        </td>
+                                        <td class="activity"><span ng-bind="invoice.date | timeAgo"></span></td>
+                                        <td>
+                                            <button class="btn btn-default btn-sm" ng-click="show_invoice_modal(invoice)"><i class="fa fa-pencil"></i> Edit</button>
+                                            <button class="btn btn-default btn-sm" ng-click="delete_invoice($index, invoice)"><i class="fa fa-trash"></i> Delete</button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <!-- <td></td> -->
+                                        <td colspan="2" class="text-right">
+                                            <strong class="pull-right"><span style="width: auto;">Sum of Total Amount:</span></strong>
+                                        </td>
+                                        <td colspan="5">
+                                            <strong><span class="form-amount-data big-amount" ng-bind="(sumTotalAmount() || 0.0) | currencyType"></span></strong>
+                                        </td>
+                                        <td colspan="4"></td>
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <br>
+                    </div>
+                    <!-- Invoice List -->
+                </div>
+            </div>
+        </div>
+        <!-- Content -->
+    </div>
+</div>
+
+<!-- Modal: Add Invoice -->
+<div class="modal" x-modal="invoiceModal" ng-controller="InvoiceCtrlModal">
+   <div class="modal-dialog">
+        <div class="modal-content">
+            <div x-modal-header>
+                Invoice
+            </div>
+            <div class="modal-body">
+                <div class="fieldset-group">
+                    <fieldset style="border:0">
+                        <!-- <div class="form-group">
+                            <label>Date</label>
+                            <input type="date" class="form-control" ng-model="model.date">
+                        </div> -->
+                        <div class="form-group">
+                            <label>Invoice Number</label>
+                            <input type="number" class="form-control" ng-model="model.number">
+                        </div>
+                        <div class="form-group">
+                            <label>Supplier</label><br/>
+                            <ui-select theme="select2" ng-model="model.supplier" style="width: 100%;">
+                            <ui-select-match placeholder="Select a supplier">{{$select.selected.name}}</ui-select-match>
+                            <ui-select-choices repeat="supplier.name as supplier in suppliers | filter: $select.search">
+                                <div ng-bind-html="supplier.name | highlight: $select.search"></div>
+                            </ui-select-choices>
+                        </div>
+                        <div class="form-group">
+                            <label>Total Amount</label>
+                            <input type="text" class="form-control" ng-model="model.cost">
+                        </div>
+                        <div class="form-group">
+                            <label>Description</label>
+                            <textarea class="form-control" ng-model="model.description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Attachment</label>
+                            <button class="btn btn-xs btn-remove" ng-click="delete_invoice_file()" ng-show="model.file"><i class="fa fa-times"></i> Remove current attachment</button>
+                            <input id="fileInput" type="file" fileread="file_model.file">
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-default" ng-click="modal.hide()"><i class="fa fa-trash"></i> Discard</button>
+                <button class="btn btn-primary" ng-disabled="!is_valid()" ng-click="save()"><i class="fa fa-check"></i> Save</button>
+            </div>
+        </div>
+   </div>
+</div>
+
+<!-- Modal: Reject -->
+<div class="modal" x-modal="rejectModal" ng-controller="ReqRejectCtrlModal">
+   <div class="modal-dialog">
+        <div class="modal-content">
+            <div x-modal-header>
+                Reject Request
+            </div>
+            <div class="modal-body">
+                <div x-loading="modal_loading"></div>
+                <div class="form-group">
+                    <label>Reason</label>
+                    <textarea class="form-control input-sm" ng-model="model.reason"></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-default" ng-click="modal.hide()">Close</button>
+                <button class="btn btn-primary" ng-click="save()">Save</button>
+            </div>
+        </div>
+   </div>
+</div>
+
+<!-- Error message notification -->
+<div class="error-notification" ng-show="has_errors">
+    <h4><i class="fa fa-exclamation-circle fa-lg"></i> Form not submitted</h4>
+    <small class="btn-block">The following errors were found on the form:</small>
+    <span class="error-item" ng-repeat="error in request_errors" ng-bind="error.message"></span>
+    <button class="btn btn-xs btn-danger btn-error-close" ng-click="has_errors = 0"><i class="fa fa-times"></i></button>
+</div>
+{%endraw%}

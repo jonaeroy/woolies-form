@@ -1,0 +1,16 @@
+{
+  "name": "google_directory",
+  "ignore": [
+    "**/.*",
+    "tests"
+  ],
+  "_release": "d5d17b4673",
+  "_resolution": {
+    "type": "branch",
+    "branch": "google_directory",
+    "commit": "d5d17b4673f6e168d48e7f2259a25966abed1ae0"
+  },
+  "_source": "git@bitbucket.org:cloudsherpas/ferris-plugins.git",
+  "_target": "google_directory",
+  "_originalSource": "git@bitbucket.org:cloudsherpas/ferris-plugins.git"
+}

@@ -1,0 +1,9 @@
+{% extends "layouts/error.html" %}
+
+{% block title %}Bad Request Encountered{% endblock %}
+{% block subtitle %}An unexpected application error has occurred.{% endblock %}
+{% block body %}
+
+The application errored while trying to respond to your request.<br/>
+This could be due to a number of factors such as a high volume load, issues with third-party services, missing parameters or could be a configuration issue.
+{% endblock %}

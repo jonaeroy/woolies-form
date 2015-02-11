@@ -1,0 +1,433 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+	{{super}}
+	<link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+	<script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+	<script src="/js/utils.js"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var dateToday = new Date;
+			var yearNow = dateToday.getFullYear(); 
+
+			$('.datepickr').datepicker({
+				dateFormat: 'dd-mm-yy'
+			});
+
+			$('.datepickrY').datepicker({
+				dateFormat: 'dd-mm-yy',
+				changeYear: true,
+				yearRange: '1950:' + yearNow
+			});
+
+			$('.datepickr, .datepickrY').val($.datepicker.formatDate('dd-mm-yy', dateToday));
+
+			$('#clearForm').click(function(){
+				$('form').find('input[type=text], textarea').val('');
+				$('#email_address').val('');
+				$('form').find(':checked').each(function(){
+				   $(this).removeAttr('checked');
+				});
+				$('select').each(function() {
+			    	$(this).prop('selectedIndex', 0);
+			    })
+			});
+		});
+	</script>
+	<style type="text/css">
+		.ui-datepicker-year{
+			height: auto;
+		}
+	</style>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Training Request Form - State HRBC
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Used for the stores to nominate people to attend different training courses.</p>
+</div>
+
+	{% if user_fullname == None %}
+		{% set user_fullname = '' %}
+	{% endif %}
+
+	<div class="container-fluid">
+		<form class="well form-horizontal" action="/training_requests/add" method="post">
+			<div class="row-fluid">
+				<div class="row-fluid">
+					<div class="span5">
+						<div class="control-group">
+							<label class="control-label" for="to">To</label>
+							<div class="controls">
+								<select class="span11" id="to" name="to" required>
+									<option value=""></option>
+									<option value="hrbcnswact@woolworths.com.au">NSW-ACT</option>
+									<option value="hrbcqldcomp@woolworths.com.au">QLD</option>
+									<option value="hrbcvic@woolworths.com.au">VIC-TAS</option>
+									<option value="hrbc-sa-trainingteam@corp.dir">SA-NT</option>
+									<option value="hrbcwatrain@woolworths.com.au">WA</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<!--
+					<div class="span3">
+						<div class="control-group">
+							<label class="control-label" for="training_requests">Training Requests</label>
+							<div class="controls">
+								<input class="span6" type="text" id="training_requests" name="training_requests" readonly="readonly">
+							</div>
+						</div>
+						<div class="control-group">
+							<label class="control-label" for="on_record">On Record</label>
+							<div class="controls">
+								<input class="span6" type="text" id="on_record" name="on_record" readonly="readonly">
+							</div>
+						</div>
+					</div>
+					<div class="span4">
+						<div class="control-group">
+							<button type="button" class="btn">Add</button> <button type="button" class="btn">Remove</button> <button type="button" class="btn">Back</button> <button type="button" class="btn">Next</button>
+						</div>
+					</div>
+					-->
+				</div>
+
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="employee_number">Employee Number</label>
+							<div class="controls">
+								<input class="span11" type="text" id="employee_number" name="employee_number" required>
+							</div>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="email_address">Participant's Email Address (First Aid RSA)</label>
+							<div class="controls">
+					            <input class="span11" type="email" id="email_address" name="email_address" value="{{current_user}}">
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="participant_name">Participant Name</label>
+							<div class="controls">
+								<input class="span11" type="text" id="participant_name" name="participant_name" value='{{user_fullname}}' placeholder="First and Last" required>
+							</div>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="preferred_training_day">Preferred Training Day</label>
+							<div class="controls">
+								<select class="span11" id="preferred_training_day" name="preferred_training_day">
+									<option value=""></option>
+									<option value="Monday">Monday</option>
+									<option value="Tuesday">Tuesday</option>
+									<option value="Wednesday">Wednesday</option>
+									<option value="Thursday">Thursday</option>
+									<option value="Friday">Friday</option>
+									<option value="Saturday">Saturday</option>
+									<option value="Sunday">Sunday</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="participant_position_title">Participant Position Title</label>
+							<div class="controls">
+								<input class="span11" type="text" id="participant_position_title" name="participant_position_title" required>
+							</div>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="shift_type">Shift Type</label>
+							<div class="controls">
+								<label class="radio">
+									<input type="radio" name="shift_type" id="shift_type1" value="Morning">
+									Morning
+								</label>
+								<label class="radio">
+									<input type="radio" name="shift_type" id="shift_type2" value="Evening">
+									Evening
+								</label>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="participant_dob">Participant D.O.B</label>
+							<div class="controls">
+								<input class="span11 datepickrY datesOnly" type="text" id="participant_dob" name="participant_dob" required>
+							</div>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="preferred_training_location">Preferred Training Location</label>
+							<div class="controls">
+								<select class="span11" id="preferred_training_location" name="preferred_training_location" required>
+									<option value=""></option>
+									<option value="Central Coast">Central Coast</option>
+									<option value="City">City</option>
+									<option value="Coffs Harbour">Coffs Harbour</option>
+									<option value="Kippax">Kippax</option>
+									<option value="Newcastle">Newcastle</option>
+									<option value="Norwest">Norwest</option>
+									<option value="Pennant Hills">Pennant Hills</option>
+									<option value="Penrith">Penrith</option>
+									<option value="Regional/Other">Regional/Other</option>
+									<option value="Wagga Wagga">Wagga Wagga</option>
+									<option value="Warringah">Warringah</option>
+									<option value="Wollongong">Wollongong</option>
+									<option value="Yennora">Yennora</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="cost_center_number">Cost Centre Number</label>
+							<div class="controls">
+								<input class="span11" type="text" id="cost_center_number" name="cost_center_number" required>
+							</div>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="current_cert_exp_date">Current Certificate Expiry Date</label>
+							<div class="controls">
+								<input class="span11 datepickr datesOnly" type="text" id="current_cert_exp_date" name="current_cert_exp_date">
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="participant_mobile_number">Participant Mobile Number</label>
+							<div class="controls">
+								<input class="span11" type="text" id="participant_mobile_number" name="participant_mobile_number">
+							</div>
+						</div>
+					</div>
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="store_site_name">Store/Site Name</label>
+							<div class="controls">
+								<input class="span11" type="text" id="store_site_name" name="store_site_name" required>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row-fluid">
+					<div class="span6">
+						<div class="control-group">
+							<label class="control-label" for="division">Division</label>
+							<div class="controls">
+								<select class="span11" id="division" name="division" required>
+									<option value=""></option>
+									<option value="BIG W">BIG W</option>
+									<option value="BWS - ALH">BWS - ALH</option>
+									<option value="BWS - WOW">BWS - WOW</option>
+									<option value="Corporate">Corporate</option>
+									<option value="Danks">Danks</option>
+									<option value="Dan Murphy's - ALH">Dan Murphy's - ALH</option>
+									<option value="Dan Murphy's - WOW">Dan Murphy's - WOW</option>
+									<option value="Logistics">Logistics</option>
+									<option value="Masters">Masters</option>
+									<option value="Petrol">Petrol</option>
+									<option value="Supermarkets">Supermarkets</option>
+									<option value="Thomas Dux">Thomas Dux</option>
+								</select>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<legend>Training Requirement</legend>
+			<div class="row-fluid">
+				<div class="span4">
+					<fieldset>
+						<legend>First Aid</legend>
+						<label class="radio">
+							<input type="radio" name="first_aid" id="optionsRadios1" value="Apply First Aid Level 2">
+							Apply First Aid Level 2
+						</label>
+						<label class="radio">
+							<input type="radio" name="first_aid" id="optionsRadios2" value="Apply First Aid Level 2 (Online)">
+							Apply First Aid Level 2 (Online)
+						</label>
+						<label class="radio">
+							<input type="radio" name="first_aid" id="optionsRadios3" value="Refresher - Apply First Aid Level 2">
+							Refresher - Apply First Aid Level 2
+						</label>
+						<label class="radio">
+							<input type="radio" name="first_aid" id="optionsRadios4" value="Occupational First Aid Level 3">
+							Occupational First Aid Level 3
+						</label>
+						<label class="radio">
+							<input type="radio" name="first_aid" id="optionsRadios5" value="Advanced Resuscitation">
+							Advanced Resuscitation
+						</label>
+					</fieldset>
+				</div>
+				<div class="span4">
+					<fieldset>
+						<legend>Responsible Service of Alcohol</legend>
+						<label class="radio">
+							<input type="radio" name="responsible_service_of_alcohol" id="optionsRadios6" value="RSA">
+							RSA
+						</label>
+						<label class="radio">
+							<input type="radio" name="responsible_service_of_alcohol" id="optionsRadios7" value="RSA Refresher (VIC, NSW, QLD)">
+							RSA Refresher (VIC, NSW, QLD)
+						</label>
+						<label class="radio">
+							<input type="radio" name="responsible_service_of_alcohol" id="optionsRadios8" value="Net Training (VIC Only)">
+							Net Training (VIC Only)
+						</label>
+						<label class="radio">
+							<input type="radio" name="responsible_service_of_alcohol" id="optionsRadios9" value="WA Liquor Licensing">
+							WA Liquor Licensing
+						</label>
+					</fieldset>
+				</div>
+				<div class="span4">
+					<fieldset>
+						<legend>Fire Training</legend>
+						<label class="radio">
+							<input type="radio" name="fire_training" id="optionsRadios10" value="Fire Warden (All States)">
+							Fire Warden (All States)
+						</label>
+						<label class="radio">
+							<input type="radio" name="fire_training" id="optionsRadios11" value="Fire Safety Adviser (QLD)">
+							Fire Safety Adviser (QLD)
+						</label>
+						<label class="radio">
+							<input type="radio" name="fire_training" id="optionsRadios12" value="Fire Safety Advisor Recertification (QLD)">
+							Fire Safety Advisor Recertification (QLD)
+						</label>
+					</fieldset>
+				</div>
+			</div>
+
+			<p>&nbsp;</p> <!--Spacer-->
+
+			<div class="row-fluid">
+				<div class="span4">
+					<fieldset>
+						<legend>Forklift</legend>
+						<label class="radio">
+							<input type="radio" name="fork_lift" id="optionsRadios14" value="Forklift Truck (LF Licence - Non Pedestrian)">
+							Forklift Truck (LF Licence - Non Pedestrian)
+						</label>
+						<label class="radio">
+							<input type="radio" name="fork_lift" id="optionsRadios15" value="Forklift Order Picker (LO Licence - Non Pedestrian)">
+							Forklift Order Picker (LO Licence - Non Pedestrian)
+						</label>
+						<label class="radio">
+							<input type="radio" name="fork_lift" id="optionsRadios16" value="Walkie Stacker Reach Truck / Electric Pallet Mover (Non Licensed Pedestrian Operated)">
+							Walkie Stacker Reach Truck / Electric Pallet Mover (Non Licensed Pedestrian Operated)
+						</label>
+					</fieldset>
+				</div>
+				<div class="span5">
+					<fieldset>
+						<legend>Rehabilitation and Return to Work Coordinator</legend>
+						<label class="radio">
+							<input type="radio" name="rehabilitation" id="optionsRadios17" value="RRTWC Certification (All States)">
+							RRTWC Certification (All States)
+						</label>
+						<label class="radio">
+							<input type="radio" name="rehabilitation" id="optionsRadios18" value="RRTWC Refresher (NSW, QLD, VIC)">
+							RRTWC Refresher (NSW, QLD, VIC)
+						</label>
+					</fieldset>
+				</div>
+				<div class="span3">
+					<fieldset>
+						<legend>Food Safety</legend>
+						<label class="radio">
+							<input type="radio" name="food_safety" id="optionsRadios19" value="Food Safety Training (All States)">
+							Food Safety Training (All States)
+						</label>
+					</fieldset>
+				</div>
+			</div>
+
+			<p>&nbsp;</p> <!--Spacer-->
+
+			<div class="row-fluid">
+				<div class="span4">
+					<fieldset>
+						<legend>Safety</legend>
+						<label class="radio">
+							<input type="radio" name="safety" value="Your Safety (All States)">
+							Your Safety (All States)
+						</label>
+						<label class="radio">
+							<input type="radio" name="safety" value="Traffic Controller Training">
+							Traffic Controller Training
+						</label>
+						<label class="radio">
+							<input type="radio" name="safety" value="White Card Training">
+							White Card Training
+						</label>
+						<label class="radio">
+							<input type="radio" name="safety" value="Seek Training Cat 3 &amp; 4">
+							Seek Training Cat 3 &amp; 4
+						</label>
+					</fieldset>
+				</div>
+			</div>
+
+			<p>&nbsp;</p> <!--Spacer-->
+
+			<div class="row-fluid">
+				<fieldset>
+					<legend>Special Instructions</legend>
+					<div class="control-group">
+						<div class="controls">
+							<textarea class="span10" rows="12" id="special_instructions" name="special_instructions"></textarea>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+
+			<p>&nbsp;</p> <!--Spacer-->
+
+			<div class="row-fluid">
+				<div class="pull-right">
+			      	<button id="clearForm" type="button" class="btn btn-primary">Clear Form</button>
+			      	<button type="submit" class="btn btn-primary">Send</button>
+			      	<button id="backHistory" type="button" class="btn">Cancel</button>
+				</div>
+			</div>
+		</form>
+	</div>
+{% endblock %}

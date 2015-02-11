@@ -1,0 +1,408 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+    <script>
+        function addDate(){
+            date = new Date();
+            var month = date.getMonth()+1;
+            var day = date.getDate();
+            var year = date.getFullYear();
+
+            var currentTime = new Date()
+            var hours = currentTime.getHours()
+            var minutes = currentTime.getMinutes()
+
+            if (minutes < 10)
+                minutes = "0" + minutes
+
+            var suffix = "AM";
+            if (hours >= 12) {
+                suffix = "PM";
+                hours = hours - 12;
+            }
+            if (hours == 0) {
+                hours = 12;
+            }
+
+            var time = hours + ":" + minutes + " " + suffix;
+
+            document.getElementById('DateAndTime').value = day + '-' + month + '-' + year + '  ' + time;
+        }
+    </script>
+
+    <script type="text/javascript">
+        function display_t(){
+            var refresh=3000; //updates every 3 secs
+            mytime=setInterval('addDate()',refresh)
+        }
+
+        $(document).ready(function(){
+            display_t();
+            $('.backout').hide();
+            $('.backoutdetails').hide();
+
+            $('.toCheck').click(function() {
+                var ctype = "";
+                $('input[class=toCheck]:checked').each(function(){
+                ctype = ctype + ", " + $(this).val();
+                });
+                var rctype = ctype.substring(1);
+                $("#Change_Type_cbox").val(rctype);
+            });
+
+            $('.btn-update').click(function(){
+                // Validate Implementation and End Date
+                if(!($("#End_date").datepicker("getDate") === null)){
+                    
+                    if ($("#Implementation_date").datepicker("getDate") > $("#End_date").datepicker("getDate")){
+                        alert("ERROR: Implementation Date is greater than End date!");
+                        $("#Implementation_date").focus();
+                        return false;
+                    }
+                }
+
+                // Validate required Checkbox
+                if ($("#Change_Type_cbox").val() == "")
+                {
+                    alert("ERROR: Please select at least one Change Type checkbox.");
+                    $("#toCheck").focus();
+                    return false;
+                }
+
+                var selectedRiskID = document.getElementById('Risk');
+                var selectedRisk = selectedRiskID.options[selectedRiskID.selectedIndex].value;
+                var selectedPriorityID = document.getElementById('Priority');
+                var selectedPriority = selectedPriorityID.options[selectedPriorityID.selectedIndex].value;
+                var selectedBack_out_planID = document.getElementById('Back_out_plan');
+                var selectedBack_out_plan = selectedBack_out_planID.options[selectedBack_out_planID.selectedIndex].value;
+
+                if((selectedRisk == 'High' || selectedPriority == '1') && (selectedBack_out_plan == '')){
+                    alert('Back Out Plan in place Field is required!');
+                    $('#Back_out_plan').focus();
+                    return false;
+                }
+
+                $.ajax({
+                    url: '/replenishments/fetch_request_status/{{key}}'
+                }).done(function(data){
+                    if(data == 'Pending'){
+                        $('#update-request-button').click();
+                    }else{
+                        window.location.href = '/replenishments/edit_locked?frmkey={{frmkey}}';
+                    }
+                });
+            });
+
+            var selectedRiskID = document.getElementById('Risk');
+            var selectedRisk = selectedRiskID.options[selectedRiskID.selectedIndex].value;
+            var selectedPriorityID = document.getElementById('Priority');
+            var selectedPriority = selectedPriorityID.options[selectedPriorityID.selectedIndex].value;
+
+            if(selectedRisk == 'High' || selectedPriority == '1'){
+                $('.backout').show();
+                $('.backoutdetails').show();
+            }
+            else{
+                $('.backout').hide();
+                $('.backoutdetails').hide();
+            }
+            
+        });
+
+        $(function() {
+                $( "#Implementation_date" ).datepicker({
+                    dateFormat: 'dd-mm-yy',
+                    minDate: 0,
+                }).datepicker("setDate", "0");
+                $( "#End_date" ).datepicker({
+                    dateFormat: 'dd-mm-yy',
+                    minDate: 0,
+                });
+                $( "#currentDate" ).datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+        });
+
+        $(document).on("change", "#Risk", function(){
+
+            var selectedRiskID = document.getElementById('Risk');
+            var selectedRisk = selectedRiskID.options[selectedRiskID.selectedIndex].value;
+            var selectedPriorityID = document.getElementById('Priority');
+            var selectedPriority = selectedPriorityID.options[selectedPriorityID.selectedIndex].value;
+
+            if(selectedRisk == 'High' || selectedPriority == '1'){
+                $('.backout').show('slow');
+                $('.backoutdetails').show('slow');
+            }
+            else{
+                $('.backout').hide('slow');
+                $('.backoutdetails').hide('slow');
+                $('#Back_out_plan').val('');
+                $('#Back_out_plan_details').val('');
+            }
+        
+        });
+
+        $(document).on("change", "#Priority", function(){
+
+            var selectedRiskID = document.getElementById('Risk');
+            var selectedRisk = selectedRiskID.options[selectedRiskID.selectedIndex].value;
+            var selectedPriorityID = document.getElementById('Priority');
+            var selectedPriority = selectedPriorityID.options[selectedPriorityID.selectedIndex].value;
+
+            if(selectedPriority == '1' || selectedRisk == 'High'){
+                $('.backout').show('slow');
+                $('.backoutdetails').show('slow');
+            }
+            else{
+                $('.backout').hide('slow');
+                $('.backoutdetails').hide('slow');
+                $('#Back_out_plan').val('');
+                $('#Back_out_plan_details').val('');
+            }
+        
+        });
+    </script>
+{% endblock %}
+
+
+{% block layout_page_title %}
+<!-- page title here -->
+Buyer's New Line Declaration Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Appraisal form, when a change is made (pre-defined set of criteria, impacting multiple areas of the business). Within support office, within replenishment teams space with impacts into warehouses and stores. People in Norwest would be filling in the forms (internal). Impacts all banners except Big W and Masters.</p>
+</div>
+
+<form class="form-horizontal repform" name="replenishmentForm" id="replenishmentForm" action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+    <div class="well">
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="Requested_By">Requested By:</label>
+                <div class="controls">
+                    <input type="text" class="span4" id="Requested_By" name="Requested_By" value="{{user}}" required readonly/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="DateAndTime">Date:</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input class="span12" type="text" value="" name="DateAndTime" id="DateAndTime" required readonly>
+                        <span class="add-on"> <i class="icon-th"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend><h3>RCR Communication - Notification Recipients</h3></legend>
+            <div class="control-group">
+                <label class="control-label" for="Approver_Details">Approver Details:</label>
+                <div class="controls">
+                    <input type="email" class="span8 global-address" id="Approver_Details" name="Approver_Details" single-select="true" value='{{item.Approver_Details}}' required />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Copy_to">Copy To:</label>
+                <div class="controls">
+                    <input type="text" class="span8 global-address" id="Copy_to" name="Copy_to" value='{{item.Copy_to}}' />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Implementer_Details">Implementer Details:</label>
+                <div class="controls">
+                    <input type="text" class="span8 global-address" id="Implementer_Details" name="Implementer_Details" value='{{item.Implementer_Details}}'/>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend><h3>RCR Communication - Change Detail</h3></legend>
+            <table border="0" width="90%" cellpadding="5">
+                <tr>
+                    <td >&nbsp;</td>
+                    <td colspan="2"><strong>Change Area</strong></td>
+                    <td colspan="2"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Type</strong></td>
+                </tr>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td width="10%">Change Type:</td>
+                    <td width="30%">
+                        <select class="span8 selectpicker" id="Change_Type_ddown" name="Change_Type_ddown" required>
+                            <option value="">Select</option>
+                            <option {{ 'selected' if item.Change_Type_ddown == 'Major Change' else '' }} value="Major Change">Major Change</option>
+                            <option {{ 'selected' if item.Change_Type_ddown == 'AROP Change' else '' }} value="AROP Change">AROP Change</option>
+                            <option {{ 'selected' if item.Change_Type_ddown == 'Safety Stock Change' else '' }} value="Safety Stock Change">Safety Stock Change</option>
+                            <option {{ 'selected' if item.Change_Type_ddown == 'EOQ Change' else '' }} value="EOQ Change">EOQ Change</option>
+                            <option {{ 'selected' if item.Change_Type_ddown == 'Store Splits Change' else '' }} value="Store Splits Change">Store Splits Change</option>
+                            <option {{ 'selected' if item.Change_Type_ddown == 'Mass Maintenance' else '' }} value="Mass Maintenance">Mass Maintenance</option>
+                            <option {{ 'selected' if item.Change_Type_ddown == 'Stock Build' else '' }} value="Stock Build">Stock Build</option>
+                            <option {{ 'selected' if item.Change_Type_ddown == 'Move Stock Request' else '' }} value="Move Stock Request">Move Stock Request</option>
+                            <option {{ 'selected' if item.Change_Type_ddown == 'Other' else '' }} value="Other">Other</option>
+                        </select>
+                    </td>
+                    <td width="2%">&nbsp;</td>
+                    <td width="25%">Change Type:</td>
+                </tr>
+                <tr>
+                    <td >&nbsp;</td>
+                    <td colspan=2>Please add detail regarding the change to be requested: </td>
+                    <td >&nbsp;</td>
+                    <td >
+                        <input 
+                            {{ 'checked' if str(cbox0)=='SystemChange' }} 
+                            {{ 'checked' if str(cbox1)=='SystemChange' }} 
+                            {{ 'checked' if str(cbox2)=='SystemChange' }}
+                            {{ 'checked' if str(cbox3)=='SystemChange' }}
+                            {{ 'checked' if str(cbox4)=='SystemChange' }} 
+                            type="checkbox" id="toCheck" name="toCheck" class="toCheck" value="System Change" > - System Change
+                    </td>
+                </tr>
+                <tr>
+                    <td >&nbsp;</td>
+                    <td colspan=2 rowspan=4><textarea rows="5" class="span11" name="Change_Type_Detail" style="resize:none">{{item.Change_Type_Detail}}</textarea></td>
+                    <td >&nbsp;</td>
+                    <td >
+                        <input 
+                            {{ 'checked' if str(cbox0)=='ProcessChange' }} 
+                            {{ 'checked' if str(cbox1)=='ProcessChange' }} 
+                            {{ 'checked' if str(cbox2)=='ProcessChange' }}
+                            {{ 'checked' if str(cbox3)=='ProcessChange' }}
+                            {{ 'checked' if str(cbox4)=='ProcessChange' }} 
+                            type="checkbox" id="toCheck" name="toCheck" class="toCheck" value="Process Change" > - Process Change
+                    </td>
+                </tr>
+                <tr>
+                    <td >&nbsp;</td>
+                    <td >&nbsp;</td>
+                    <td ><input 
+                            {{ 'checked' if str(cbox0)=='ParameterChange' }} 
+                            {{ 'checked' if str(cbox1)=='ParameterChange' }} 
+                            {{ 'checked' if str(cbox2)=='ParameterChange' }}
+                            {{ 'checked' if str(cbox3)=='ParameterChange' }}
+                            {{ 'checked' if str(cbox4)=='ParameterChange' }}
+                            type="checkbox" id="toCheck" name="toCheck" class="toCheck" value="Parameter Change"> - Parameter Change</td>
+                </tr>
+                <tr>
+                    <td >&nbsp;</td>
+                    <td >&nbsp;</td>
+                    <td ><input 
+                            {{ 'checked' if str(cbox0)=='NewSystem' }} 
+                            {{ 'checked' if str(cbox1)=='NewSystem' }} 
+                            {{ 'checked' if str(cbox2)=='NewSystem' }}
+                            {{ 'checked' if str(cbox3)=='NewSystem' }}
+                            {{ 'checked' if str(cbox4)=='NewSystem' }}
+                            type="checkbox" id="toCheck" name="toCheck" class="toCheck"  value="New System"> - New System</td>
+                </tr>
+                <tr>
+                    <td >&nbsp;</td>
+                    <td >&nbsp;</td>
+                    <td ><input 
+                            {{ 'checked' if str(cbox0)=='NewProcess' }} 
+                            {{ 'checked' if str(cbox1)=='NewProcess' }} 
+                            {{ 'checked' if str(cbox2)=='NewProcess' }}
+                            {{ 'checked' if str(cbox3)=='NewProcess' }}
+                            {{ 'checked' if str(cbox4)=='NewProcess' }}
+                            type="checkbox" id="toCheck" name="toCheck" class="toCheck" value="New Process"> - New Process</td>
+                    <input type="hidden" class="span8" id="Change_Type_cbox" name="Change_Type_cbox" value="{{chkboxes}}">
+                </tr>
+            </table>
+            
+        </fieldset>
+        <fieldset>
+            <legend><h3>RCR Communication - Risk, Migration and Contingencies</h3></legend>
+            <div class="control-group">
+                <label class="control-label" for="Risk">Risk:</label>
+                <div class="controls">
+                    <select class="span8 selectpicker" id="Risk" name="Risk" required>
+                        <option value="">Select</option>
+                        <option {{ 'selected' if item.Risk == 'High' else '' }} value="High">High</option>
+                        <option {{ 'selected' if item.Risk == 'Medium' else '' }} value="Medium">Medium</option>
+                        <option {{ 'selected' if item.Risk == 'Low' else '' }} value="Low">Low</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Priority">Priority (1-4):</label>
+                <div class="controls">
+                    <select class="span8 selectpicker" id="Priority" name="Priority" required>
+                        <option value="">Select</option>
+                        <option {{ 'selected' if item.Priority == '1' else '' }} value="1">1</option>
+                        <option {{ 'selected' if item.Priority == '2' else '' }} value="2">2</option>
+                        <option {{ 'selected' if item.Priority == '3' else '' }} value="3">3</option>
+                        <option {{ 'selected' if item.Priority == '4' else '' }} value="4">4</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group backout">
+                <label class="control-label" for="Back_out_plan">Back out plan in place:</label>
+                <div class="controls">
+                    <select class="span8 selectpicker" id="Back_out_plan" name="Back_out_plan">
+                        <option value="">Select</option>
+                        <option {{ 'selected' if item.Back_out_plan == 'Yes' else '' }} value="Yes">Yes</option>
+                        <option {{ 'selected' if item.Back_out_plan == 'No' else '' }} value="No">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group backoutdetails">
+                <label class="control-label" for="Back_out_plan_details">Please add the detail of the back out plan:</label>
+                <div class="controls">
+                    <textarea rows="3" class="span8" id="Back_out_plan_details" name="Back_out_plan_details" style="resize:none">{{item.Back_out_plan_details}}</textarea>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>
+                <h3>RCR Communication - Timing of Change</h3>
+            </legend>
+            <div class="control-group">
+                <label class="control-label" for="Implementation_date">Implementation date:</label>
+                <div class="controls">
+                    <input type="text" class="span3 datesOnly" name="Implementation_date" id="Implementation_date" value='{{item.Implementation_date}}' required/> 
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="End_date">End date (if applicable):</label>
+                <div class="controls">
+                    <input type="text" class="span3 datesOnly" name="End_date" id="End_date" value='{{item.End_date}}' /> 
+                    <input type="hidden" class="span3 datesOnly" name="currentDate" id="currentDate" /> 
+                </div>
+            </div>
+            {% if attachment != None %}
+            <div class="control-group">
+                <label class="control-label" for="Attachment"> Previous Attachment:</label>
+                <div class="controls">
+                    <b>{{attachment}}</b>
+                </div>
+            </div>
+            {% endif %}
+            <div class="control-group">
+                <label class="control-label" for="Attachment">(Free text and/or attached documents):</label>
+                <div class="controls">
+                    <textarea rows="3" class="span8" name="ReqComments" style="resize:none">{{item.ReqComments}}</textarea>
+                    <input class="span6 field-type-blob-key-field" id="Attachment" name="Attachment" type="file">
+                </div>
+            </div>
+        </fieldset>
+        <br>
+         <div class="control-group">
+                <div align="right">
+                    <button id="submit" type="button" class="btn-update btn btn-primary">Update Request</button>
+                    <input id="update-request-button" type="submit" class="btn-update btn btn-primary" style="display: none;" />
+                    <input type="hidden" name="key" value="{{item.key.urlsafe()}}">
+                    <input type="hidden" name="Approved" value="{{item.Approved}}">
+                    <input type="button" class="btn" value="Cancel" id="backHistory">
+                </div>
+            </div>
+    </div>
+    {% include "includes/global_address_modal.html" %}
+</form>
+{% endblock %}

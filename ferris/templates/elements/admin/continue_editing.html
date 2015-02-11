@@ -1,0 +1,9 @@
+<script type='text/javascript'>
+$(function(){
+    $('#ContinueEditing').click(function(e){
+        e.preventDefault();
+        $('form').append($('<input>', {type: 'text', name: '__ferris__no_redirect', value: '1'}));
+        $('form').submit();
+    });
+});
+</script>

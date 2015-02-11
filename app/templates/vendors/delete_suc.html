@@ -1,0 +1,27 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+{% endblock %}
+
+{% block layout_page_buttons %}
+
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Visibilty of vendor issues. All info from here goes into one mailbox (vendor capability)</p>
+    </div>
+    <div class="well">
+        <fieldset>
+            <br><br><br><br>
+            <center><h3>Form request has been cancelled! Back to <a href="/vendors?key={{key}}&status={{tab}}">list.</a></h3></center>
+        </fieldset>
+    </div>
+{% endblock %}

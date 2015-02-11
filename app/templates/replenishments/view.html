@@ -1,0 +1,138 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<script type='text/javascript' src='/js/utils.js'></script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Buyer's New Line Declaration Request Details
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Appraisal form, when a change is made (pre-defined set of criteria, impacting multiple areas of the business). Within support office, within replenishment teams space with impacts into warehouses and stores. People in Norwest would be filling in the forms (internal). Impacts all banners except Big W and Masters.</p>
+    </div>
+
+    <div class="well">
+        <fieldset>
+            <table class="table table-striped">
+                <tr>
+                    <td>Requested By:</td>
+                    <td>{{dataselected.Requested_By}}</td>
+                </tr>
+                <tr>
+                    <td>Date:</td>
+                    <td>{{dataselected.DateAndTime}}</td>
+                </tr>
+                <tr>
+                    <td><strong>RCR Communication - Notification Recipients</strong></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Approver Details:</td>
+                    <td>{{dataselected.Approver_Details}}</td>
+                </tr>
+                <tr>
+                    <td>Copy to:</td>
+                    <td>{{dataselected.Copy_to}}</td>
+                </tr>
+                <tr>
+                    <td>Implementer Details:</td>
+                    <td>{{dataselected.Implementer_Details}}</td>
+                </tr>
+                <tr>
+                    <td><strong>RCR Communication - Change Detail</strong></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Change Area: Change Type</td>
+                    <td>{{dataselected.Change_Type_ddown}}</td>
+                </tr>
+                <tr>
+                    <td>Change Type: Change Type</td>
+                    <td>{{dataselected.Change_Type_cbox}}</td>
+                </tr>
+                <tr>
+                    <td>Details regarding the change to be requested:</td>
+                    <td>{{dataselected.Change_Type_Detail}}</td>
+                </tr>
+                <tr>
+                    <td><strong>RCR Communication - Risk, Migration and Contingencies</strong></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Risk:</td>
+                    <td>{{dataselected.Risk}}</td>
+                </tr>
+                <tr>
+                    <td>Priority (1-4):</td>
+                    <td>{{dataselected.Priority}}</td>
+                </tr>
+                <tr>
+                    <td>Back out plan in place:</td>
+                    <td>{{dataselected.Back_out_plan}}</td>
+                </tr>
+                <tr>
+                    <td>Detail of the back out plan:</td>
+                    <td>{{dataselected.Back_out_plan_details}}</td>
+                </tr>
+                <tr>
+                    <td><strong>RCR Communication - Timing of Change</strong></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Implementation date:</td>
+                    <td>{{dataselected.Implementation_date}}</td>
+                </tr>
+                <tr>
+                    <td>End date (if applicable):</td>
+                    <td>{{dataselected.End_date}}</td>
+                </tr>
+                <tr>
+                    <td>Free text:</td>
+                    <td>{{dataselected.ReqComments}}</td>
+                </tr>
+                <tr>
+                    <td>Attachment:</td>
+                    <td>{{download_link}}</td>
+                </tr>
+                {% if approved == 'Yes' %}
+                <tr>
+                    <td><strong>STATUS:</strong></td>
+                    <td><strong>Approved by {{dataselected.modified_by}} on {{localize_datetime(dataselected.modified)}}</strong></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><strong>Reviewer's Comments: {{dataselected.Comments}}</strong></td>
+                </tr>
+                {% elif approved == 'No' %}
+                <tr>
+                    <td><strong>STATUS:</strong></td>
+                    <td><strong>Rejected by {{dataselected.modified_by}} on {{localize_datetime(dataselected.modified)}}</strong></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><strong>Details: {{dataselected.Details_if_no}}</strong></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><strong>Reviewer's Comments: {{dataselected.Comments}}</strong></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td><strong>STATUS:</strong></td>
+                    <td>Pending Approval</td>
+                </tr>
+                {% endif %}
+            </table>
+            <div align="right">
+                {% if approved == 'Pending' and is_requestor %}
+                    <a href="/replenishments/page/edit/{{keyid}}/{{frmkey}}" class="btn btn-primary">Edit</a>
+                {% endif %}
+                <input type="button" class="btn btn-primary" id="backHistory" value="Back"></div>
+        </fieldset>
+    </div>
+{% endblock %}

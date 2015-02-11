@@ -1,0 +1,248 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>   
+    <script type='text/javascript' src='/js/utils.js'></script>
+    <script>
+        $(function() {
+            $("#In_Store_Date").datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+            $( "#dateSent" ).datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+        });
+
+        $(function() {
+            $("#In_DC_Date").datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+        });
+
+        $(function() {
+            $("#Planned_lst_Ship_Date").datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+        });
+
+        $(document).ready(function(){
+            $('#tdLabel').hide();
+            $('#tdContent').hide();
+
+            $('.btn-update').click(function(){
+                $.ajax({
+                    url: '/qasubmissions/fetch_request_status/{{key}}'
+                }).done(function(data){
+                    if(data == 0){
+                        $('#update-request-button').click();
+                    }else{
+                        window.location.href = '/qasubmissions/edit_locked?frmkey={{frmkey}}';
+                    }
+                });
+            });
+
+            var selectedVendID = document.getElementById('Is_Vendor_Currently_Supplying_to_Woolworths');
+            var selectedVend = selectedVendID.options[selectedVendID.selectedIndex].value;
+
+            if(selectedVend == 'No'){
+                $('#tdLabel').show();
+                $('#tdContent').show();
+            }
+            else{
+                $('#tdLabel').hide();
+                $('#tdContent').hide();
+            }
+
+        });
+
+        $(document).on("click", "#Is_Vendor_Currently_Supplying_to_Woolworths", function(){
+
+            var selectedVendID = document.getElementById('Is_Vendor_Currently_Supplying_to_Woolworths');
+            var selectedVend = selectedVendID.options[selectedVendID.selectedIndex].value;
+
+            if(selectedVend == 'No'){
+                $('#tdLabel').show('slow');
+                $('#tdContent').show('slow');
+            }
+            else{
+                $('#tdLabel').hide('slow');
+                $('#tdContent').hide('slow');
+            }
+        
+        });
+        
+    </script>
+{% endblock %}
+
+
+{% block layout_page_title %}
+<!-- page title here -->
+QA - PRO Submission Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Starting point where buyers will load on a project overview. It begins the process for quality assurance.</p>
+</div>
+<form  class="form-horizontal" action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+    <div class="well">
+        <table width="100%" cellpadding="5">
+            <tr>
+                <td>To</td>
+                <td colspan="3">
+                    <input class="global-address span10" type="text" id="To" name="To" single-select="True" value='{{item.To}}' required/>
+                    <input type="hidden" class="span9" id="dateSent" name="dateSent" value="">
+                </td>
+            </tr>
+            <tr>
+                <td>Product Range Name:</td>
+                <td colspan="3">
+                    <input class="span10" type="text" id="Product_Range_Name" name="Product_Range_Name" value='{{item.Product_Range_Name}}' required/>
+                </td>
+            </tr>
+            <tr>
+                <td width="25%">Is a Product Brief Required</td>
+                <td width="25%">
+                    <select class="span9 selectpicker" id="Is_a_product_brief_required" name="Is_a_product_brief_required" required>
+                        <option value="">Select</option>
+                        <option {{ 'selected' if item.Is_a_product_brief_required == 'Yes' else '' }} value="Yes">Yes</option>
+                        <option {{ 'selected' if item.Is_a_product_brief_required == 'No' else '' }} value="No">No</option>
+                    </select>
+                </td>
+                <td width="20%">Vendor Name:</td>
+                <td width="30%">
+                    <input class="span9" type="text" id="Vendor_Name" name="Vendor_Name" value='{{item.Vendor_Name}}' required/>
+                </td>
+            </tr>
+            <tr>
+                <td>Number of SKUs to Launch:</td>
+                <td>
+                     <input class="span9" type="text" id="Number_of_SKUs_to_launch" name="Number_of_SKUs_to_launch" value='{{item.Number_of_SKUs_to_launch}}' required/>
+                </td>
+                <td>Trading Division:</td>
+                <td>
+                    <select class="span9 selectpicker" id="Trading_Division" name="Trading_Division" required>
+                        <option value="">Select</option>
+                        <option {{ 'selected' if item.Trading_Division == 'AHL Group Australia' else '' }} value="AHL Group Australia">AHL Group Australia</option>
+                        <option {{ 'selected' if item.Trading_Division == 'Big W Australia' else '' }} value="Big W Australia">Big W Australia</option>
+                        <option {{ 'selected' if item.Trading_Division == 'BWS Liquor Australia' else '' }} value="BWS Liquor Australia">BWS Liquor Australia</option>
+                        <option {{ 'selected' if item.Trading_Division == 'Cellarmasters' else '' }} value="Cellarmasters">Cellarmasters</option>
+                        <option {{ 'selected' if item.Trading_Division == 'CROMA Electronics India' else '' }} value="CROMA Electronics India">CROMA Electronics India</option>
+                        <option {{ 'selected' if item.Trading_Division == "Dan Murphy's Australia" else '' }} value="Dan Murphy's Australia">Dan Murphy's Australia</option>
+                        <option {{ 'selected' if item.Trading_Division == 'Masters Home Improvement' else '' }} value="Masters Home Improvement">Masters Home Improvement</option>
+                        <option {{ 'selected' if item.Trading_Division == 'Progressive Enterprises New Zealand' else '' }} value="Progressive Enterprises New Zealand">Progressive Enterprises New Zealand</option>
+                        <option {{ 'selected' if item.Trading_Division == 'Thomas Dux Grocer Australia' else '' }} value="Thomas Dux Grocer Australia">Thomas Dux Grocer Australia</option>
+                        <option {{ 'selected' if item.Trading_Division == 'Woolworths Liquor' else '' }} value="Woolworths Liquor">Woolworths Liquor</option>
+                        <option {{ 'selected' if item.Trading_Division == 'Woolworths Petrol Australia' else '' }} value="Woolworths Petrol Australia">Woolworths Petrol Australia</option>
+                        <option {{ 'selected' if item.Trading_Division == 'Woolworths Supermarkets Australia' else '' }} value="Woolworths Supermarkets Australia">Woolworths Supermarkets Australia</option>
+                        <option {{ 'selected' if item.Trading_Division == 'WW Liquor Group' else '' }} value="WW Liquor Group">WW Liquor Group</option>
+                        <option {{ 'selected' if item.Trading_Division == 'Danks' else '' }} value="Danks">Danks</option>
+                        <option {{ 'selected' if item.Trading_Division == 'All Divisions' else '' }} value="All Divisions">All Divisions</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Brand:</td>
+                <td>
+                    <input class="span9" type="text" id="Brand" name="Brand" value='{{item.Brand}}' required/>
+                </td>
+                <td>Senior Business Manager:</td>
+                <td>
+                    <input class="span9" type="text" id="Senior_Business_Manager" name="Senior_Business_Manager" value='{{item.Senior_Business_Manager}}' required/>
+                </td>
+            </tr>
+            <tr>
+                <td>Country of Sale:</td>
+                <td>
+                    <select class="span9 selectpicker" id="Country_of_sale" name="Country_of_sale" required>
+                        <option value="">Select</option>
+                        <option {{ 'selected' if item.Country_of_sale == 'Australia' else '' }} value="Australia">Australia</option>
+                        <option {{ 'selected' if item.Country_of_sale == 'New Zealand' else '' }} value="New Zealand">New Zealand</option>
+                        <option {{ 'selected' if item.Country_of_sale == 'Australia and New Zealand' else '' }} value="Australia and New Zealand">Australia and New Zealand</option>
+                    </select>
+                </td>
+                <td>Business Manager:</td>
+                <td>
+                    <input class="span9" type="text" id="Business_Manager" name="Business_Manager" value='{{item.Business_Manager}}' required/>
+                </td>
+            </tr>
+            <tr>
+                <td>In Store Date:</td>
+                <td>
+                    <input class="span9 datesOnly" type="text" id="In_Store_Date" name="In_Store_Date" value='{{item.In_Store_Date}}' required/>
+                </td>
+                <td>Sourcing Manager:</td>
+                <td>
+                    <input class="span9" type="text" id="Sourcing_Manager" name="Sourcing_Manager" value='{{item.Sourcing_Manager}}' required/>
+                </td>
+            </tr>
+            <tr>
+                <td>In DC Date:</td>
+                <td>
+                    <input class="span9 datesOnly" type="text" id="In_DC_Date" name="In_DC_Date" value='{{item.In_DC_Date}}' required/>
+                </td>
+                <td>Is Vendor Currently <br>Supplying to Woolworths?:</td>
+                <td>
+                    <select class="span9 selectpicker" id="Is_Vendor_Currently_Supplying_to_Woolworths" name="Is_Vendor_Currently_Supplying_to_Woolworths" required>
+                        <option value="">Select</option>
+                        <option {{ 'selected' if item.Is_Vendor_Currently_Supplying_to_Woolworths == 'Yes' else '' }} value="Yes">Yes</option>
+                        <option {{ 'selected' if item.Is_Vendor_Currently_Supplying_to_Woolworths == 'No' else '' }} value="No">No</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Planned first ship date <br>(if product being indented):</td>
+                <td>
+                    <input class="span9 datesOnly" type="text" id="Planned_lst_Ship_Date" name="Planned_lst_Ship_Date" value='{{item.Planned_lst_Ship_Date}}' required/>
+                </td>
+                <td id="tdLabel">If No, has Factory Pre Audit <br> Questionnaire (FPAQ) <br> been issued?:</td>
+                <td id="tdContent">
+                    <select class="span9 selectpicker" id="Is_FPAQ_been_issued" name="Is_FPAQ_been_issued">
+                        <option  value="None">Select</option>
+                        <option {{ 'selected' if item.Is_FPAQ_been_issued == 'Yes' else '' }} value="Yes">Yes</option>
+                        <option {{ 'selected' if item.Is_FPAQ_been_issued == 'No' else '' }} value="No">No</option>
+                        <option {{ 'selected' if item.Is_FPAQ_been_issued == 'N/A' else '' }} value="N/A">N/A</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>Brief description of range <br>(or attach document outlining range):</td>
+                <td colspan="3">
+                    <textarea rows="4" id="Brief_description_of_range" name="Brief_description_of_range" class="span11" style="resize: none" required>{{item.Brief_description_of_range}}</textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>Product details, descriptions, <br> article numbers (eg. Keycodes, <br> referral numbers, and <br>item numbers):</td>
+                <td colspan="3">
+                    <textarea rows="4" id="Product_details" name="Product_details" class="span11" style="resize: none" required>{{item.Product_details}}</textarea>
+                </td>
+            </tr>
+            {% if attachment != None %}
+            <tr>
+                <td>
+                    Previous Attachment: 
+                </td>
+                <td colspan="3">
+                    <b>{{attachment}}</b>
+                </td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td>Attachments:</td>
+                <td colspan="3">
+                    <input class="span6 field-type-blob-key-field" id="Attachment" name="Attachment" type="file">
+                </td>
+            </tr>
+        </table>
+        <br>
+        <div class="control-group">
+            <div align="right">
+                <button id="submit" type="button" class="btn-update btn btn-primary">Update Request</button>
+                <input id="update-request-button" type="submit" class="btn-update btn btn-primary" style="display: none;" />
+                <input type="hidden" name="key" value="{{item.key.urlsafe()}}">
+                <input type="hidden" name="Status" value="{{item.QA_number}}">
+                <input type="button" class="btn" value="Cancel" id="backHistory">
+            </div>
+        </div>
+    </div>
+    {% include "includes/global_address_modal.html" %}
+</form>
+{% endblock %}

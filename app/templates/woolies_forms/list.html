@@ -1,0 +1,59 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+{% endblock %}
+
+
+{% block layout_page_title %}
+<!-- page title here -->
+Manage Forms
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+<a class="btn-flat primary " href="/woolies_forms/add"><i class="icon-plus"></i> Add New Form</a>	
+{% endblock %}
+
+{% block layout_content %}
+	<br/>
+	<br/>
+	<script>
+		eval = eval({{scaffolding.plural}});
+	</script>
+	{% set list = scaffolding_plural %}
+	<table class='table table-striped table-hover'>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Level 1 Manager</th>
+            <th>Level 2 Manager</th>
+            <th><span class="hide">Actions</span></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in data %}
+        <tr>
+            <td>
+                {{item.name}}<br>
+                <small class="muted hide" title='{{item.key.urlsafe()}}'>{{item.key.id()}}</small>
+            </td>
+            <td class="span3">
+                {{s.print_value(item.first_level_manager)}}
+            </td>
+            <td class="span3">
+                {{s.print_value(item.second_level_manager)}}
+            </td>
+            <td class="span2">
+                {% block item_action_buttons scoped %}
+                    {{s.action_buttons(item)}}
+                {% endblock %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<!-- {% include 'elements/debug/toolbox.html' %} -->
+{% endblock %}

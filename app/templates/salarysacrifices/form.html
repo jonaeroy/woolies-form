@@ -1,0 +1,369 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+    {{super}}
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+    <script type='text/javascript' src='/js/app/salarysacrifice/jquery.h5validate.js'></script>
+    <script type='text/javascript' src='/js/app/salarysacrifice/salarysacrifices.js'></script>
+    <script type="text/javascript">
+
+
+    </script>
+    <script>
+        $(function() {
+        $( "#purchase_date" ).datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+        });
+
+        $(document).ready(function() {
+
+            setInterval(function(){
+                 $.ajax({
+                      url: '/salarysacrifices/generate_upload_url',
+                      method: 'GET',
+                      success: function(result){
+                        $('#salform').attr('action', result);
+                        console.log('====> PING OK');
+                      },
+                      error: function(result){
+                        console.log('====> PING ERROR/TIMEOUT');
+                      }
+                   });
+            }, 50000);
+
+            $('.submit-successful').click(function() {
+
+                alert('Your application will be processed by the NPO team.');
+                $('.submit-successful').attr('disabled', 'disabled').html("Sending Request...");
+                $('.form').submit();
+
+            });
+
+            $("#attachment").on('change',function(){
+                attachment = $('#attachment').val();
+
+                if (attachment == ''){ $('.submit-successful').attr("disabled", true); }
+                else{$('.submit-successful').attr("disabled", false);}
+            });
+
+            $('.submit-successful').attr("disabled", true);
+
+        });
+    </script>
+
+    <style type="text/css">
+        .firstpart p { margin-bottom: 15px; max-width: 90%;}
+        .form { width: 90%; min-height: 30%; }
+        .form-container {padding: 20px;}
+        .form-container h5 { margin: 30px 0 15px 0; font-size: 1.5em; font-weight: bold; border-bottom: 1px solid #d3d3d3; padding-bottom: 10px; max-width: 100%; display: block;}
+        .btn { margin: 20px 0 10px 30px; }
+        .page_num { margin: -50px 20px 0 0; display: block; float: right; font-weight: bold;}
+
+
+        @media (max-width: 1400px) {
+          .fl-l { clear: both; float: left; width: 100%; }
+          .date_pickr { width: 80px !important; }
+          .numbersOnly { width: 30px !important; }
+          #Employee_ID_Number { width: auto !important; }
+        }
+
+    </style>
+
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Complete Computing Device Salary Sacrifice Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Allows an eligible user to apply for salary sacrifice on a device purchased for work intentions.</p>
+</div>
+
+<form class="form well form-horizontal" id='salform' action="{{upload_url}}" enctype="multipart/form-data" method="post">
+
+<div class="form-container">
+    <!-- Introduction -->
+    <div class="firstpart">
+        <p id="descFirst">This form is to be used by staff of the Woolworths Limited group who wish to Salary Sacrifice the purchase of a Laptop computer, tablet or smartphone for use in performing their duties for Woolworths.</p>
+
+        <p>Your username (<a href=#>{{user}}</a>) will be recorded when you submit this form.</p>
+
+        <p>Not <strong><span>{{user}}</span></strong>? <a href={{logout}}>Sign out</a></p>
+    </div>
+    <!-- Introduction -->
+
+    <!-- Question 1 -->
+    <div class="d1">
+        <h5>Salary Sacrifice Conditions</h5> <span class='page_num'>1 out of 10 pages </span>
+        <p>I have read and understood the Salary Sacrifice Policy and Agree to abide by the provisions which may be varied from time to time. <span>*</span></p>
+
+        <fieldset>
+            <label class="radio"><input class="radio1" type="radio" name="question_1" id="q1-optsRadios1" value="Agree">Agree</label>
+            <label class="radio"><input class="radio1" type="radio" name="question_1" id="q1-optsRadios2" value="Disagree">Disagree</label>
+        </fieldset>
+
+        <button id="next1" type="button" class="btn btn-primary">Continue</button>
+    </div>
+    <!-- Question 1 -->
+
+    <!-- Question 2 -->
+    <div class="d2">
+        <h5>Salary Sacrifice Conditions continued</h5> <span class='page_num'>2 out of 10 pages </span>
+        <p>I acknowledge that Woolworths has advised me to seek independent financial advice before considering the Woolworths offer to enter into this salary sacrifice arrangement. <span>*</span></p>
+
+        <fieldset>
+            <label class="radio"><input class="radio2" type="radio" name="question_2" id="q2-optsRadios1" value="Agree">Agree</label>
+            <label class="radio"><input class="radio2" type="radio" name="question_2" id="q2-optsRadios2" value="Disagree">Disagree</label>
+        </fieldset>
+
+        <button id="prev2" type="button" class="btn">Back</button>
+        <button id="next2" type="button" class="btn btn-primary">Continue</button>
+    </div>
+    <!-- Question 2 -->
+
+    <!-- Question 3 -->
+    <div class="d3">
+        <h5>Salary Sacrifice Conditions continued</h5> <span class='page_num'>3 out of 10 pages </span>
+        <p>I understand as an eligible employee of the Woolworths Limited group I am able under the MyDevice policy to salary sacrifice up to 1 portable computing device per FBT year (1 April to 31 March). <span>*</span></p>
+
+        <fieldset>
+            <label class="radio"><input class="radio3" type="radio" name="question_3" id="q3-optsRadios1" value="Agree">Agree</label>
+            <label class="radio"><input class="radio3" type="radio" name="question_3" id="q3-optsRadios2" value="Disagree">Disagree</label>
+        </fieldset>
+
+        <button id="prev3" type="button" class="btn">Back</button>
+        <button id="next3" type="button" class="btn btn-primary">Continue</button>
+    </div>
+    <!-- Question 3 -->
+
+    <!-- Question 4 -->
+    <div class="d4">
+        <h5>Tax Declaration</h5> <span class='page_num'>4 out of 10 pages </span>
+        <p>I declare, the PRIMARY use of the device being sought for salary sacrifice will be for Woolworths Limited work/employment related purposes.<span>*</span></p>
+
+        <fieldset>
+            <label class="radio"><input class="radio4" type="radio" name="question_4" id="q4-optsRadios1" value="Agree">Agree</label>
+            <label class="radio"><input class="radio4" type="radio" name="question_4" id="q4-optsRadios2" value="Disagree">Disagree</label>
+        </fieldset>
+
+        <button id="prev4" type="button" class="btn">Back</button>
+        <button id="next4" type="button" class="btn btn-primary">Continue</button>
+    </div>
+    <!-- Question 4 -->
+
+    <!-- Question 5 -->
+    <div class="d5">
+        <h5>Tax Declaration Continued</h5> <span class='page_num'>5 out of 10 pages </span>
+        <p>I am currently entitled to or using a Woolworths provided computing device.<span>*</span></p>
+
+        <fieldset>
+            <label class="radio"><input class="radio5" type="radio" name="question_5" id="q5-optsRadios1" value="Agree">Agree</label>
+            <label class="radio"><input class="radio5" type="radio" name="question_5" id="q5-optsRadios2" value="Disagree">Disagree</label>
+        </fieldset>
+
+        <button id="prev5" type="button" class="btn">Back</button>
+        <button id="next5" type="button" class="btn btn-primary">Continue</button>
+    </div>
+    <!-- Question 5 -->
+
+    <!-- Question 6 -->
+    <div class="d6">
+        <h5>Tax Declaration Continued</h5> <span class='page_num'>6 out of 10 pages </span>
+        <p>Woolworths Limited has not already supplied me with a Laptop computer, tablet or smartphone with the same functionality as the device to which I am seeking to salary sacrifice.<span>*</span></p>
+
+        <fieldset>
+            <label class="radio"><input class="radio6" type="radio" name="question_6" id="q6-optsRadios1" value="Agree">Agree</label>
+            <label class="radio"><input class="radio6" type="radio" name="question_6" id="q6-optsRadios2" value="Disagree">Disagree</label>
+        </fieldset>
+
+        <button id="prev6" type="button" class="btn">Back</button>
+        <button id="next6" type="button" class="btn btn-primary">Continue</button>
+    </div>
+    <!-- Question 6 -->
+
+    <!-- Question 7 -->
+    <div class="d7">
+        <h5>Tax Declaration Continued</h5> <span class='page_num'>7 out of 10 pages </span>
+        <p>Any private use of the item will be incidental to the primary work use of the item.<span>*</span></p>
+
+        <fieldset>
+            <label class="radio"><input class="radio7" type="radio" name="question_7" id="q7-optsRadios1" value="Agree">Agree</label>
+            <label class="radio"><input class="radio7" type="radio" name="question_7" id="q7-optsRadios2" value="Disagree">Disagree</label>
+        </fieldset>
+
+        <button id="prev7" type="button" class="btn">Back</button>
+        <button id="next7" type="button" class="btn btn-primary">Continue</button>
+    </div>
+    <!-- Question 7 -->
+
+    <!-- Question 8 -->
+    <div class="d8">
+        <h5>Salary Sacrifice Request</h5> <span class='page_num'>8 out of 10 pages </span>
+        <p>I hereby request Woolworths to deduct from my salary the amount specified below and authorize this deduction over the minimum number of pay periods required.<span>*</span></p>
+
+        <fieldset>
+            <label class="radio"><input class="radio8" type="radio" name="question_8" id="q8-optsRadios1" value="Agree">Agree</label>
+            <label class="radio"><input class="radio8" type="radio" name="question_8" id="q8-optsRadios2" value="Disagree">Disagree</label>
+        </fieldset>
+
+        <button id="prev8" type="button" class="btn">Back</button>
+        <button id="next8" type="button" class="btn btn-primary">Continue</button>
+    </div>
+    <!-- Question 8 -->
+
+    <!-- Purchase Details -->
+    <div class="d9">
+        <h5>Purchase Details</h5> <span class='page_num'>9 out of 10 pages </span>
+
+       <div class="control-group">
+            <label class="control-label" for="full_name">Full Name*</label>
+            <div class="controls">
+                <input class="" type="text" id="full_name" name="full_name" placeholder='Full Name' value="{{user_info_fullname}}" required>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="payroll_number">Payroll Number*</label>
+            <div class="controls">
+                <input class="numbersOnly" type="text" id="payroll_number" name="payroll_number" placeholder='Payroll Number' value="{{employeeId}}" required>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="cost_centre">Cost Centre*</label>
+            <div class="controls">
+                <input class="numbersOnly" type="text" id="cost_centre" name="cost_centre" placeholder='Cost Centre Number' value="{{costCentre}}" required>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="location_name">Location Name*</label>
+            <div class="controls">
+                <input class="" type="text" id="location_name" name="location_name" placeholder='Location Name' value="{{location}}" required>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="employment_status">Employment Status*</label>
+            <strong><sup style="margin-left: 40px;">Note: casual employee not eligible</sup></strong>
+            <div class="controls">
+                <fieldset>
+                    <label class="radio"><input type="radio" name="employment_status" id="es-optsRadios1" value="Full Time" checked>Full Time</label>
+                    <label class="radio"><input type="radio" name="employment_status" id="es-optsRadios2" value="Part Time">Part Time</label>
+                </fieldset>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="pay_cycle">Pay Cycle*</label>
+            <div class="controls">
+                <fieldset>
+                    <label class="radio"><input type="radio" name="pay_cycle" id="pc-optsRadios1" value="Weekly" checked>Weekly</label>
+                    <label class="radio"><input type="radio" name="pay_cycle" id="pc-optsRadios2" value="Fortnightly">Fortnightly</label>
+                    <label class="radio"><input type="radio" name="pay_cycle" id="pc-optsRadios2" value="Monthly">Monthly</label>
+                </fieldset>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="device_purchase_type">Device Purchased Type*</label>
+            <div class="controls">
+                <select id="device_purchase_type" name="device_purchase_type" class="span4" required>
+                    <option value="">Select Type</option>
+                    <option value="Laptop">Laptop</option>
+                    <option value="Tablet">Tablet</option>
+                    <option value="Smartphone">Smartphone</option>
+                </select>
+            </div>
+        </div>
+        <div class="control-group">
+            <label class="control-label" for="purchase_amount">What you have purchased*</label>
+            <div class="controls">
+                <textarea style="resize: none;" class="span4" rows="3" id="device_description" name="device_description"></textarea>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="purchase_amount">Purchase Amount (Inclusive of GST)*</label>
+            <div class="controls">
+                <input class="numbersOnly" type="text" id="purchase_amount" name="purchase_amount" placeholder='$ 0.00' required>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="gst_amount">GST Amount*</label>
+            <div class="controls">
+                <input class="numbersOnly" type="text" id="gst_amount" name="gst_amount" placeholder='$ 0.00' required>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label class="control-label" for="purchase_date">Purchase Date</label>
+            <div class="controls">
+                <div class="input-append">
+                    <input class="span6 date_pickr"
+                           type="text"
+                           id="purchase_date" name="purchase_date" placeholder="dd-mm-yyyy" required >
+                </div>
+            </div>
+        </div>
+
+        <button id="prev9" type="button" class="btn">Back</button>
+        <button id="next9" type="button" class="btn btn-primary last-continue">Continue</button>
+
+    </div>
+    <!-- Purchase Details -->
+
+    <!-- Device Salary Application -->
+    <div class="d10" id="success-response">
+        <h5>Computing Device Salary Application</h5> <span class='page_num'>10 out of 10 pages </span>
+
+        <ol>
+            <li>Scan your receipt.</li>
+            <li>Store the scanned copy to your local drive (PC).</li>
+            <li>Click on <b>'Choose File'</b> button and locate the scanned copy from your local drive.</li>
+        </ol>
+        <div class="control-group">
+            <label class="control-label" for="attachment">Attachment</label>
+            <div class="controls">
+                <input class="span6 field-type-blob-key-field" id="attachment" name="attachment" type="file" required>
+            </div>
+        </div>
+
+        <div class="control-group">
+                <label class="control-label" for="submit_response">Send me a copy of my responses</label>
+                <div class="controls" id="show-submit">
+                    <input type="checkbox" id="submit_response" name="submit_response" value="Yes" checked>
+                </div>
+        </div>
+        <button id="prev10" type="button" class="btn">Back</button>
+        <button type="submit" class="btn btn-primary submit-successful">Submit</button>
+    </div>
+
+
+    <div class="unsuc" id="unsuc">
+        <div class="control-group">
+            <h5>Unsuccessful application</h5>
+            <p>Your application for salary sacrifice will not be processed if you do not Agree to all the terms set out in this application.</p>
+        </div>
+
+        <button id="unsuc-prev1" type="button" class="btn">I wish to change my answer</button>
+        <button id="unsuc-prev2" type="button" class="btn">I wish to change my answer</button>
+        <button id="unsuc-prev3" type="button" class="btn">I wish to change my answer</button>
+        <button id="unsuc-prev4" type="button" class="btn">I wish to change my answer</button>
+        <button id="unsuc-prev5" type="button" class="btn">I wish to change my answer</button>
+        <button id="unsuc-prev6" type="button" class="btn">I wish to change my answer</button>
+        <button id="unsuc-prev7" type="button" class="btn">I wish to change my answer</button>
+        <button id="unsuc-prev8" type="button" class="btn">I wish to change my answer</button>
+        <a href="/salarysacrifices/cancel_app?key={{frmkey}}" class="btn btn-primary submit-unsuccessful">Cancel Application</a>
+    </div>
+
+</div>
+</form>
+{% endblock %}

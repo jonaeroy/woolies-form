@@ -1,0 +1,30 @@
+{% import "scaffolding/edit.html" as scaffold with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+<style type="text/css">
+    #group_chzn a span {
+        color: #444444;
+    }
+
+    #sidebar-nav { display: none; }
+    .content { margin-left: 0 !important; border-left: none; }
+    .container { margin-left: 0 !important; }
+
+</style>
+{% endblock %}
+
+
+{% block layout_page_title %}
+<!-- page title here -->
+Edit User
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+    {{ scaffold }}
+{% endblock %}

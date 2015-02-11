@@ -1,0 +1,141 @@
+{%  if  user_isFormAdmin or user_isAdmin and route=='list' %}
+    <!-- Modal -->
+    <div class="modal" id="template_user_select_modal" style="display:none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title"><i class=icon-group></i> 
+                    <span style="color:#666">
+                        <strong>
+                            <span id="form_modal_span_title"></span>
+                        </strong>
+                    </span>
+                </h4>
+                <hr />
+                <div class="row-fluid">
+                    <div class="alert alert-warning ">
+                      <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        <i class='icon-info'></i>
+                        <strong>
+                            Assigned Approvers on this form will receive notification via email and can see all the forms submitted by other users.
+                        </strong>
+                    </div>
+
+                    <div class="span10"><strong><span id="drop_down_modal_select_caption"></span></strong></div>
+                    <div id="div_container_select_Admin"  style="display:none"  class="group_selector_div">
+                        <select class="selectpicker span14" id="select_group_admin" data-size="auto">          
+                            <option  class='option' value="None" selected=selected>None</option>
+                            {% for group in group_list %}
+                                {% if form_admin %}  
+                                    {% if form_admin.urlsafe() == group.key.urlsafe() %}  
+                                    <option  class='option' value="{{ group.key.urlsafe() }}" selected=selected>{{ group.name }}</option>
+                                    {% else %}
+                                    <option  class='option' value="{{ group.key.urlsafe() }}">{{ group.name }}</option>
+                                    {% endif %}
+                                {% else %}
+                                    <option  class='option' value="{{ group.key.urlsafe() }}">{{ group.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="div_container_select_First"  style="display:none"  class="group_selector_div">
+                        <select class="selectpicker span14" id="select_group_one" data-size="auto">          
+                            <option  class='option' value="None" selected=selected>None</option>
+                            {% for group in group_list %}
+                                {% if first_group_approver %}  
+                                    {% if first_group_approver.key.urlsafe() == group.key.urlsafe() %}  
+                                    <option  class='option' value="{{ group.key.urlsafe() }}" selected=selected>{{ group.name }}</option>
+                                    {% else %}
+                                    <option  class='option' value="{{ group.key.urlsafe() }}">{{ group.name }}</option>
+                                    {% endif %}
+                                {% else %}
+                                    <option  class='option' value="{{ group.key.urlsafe() }}">{{ group.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="div_container_select_Second" style="display:none" class="group_selector_div">
+                        <select class="selectpicker span14" id="select_group_two" data-size="auto">          
+                            <option  class='option' value="None" selected=selected>None</option>
+                            {% for group in group_list %}
+                                {% if second_group_approver %}  
+                                    {% if second_group_approver.key.urlsafe() == group.key.urlsafe() %}  
+                                    <option  class='option' value="{{ group.key.urlsafe() }}" selected=selected>{{ group.name }}</option>
+                                    {% else %}
+                                    <option  class='option' value="{{ group.key.urlsafe() }}">{{ group.name }}</option>
+                                    {% endif %}
+                                {% else %}
+                                    <option  class='option' value="{{ group.key.urlsafe() }}">{{ group.name }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div id="add_new_member_modal_div" style="display:none">
+                    <a class="btn-flat success" id="add_new_member_btn"><i class=icon-plus></i> Add new member of <span id="span_modal_selected_group_name"></span></a> 
+                </div>
+            </div>
+            
+            <div class="modal-body">
+                <div id="select_group_admin_list" class="group_list_div" style="max-height: 250px; display:none"></div>
+                <div id="select_group_one_list" class="group_list_div" style="max-height: 250px; display:none"></div>
+                <div id="select_group_two_list" class="group_list_div" style="max-height: 250px; display:none"></div>
+            </div>
+
+            <div class="modal-footer">
+                  <a href="#" class="btn" class="close" data-dismiss="modal" aria-hidden="true">Close</a>
+                  <a href="#" class="btn btn-primary" id="save_managers_btn">Save changes</a>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    {% endif %}
+
+
+
+    {%  if  user_isFormAdmin or user_isAdmin and route=='list' %}
+    <!-- Modal -->
+    <div class="modal" id="template_user_add_modal" style="display:none">
+    <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">
+                <i class=icon-user></i>
+                <strong>
+                    Add new member of <span id="user_add_modal_group_name"></span>
+                </strong>
+            </h4>
+        </div>
+        <div class="modal-body">
+            <div class="row-fluid form-group">
+                <div class=""><strong>Name : </strong></div>
+                <input type="text" value="" class="span14 field-type-text-field  flag_required_true form-control" placeholder="Enter Name" id="add_member_name_modal"/>
+                
+                <div class=""><strong>Email : </strong></div>
+                <input type="text" value="" class="span14 field-type-text-field  flag_required_true form-control global-address" style="width:530px" single-select="true" placeholder="Enter Email" id="add_member_email_modal"/>
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />
+                <br />        
+            </div>
+        </div>
+        <div class="modal-footer">
+              <a href="#" class="btn" class="close" data-dismiss="modal" aria-hidden="true">Close</a>
+              <a href="#" class="btn btn-primary" id="save_member_btn">Save Member</a>
+        </div>
+        </div><!-- /.modal-content -->
+
+    </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    {% endif %}

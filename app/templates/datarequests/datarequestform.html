@@ -1,0 +1,210 @@
+{% extends "layouts/datareqformmain.html" %}
+{% import "scaffolding/macros.html" as scaffold with context %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Staff use this form if they want to request data or to change data around certain products.</p>
+</div>
+<form class="form-horizontal" action="/datarequests/add" method="post">
+    <div class="well" style="width: 1050px">
+        <fieldset>
+            <legend>
+                <h3>Master Data Request Form</h3>
+            </legend>
+            <div class="control-group">
+                <label class="control-label" for="Requested_By">Requested By</label>
+                <div class="controls">
+                    <input type="text" id="Requested_By" name="Requested_By" required readonly value="{{user}}"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="date">Submission Date</label>
+                <div class="controls">
+                    <input class="span3" type="text" name="Submission_Date" id="date" required readonly/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Buyer">Buyer</label>
+                <div class="controls">
+                    <input class="span3" type="email" name="Buyer" id="Buyer" required/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Subject">Subject</label>
+                <div class="controls">
+                    <input class="span3" type="text" name="Subject" id="Subject"/>
+                </div>
+            </div>
+
+            <fieldset>
+                <legend>
+                    <h4>Please Select Request Type</h4>
+                </legend>
+                <div class="control-group">
+                    <div class="controls">
+                        <select name="Please_Select_Request_Type" required>
+                            <option value=""></option>
+                            <option value="Request">Request</option>
+                            <option value="Add">Add</option>
+                            <option value="Change">Change</option>
+                            <option value="Delete">Delete</option>
+                        </select>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset>
+                <legend>
+                    <h4>
+                        Please Select Request Area(s)
+                    </h4>
+                </legend>
+                <table "width=100%">
+                    <tr>
+                        <td width="20%">
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Barcode Request">
+                                <small>Barcode Request</small>
+                            </label>
+                        </td>
+                        <td width="30%">
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Features_Beneifts">
+                                <small>Features & Beneifts</small>
+                            </label>
+                        </td>
+                        <td width="25%">
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Source Method">
+                                <small>Source Method</small>
+                            </label>
+                        </td>
+                        <td width="25%">
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Other">
+                                <small>
+                                    Other <em>Please Specify</em>
+                                </small>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Barcode Purge">
+                                <small>Barcode Purge</small>
+                            </label>
+                        </td>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="GST (VAT Maintenance)">
+                                <small>GST (VAT Maintenance)</small>
+                            </label>
+                        </td>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Supplier Change">
+                                <small>Supplier Change</small>
+                            </label>
+                        </td>
+                        <td rowspan="5">
+                            <label class="textarea">
+                                <textarea rows="3" class="span5" name="Comments" style="resize:none"></textarea>
+                                <small>
+                                    Examples of 'Other': Backorderable Indicator, Country of Manufacturer, Country of Sourcing, Deleted Line Reversal, Generic Item Attributes, User Defined Attributes, VPN
+                                </small>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>    
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Barcode Test Scan">
+                                <small>Barcode Test Scan</small>
+                            </label>
+                        </td>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Item Description">
+                                <small>Item Description</small>
+                            </label>
+                        </td>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="TI x HI">
+                                <small>TI x HI</small>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Comments">
+                                <small>Comments</small>
+                            </label>
+                        </td>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Item Location Status (ranging)">
+                                <small>Item Location Status (ranging)</small>
+                            </label>
+                        </td>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Trade Pack">
+                                <small>Trade Pack</small>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Complex Pack">
+                                <small>Complex Pack</small>
+                            </label>
+                        </td>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Promotion">
+                                <small>Promotion</small>
+                            </label>
+                        </td>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Dimensions & Weights">
+                                <small>Dimensions & Weights</small>
+                            </label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Dangerous Goods">
+                                <small>Dangerous Goods</small>
+                            </label>
+                        </td>
+                        <td>
+                            <label class="checkbox">
+                                <input type="checkbox" name="Please_Select_Request_Area" value="Scanned Deal">
+                                <small>Scanned Deal</small>
+                            </label>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <hr size="3"/>
+            <div class="control-group">
+                <label class="text-left" for="Attachments">Attachment</label>
+                <div class="text-left   ">
+                    <input class="span8" type="file" id="Attachments" name="Attachments" required/>
+                </div>
+            </div>
+            <div class="control-group">
+                <div align="right">
+                    <input type="submit" onsubmit="check_checkboxes()" class="btn btn-primary" value="Send">
+                    <input type="button" class="btn" value="Cancel" onclick="history.back()">
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</form>
+{% endblock %}

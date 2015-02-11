@@ -1,0 +1,33 @@
+{% import "scaffolding/add.html" as scaffold with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+<script>
+    //If no items are found on the list, display this message
+    $(document).ready(function(){
+        var findbanner = $('#page-container').find('.banner-div').length;
+        var nodisplaystr = '<div class="banner-error-notif"><p><em>There are no banner links to display</em></p></div>';
+
+        if (findbanner == 0) {
+            $('#page-container').html(nodisplaystr)
+        }
+        console.log(findbanner);
+    });
+</script>
+<style>.content { margin-left: 0 !important; } </style>
+{% endblock %}
+
+
+{% block layout_page_title %}
+<!-- page title here -->
+Banners
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+    {{data}}
+{% endblock %}

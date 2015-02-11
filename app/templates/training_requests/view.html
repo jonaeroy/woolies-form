@@ -1,0 +1,151 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<script type='text/javascript' src='/js/utils.js'></script>
+<script type='text/javascript'>
+    $(document).ready(function(){
+        $('#exportToExcel').click(function(){
+            var data = $(this).attr('key');
+            response = confirm('Export?');
+            if(response){
+                document.location.href="/training_requests/export/" + data;
+            }
+            return false;
+        });
+    });
+</script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Training Request View
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->  
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Used for the stores to nominate people to attend different training courses.</p>
+</div>
+<div class="well">
+    <fieldset>
+        {% import "scaffolding/macros.html" as scaffold with context %}
+        {% import 'macros/search.html' as search with context %}
+        <table class="table table-striped">
+
+            <!--
+            {% if status == 'Rejected' or status =='Approved' %}
+            <tr>
+                <td>Status:</td>
+                <td>{{status}} by {{modified_by}} on {{modified.strftime('%b %d, %Y %I:%M %p')}}</td>
+            </tr>
+            {% endif %}
+            -->
+            
+            <tr>
+                <td>To:</td>
+                <td>{{to}}</td>
+            </tr>
+            <tr>
+                <td>Employee Number:</td>
+                <td>{{employee_number}}</td>
+            </tr>
+            <tr>
+                <td>Participant's Email Address:</td>
+                <td>{{email_address}}</td>
+            </tr>
+            <tr>
+                <td>Participant Name:</td>
+                <td>{{participant_name}}</td>
+            </tr>
+            <tr>
+                <td>Preferred Training Day:</td>
+                <td>{{preferred_training_day}}</td>
+            </tr>
+            <tr>
+                <td>Participant Position Title:</td>
+                <td>{{participant_position_title}}</td>
+            </tr>
+            <tr>
+                <td>Shift Type:</td>
+                <td>{{shift_type}}</td>
+            </tr>
+            <tr>
+                <td>Participant D.O.B:</td>
+                <td>{{participant_dob}}</td>
+            </tr>
+            <tr>
+                <td>Preferred Training Location:</td>
+                <td>{{preferred_training_location}}</td>
+            </tr>
+            <tr>
+                <td>Cost Center Number:</td>
+                <td>{{cost_center_number}}</td>
+            </tr>
+            <tr>
+                <td>Current Certificate Expiry Date:</td>
+                <td>{{current_cert_exp_date}}</td>
+            </tr>
+            <tr>
+                <td>Participant Mobile Number:</td>
+                <td>{{participant_mobile_number}}</td>
+            </tr>
+            <tr>
+                <td>Store/Site Name:</td>
+                <td>{{store_site_name}}</td>
+            </tr>
+            <tr>
+                <td>Division:</td>
+                <td>{{division}}</td>
+            </tr>
+            <tr>
+                <td><b>Training Requirement</b></td>
+                <td>&nbsp;</td>
+            </tr>
+            <tr>
+                <td>First Aid:</td>
+                <td>{{first_aid}}</td>
+            </tr>
+            <tr>
+                <td>Responsible Service of Alcohol:</td>
+                <td>{{responsible_service_of_alcohol}}</td>
+            </tr>
+            <tr>
+                <td>Fire Training:</td>
+                <td>{{fire_training}}</td>
+            </tr>
+            <tr>
+                <td>Fork Lift:</td>
+                <td>{{fork_lift}}</td>
+            </tr>
+            <tr>
+                <td>Rehabilitation and Return to Work Coordinator:</td>
+                <td>{{rehabilitation}}</td>
+            </tr>
+            <tr>
+                <td>Food Safety:</td>
+                <td>{{food_safety}}</td>
+            </tr>
+             <tr>
+                <td>Safety:</td>
+                <td>{{safety}}</td>
+            </tr>
+            <tr>
+                <td>Special Instructions:</td>
+                <td>{{special_instructions}}</td>
+            </tr>
+        </table>
+    </fieldset>
+    <div class="row-fluid">
+        <div class="pull-right">
+            <!-- <a href="{{this.uri('training_requests:update', key=item.key.urlsafe(), frmkey=frmkey)}}" class="btn btn-primary">Edit</a> -->
+            <a href="{{this.uri('training_requests:list', key=frmkey)}}" class="btn btn-primary">Back</a>
+            <button id="exportToExcel" type="button" class="btn btn-primary" key="{{key}}">Export Data</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

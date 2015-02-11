@@ -1,0 +1,339 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+    
+    <script>
+        $(function() {
+        $( "#Date_of_Arrival" ).datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+        $( "#dateSent" ).datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+        });
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.toCheck').click(function() {
+                var strto = "";
+                $('input[class=toCheck]:checked').each(function(){
+                strto = strto + "," + $(this).val();
+                });
+                var rstrto = strto.substring(1);
+                document.getElementById("To").value = rstrto;
+            });
+
+
+        });
+
+        $(document).on("click", ".sendReq", function (){
+
+            // Validate required Checkbox
+            if ($("#To").val() == "")
+            {
+                alert("ERROR: Select atleast one receiver in 'TO' checkboxes.");
+                $("#toCheck").focus();
+                return false;
+            }
+
+            // Validate required Checkbox
+            if (parseInt($("#Pallets_Received").val()) < parseInt($("#Pallets_Affected").val()))
+            {
+                alert("ERROR: Pallets received should be greater than or equal to pallets affected.");
+                $("#Pallets_Received").focus();
+                return false;
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        function getTime(){
+
+            var currentTime = new Date()
+            var hours = currentTime.getHours()
+            var minutes = currentTime.getMinutes()
+
+            if (minutes < 10)
+            minutes = "0" + minutes
+
+            var suffix = "AM";
+            if (hours >= 12) {
+                suffix = "PM";
+                hours = hours - 12;
+            }
+            if (hours == 0) {
+                hours = 12;
+            }
+
+            var time = hours + ":" + minutes + " " + suffix;
+
+            document.getElementById("Time_of_Rejection").value = time;
+
+        }
+
+        function display_t(){
+            var refresh=3000; //updates every 3 secs
+            mytime=setInterval('getTime()',refresh)
+        }
+
+        $(document).ready(function(){
+            display_t();
+        });
+
+        function setSubject(){
+            var dc = document.getElementById("DC").value;
+            document.getElementById("Subject").value = "Stock Rejection: DC " + dc;
+        }
+
+    </script>
+
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Stock Rejection - Woolworths
+{% endblock %}
+
+{% block layout_page_buttons %}
+
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Communication link between the warehouse (DC) for them to enter info on a product on a delivery that is being rejected, issues with the delivery, which goes to replenishment sr mgmt team, there is a tick box to indicate who this is sent to. behind the tick box are distribution lists</p>
+</div>
+
+<form  class="form-horizontal" action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+    <div class="well">
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="toCheck">To:</label>
+                {% for form_manager in form_managers%}
+                <div class="controls">
+                    <div class="rb-combo">
+                        <input type="checkbox" id="toCheck" class="toCheck" value="{{form_manager.email}}"> 
+                        <label>{{form_manager.fullname}}</label>
+                    </div>
+                </div>
+                {% endfor %}
+                <input type="hidden" class="span9" id="To" name="To" value="">
+                <input type="hidden" class="span9" id="dateSent" name="dateSent" value="">
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="CC">CC</label>
+                <div class="controls">
+                    <input type="email" class="span5 global-address" id="CC" name="CC" single-select="True" required/>
+                </div>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label" for="DC">DC:</label>
+                <div class="controls">
+                    <select class="span5 selectpicker" id="DC" name="DC" onchange="setSubject()" required>
+                        <option value="">Select DC</option>
+                        {% for dc in dcs %}
+                        <option value="{{ dc.location_number }} - {{ dc.location_name }}">{{ dc.location_number }} - {{ dc.location_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Subject">Subject</label>
+                <div class="controls">
+                    <input class="span11" type="text" id="Subject" name="Subject" placeholder="Select DC to populate Subject" required/>
+                </div>
+            </div>
+                <legend></legend>
+                <table width="100%">
+                    <tr>
+                        <td valign="top">
+                            <h5><center><strong>- 1 -</strong></center></h5>
+                            <hr style="height:0px; width:90%">
+                            
+                                <div class="control-group">
+                                    <label class="control-label" for="Vendor">Vendor:</label>
+                                    <div class="controls">
+                                        <select id="Vendor" name="Vendor" class="span11 auto-subject-if selectpicker" required>
+                                            <option value=""></option>
+                                            {% for item in vendors %}
+                                            <option value="{{item.vendor}}">{{item.vendor}}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="Return_Type">Return Type:</label>
+                                    <div class="controls">
+                                        <select class="span8 selectpicker" id="Return_Type" name="Return_Type" required>
+                                            <option value="">Select Return type..</option>
+                                            <option value="Position Incorrect">Position Incorrect</option>
+                                            <option value="No Label in use">No Label in use</option>
+                                            <option value="Damaged Label">Damaged Label</option>
+                                            <option value="Print Quality">Print Quality</option>
+                                            <option value="Duplicated SSCC Numbers">Duplicated SSCC Numbers</option>
+                                            <option value="Mismatch Labels">Mismatch Labels</option>
+                                            <option value="Missing / Incorrect Data">Missing / Incorrect Data</option>
+                                            <option value="Plastic Wrapping Dags">Plastic Wrapping Dags</option>
+                                            <option value="Chep Pallet Damaged">Chep Pallet Damaged</option>
+                                            <option value="Loscam Pallet Damaged">Loscam Pallet Damaged</option>
+                                            <option value="Load Shifted">Load Shifted</option>
+                                            <option value="Incorrect / No Paperwork">Incorrect / No Paperwork</option>
+                                            <option value="A4 Loose Paper">A4 Loose Paper</option>
+                                            <option value="Stabilisation Issues">Stabilisation Issues</option>
+                                            <option value="No Pallet / Crate Transfer Docket">No Pallet / Crate Transfer Docket</option>
+                                            <option value="No or Insufficient GTIN's">No or Insufficient GTIN's</option>
+                                            <option value="Print Quality">Print Quality</option>
+                                            <option value="Damaged Barcode">Damaged Barcode</option>
+                                            <option value="Missing / Incorrect Data">Missing / Incorrect Data</option>
+                                            <option value="Mixed Items On Pallet">Mixed Items On Pallet</option>
+                                            <option value="Incorrect TiXHi">Incorrect TiXHi</option>
+                                            <option value="Column Stacked">Column Stacked</option>
+                                            <option value="Glue Issues">Glue Issues</option>
+                                            <option value="Damaged">Damaged</option>
+                                            <option value="Perforation Issues">Perforation Issues</option>
+                                            <option value="Missing / Incorrect Details">Missing / Incorrect Details</option>
+                                            <option value="Incorrect Order Qty Delivered">Incorrect Order Qty Delivered</option>
+                                            <option value="Incorrect Stock">Incorrect Stock</option>
+                                            <option value="Max Date/Too New">Max Date/Too New</option>
+                                            <option value="Min Date/Too Old">Min Date/Too Old</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="Carrier">Carrier:</label>
+                                    <div class="controls">
+                                        <input class="span8" type="text" id="Carrier" placeholder="Carrier Name" name="Carrier" required/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="Date_of_Arrival">Date of Arrival:</label>
+                                    <div class="controls">
+                                        <input class="span8" type="text" id="Date_of_Arrival" name="Date_of_Arrival" required/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="Time_of_Rejection">Time of Rejection:</label>
+                                    <div class="controls">
+                                        <input class="span8" type="text" id="Time_of_Rejection" name="Time_of_Rejection" required/>
+                                    </div>
+                                </div>
+                            
+                        </td>
+                        <td valign="top">
+                            <h5><center><strong>- 2 -</strong></center></h5>
+                            <hr style="height:0px; width:90%">
+                            <label>Product Other:</label>
+                            <fieldset>
+                                <textarea rows="8" class="span9" name="Product_Other" placeholder=" Enter product and specify the Return Type" style="resize:none" required></textarea>
+                            </fieldset>
+                        </td>
+                        <td valign="top">
+                            <h5><center><strong> - 3 - </strong></center></h5>
+                            <hr style="height:0px; width:90%">
+                            
+                                <div class="control-group">
+                                    <label class="control-label" for="Purchase_Order">Purchase Order:</label>
+                                    <div class="controls">
+                                        <input class="span8 numbersOnly" type="text" id="Purchase_Order" name="Purchase_Order" placeholder="Purchase Order number" required/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="Load_Number">Load Number:</label>
+                                    <div class="controls">
+                                        <input class="span8 numbersOnly" type="text" id="Load_Number" name="Load_Number" placeholder="Load Number details" required/>
+                                    </div>
+                                </div>
+
+                                <div class="control-group">
+                                    <label class="control-label" for="Pallets_Received">Pallets Received:</label>
+                                    <div class="controls">
+                                        <input class="span8 numbersOnly" type="text" id="Pallets_Received" name="Pallets_Received" placeholder="Number of Pallets" required/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="Pallets_Affected">Pallets Affected:</label>
+                                    <div class="controls">
+                                        <input class="span8 numbersOnly" type="text" id="Pallets_Affected" name="Pallets_Affected" placeholder="Number of Pallets with issues" required/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="Cartons_Affected">Cartons Affected:</label>
+                                    <div class="controls">
+                                        <input class="span8 numbersOnly" type="text" id="Cartons_Affected" name="Cartons_Affected" placeholder="Number of cartons with issues" required/>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="Replenishment_Contacted">Replenishment Contacted:</label>
+                                    <div class="controls">
+                                        <select class="span6 selectpicker" id="Replenishment_Contacted" name="Replenishment_Contacted" required>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="Woolworths_Primary_Freight">Woolworths Primary Freight:</label>
+                                    <div class="controls">
+                                        <select class="span6 selectpicker" id="Woolworths_Primary_Freight" name="Woolworths_Primary_Freight" required>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                                </div>
+                        </td>
+                    </tr>
+                </table>
+            
+                <legend>
+                    <h4>Comments / Attachments</h4>
+                </legend>
+                <div class="control-group">
+                    <div class="controls">
+                        <textarea rows="6" class="span11" name="Comments" style="resize:none" placeholder="Enter relevant details of the rejection" required></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                    <input class="span6 field-type-blob-key-field" id="Attachments" name="Attachments" type="file">
+                </div>
+                </div>
+
+                <legend>
+                    <h4>Contact Details (For Replies)</h4>
+                </legend>
+                <div class="control-group controls-row">
+                    <label class="control-label" for="From">From:</label>
+                    <div class="controls">
+                        <input class="span3" type="text" id="From" name="From" placeholder="Name" value="{{user_info_fullname}}" required/>                
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="Phone">Phone:</label>
+                    <div class="controls">
+                        <input class="span3" type="text" id="Phone" name="Phone" placeholder="Number" required/>                
+                    </div>
+                </div><div class="control-group">
+                    <label class="control-label" for="Fax">Fax:</label>
+                    <div class="controls">
+                        <input class="span3" type="text" id="Fax" name="Fax" placeholder="Fax"/>                
+                    </div>
+                </div><div class="control-group">
+                    <label class="control-label" for="Email">Email</label>
+                    <div class="controls">
+                        <input type="email" class="span5 global-address" id="Email" name="Email" single-select="True" required/>                
+                    </div>
+                </div>
+            
+            <hr size="3"/>
+            <div class="control-group">
+                <div align="right">
+                    <input type="submit" class="btn btn-primary sendReq" value="Send">            
+                    <input type="button" class="btn" value="Cancel" id="backHistory">
+                </div>
+            </div>
+        </fieldset>
+    </div>
+    {% include "includes/global_address_modal.html" %}  
+</form>
+{% endblock %}

@@ -1,0 +1,117 @@
+# application: quality-woolies-forms    #.appspot.com
+# version: 2-4-release
+
+application: woolworths-forms   #.appspot.com
+version: 2-60-release
+
+runtime: python27
+api_version: 1
+threadsafe: yes
+
+builtins:
+- deferred: on
+- remote_api: on
+#- appstats: on
+
+libraries:
+- name: jinja2
+  version: latest
+- name: lxml
+  version: latest
+- name: webapp2
+  version: latest
+- name: webob
+  version: latest
+- name: ssl
+  version: latest
+- name: pycrypto
+  version: latest
+
+skip_files:
+- ^(.*/)?app\.yaml
+- ^(.*/)?app\.yml
+- ^(.*/)?index\.yaml
+- ^(.*/)?index\.yml
+- ^(.*/)?#.*#
+- ^(.*/)?.*~
+- ^(.*/)?.*\.py[co]
+- ^(.*/)?.*/RCS/.*
+- ^(.*/)?\..*
+- ^/docs*
+
+handlers:
+
+- url: /googlecalendar/email/task
+  script: main.notification_receiver
+  login: optional
+
+- url: /notifications
+  script: main.notification_receiver
+  login: optional
+
+- url: /google0bb5b8326c8d230a.html
+  static_files: app/static/google0bb5b8326c8d230a.html
+  upload: app/static/google0bb5b8326c8d230a\.html
+  login: optional
+
+- url: /googlecc72d78e966bb4f3.html
+  static_files: app/static/googlecc72d78e966bb4f3.html
+  upload: app/static/googlecc72d78e966bb4f3\.html
+  login: optional
+
+- url: /google66e41c5e7ec54d39.html
+  static_files: app/static/google66e41c5e7ec54d39.html
+  upload: app/static/google66e41c5e7ec54d39\.html
+  login: optional
+
+- url: /static
+  static_dir: app/static
+
+- url: /css
+  static_dir: app/static/css
+
+- url: /js
+  static_dir: app/static/js
+
+- url: /img
+  static_dir: app/static/img
+
+- url: /ferris/static
+  static_dir: ferris/static
+
+- url: /ferris/css
+  static_dir: ferris/static/css
+
+- url: /ferris/js
+  static_dir: ferris/static/js
+
+- url: /ferris/img
+  static_dir: ferris/static/img
+
+- url: /favicon\.ico
+  static_files: app/static/favicon.ico
+  upload: app/static/favicon\.ico
+
+- url: /robots\.txt
+  static_files: app/static/robots.txt
+  upload: app/static/robots\.txt
+
+- url: /humans\.txt
+  static_files: app/static/humans.txt
+  upload: app/static/humans\.txt
+
+- url: /plugins/(.*?)/(.*)
+  static_files: plugins/\1/static/\2
+  upload: plugins/(.*?)/static/(.*)
+
+- url: /api/.*
+  script: main.app
+
+- url: /_ah/start
+  script: main.app
+
+- url: .*
+  script: main.app
+  login: required
+
+#instance_class: F4

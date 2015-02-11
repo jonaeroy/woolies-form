@@ -1,0 +1,16 @@
+<div class="media">
+  <a class="pull-left" href="{{this.uri('users:view', key=user.key.urlsafe())}}">
+    <img class="media-object" src="{{this.uri('users:picture', key=user.key.urlsafe())}}" width="64">
+  </a>
+  <div class="media-body">
+    <h4 class="media-heading">
+      <a href="{{this.uri('users:view', key=user.key.urlsafe())}}">{{user.name}}</a>
+    </h4>
+
+    <p>
+      <a href='mailto:{{user.user.email()}}'>{{user.user.email()}}</a>
+    </p>
+    
+
+  </div>
+</div>

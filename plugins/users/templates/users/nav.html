@@ -1,0 +1,26 @@
+{% import 'scaffolding/macros.html' as s with context %}
+{%extends 'scaffolding/nav.html'%}
+
+{% block tool_lies %}
+    {% if this.route.controller == 'users' %}
+        {{s.nav_link('Add User', 'add', 'icon-plus')}}
+    {% endif %}
+    {% if this.route.controller == 'user_tags' %}
+        {{s.nav_link('Add Group', 'add', 'icon-plus')}}
+    {% endif %}
+{%endblock%}
+
+{%block menu_bar -%}
+<ul class="nav nav-tabs">
+    <li {% if this.route.controller == 'users' %}class='active'{% endif %}>
+        <a href="{{this.uri('admin:users:list')}}">
+            Users
+        </a>
+    </li>
+    <li {% if this.route.controller == 'user_tags' %}class='active'{% endif %}>
+        <a href="{{this.uri('admin:user_tags:list')}}">
+            Groups
+        </a>
+    </li>
+</ul>
+{% endblock %}

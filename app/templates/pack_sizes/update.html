@@ -1,0 +1,336 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+    {{ super() }}
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type='text/javascript' src='/js/angular/angular.js'></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+    <script type='text/javascript'>
+        var dateToday = new Date();
+        var rowCount = {{details|length}};
+
+        $(document).ready(function(){
+            $('.date_pickr').datepicker({
+                dateFormat: 'dd-mm-yy'
+            });
+
+            $('.btn-update').click(function(){
+                $.ajax({
+                    url: '/pack_sizes/fetch_request_status/{{key}}'
+                }).done(function(data){
+                    if(data == 1){
+                        $('#update-request-button').click();
+                    }else{
+                        window.location.href = '/pack_sizes/edit_locked?frmkey={{frmkey}}';
+                    }
+                });
+            });
+
+            // $('.date_pickr').val($.datepicker.formatDate('dd-mm-yy', dateToday));
+
+            $('#submission_date').change(function(){
+                var bits = $(this).val().split('-');
+                var end = new Date(bits[2], bits[1] - 1, bits[0])
+
+                $('#effective_date').val($.datepicker.formatDate('dd-mm-yy', end));
+                $('#effective_date').datepicker("option", "minDate", end);
+
+            });
+
+            if(rowCount <= 1)
+                $('.removeRow, .action').hide();
+
+            $('#addRow').on('click', function(){
+                $("#tblDetails >tbody tr:first").clone().find("input").each(function(){
+                    $(this).val('');
+                }).end().appendTo("#tblDetails >tbody");
+                Drafts.check_changes();
+                
+                rowCount++;
+                
+                if(rowCount > 1){
+                    $('.removeRow').show();
+                    $('.action').show();
+                }
+            });
+
+            $('#tblDetails').on('click', '.removeRow', function(){
+                $(this).parent().parent().remove();
+                
+                rowCount--;
+                
+                if(rowCount < 2){
+                    $('.removeRow').hide();
+                    $('.action').hide();
+                }
+            });
+
+            $('#tblDetails').on('focusout', '.itemNumbr', function(){ // Originally .itemNumber
+                var state = true;
+                var elements = new Array();
+                var root = $(this).parent().parent();
+
+                root.find(':input[name="item_number[]"]').each(function(){
+
+                    var attachment = $('#attachment').val();
+                    var inputValue = $.trim($(this).val());
+
+                    if(inputValue != "" && attachment == ""){
+                        if(inputValue != 0){
+                            $(this).prop('pattern', '[0-9]{9}');
+                            $(this).prop('title', '9 digits only');
+                        }
+                        state = false;
+                        return
+                    }
+                });
+
+                if(!state){
+                    root.find('.conditional').prop('required', true);
+                }else{
+                    root.find('.conditional').prop('required', false);
+                    $('.conditional').removeAttr('pattern title');
+                }
+
+                // Do check on all fields with itemNumber class
+                $('.itemNumber').each(function(){
+                    var value = $(this).val();
+                    if(value != "")
+                        elements.push($(this).val())
+                });
+
+                // Determines if attachment becomes required or not
+                if(elements.length > 0)
+                    $('#attachment').prop('required', false)
+                else
+                    $('#attachment').prop('required', true)
+            });
+
+            $('#tblDetails').on('focusout', '.numbersOnly_dynamic', function(){
+                allowNumberOnly(this);
+            });
+
+            $('#tblDetails').on('keyup', '.numbersOnly_dynamic', function(){
+                allowNumberOnly(this);
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Masters Inner &amp; Outer Pack Size Change Request Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+    {% set readonly = 'readonly="readonly"' %}
+    {% if user_fullname == None %}
+        {% set user_fullname = '' %}
+        {% set readonly = '' %}
+    {% endif %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>When product is changing carton configurations, aka packaging changes from the vendors.</p>
+    </div>
+    <div class="container-fluid well">
+        <form id="frm-update" class="form-horizontal" action="{{upload_url}}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="key" value="{{item.key.urlsafe()}}">
+            <input type="hidden" name="frmkey" value="{{frmkey}}">
+
+            <input type="hidden" id="details" name="details" value="">
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label" for="buyer_or_baa_name">Buyer or BAA Name</label>
+                        <div class="controls">
+                            <input class="span11" type="text" id="buyer_or_baa_name" name="buyer_or_baa_name" value="{{item.buyer_or_baa_name}}" {{readonly}} required>
+                        </div>
+                    </div>
+                </div>
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label" for="reason_for_change">Reason for Pack Size Change</label>
+                        <div class="controls">
+                            <input class="span11" type="text" id="reason_for_change" name="reason_for_change" required value="{{item.reason_for_change}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="control-group">
+                        <label class="control-label" for="replenisher">Replenisher</label>
+                        <div class="controls">
+                            <input class="span11 global-address" type="text" id="replenisher" name="replenisher" required value="{{item.replenisher}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label" for="replenisher">Viewer</label>
+                        <div class="controls">
+                            <input class="span11" type="text" id="viewer" name="viewer" value="massfill@masters.com.au" readonly="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label" for="department">Department</label>
+                        <div class="controls">
+                            <input class="span11" type="text" id="department" name="department" required value="{{item.department}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label" for="supplier_number">Supplier Site Number</label>
+                        <div class="controls">
+                            <input maxlength="8" pattern="[0-9]{8}" title="8 digits only" class="span11 numbersOnly" type="text" id="supplier_number" name="supplier_number" required value="{{item.supplier_number}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label" for="submission_date">Submission Date</label>
+                        <div class="controls">
+                            <input class="span11 date_pickr datesOnly" type="text" id="submission_date" name="submission_date" required value="{{item.submission_date}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label" for="supplier_name">Supplier Name</label>
+                        <div class="controls">
+                            <input class="span11" type="text" id="supplier_name" name="supplier_name" required value="{{item.supplier_name}}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label" for="effective_date">Effective Date</label>
+                        <div class="controls">
+                            <input class="span11 date_pickr datesOnly" type="text" id="effective_date" name="effective_date" required value="{{item.effective_date}}">
+                        </div>
+                    </div>
+                </div>
+                <div class="span6">
+                    <div class="control-group">
+                        <label class="control-label" for="dsd_or_dc">DSD or DC</label>
+                        <div class="controls">
+                            <select id="dsd_or_dc" name="dsd_or_dc" class="span11" required>
+                                <option value=""></option>
+                                <option value="DC" {{ 'selected' if item.dsd_or_dc == 'DC' else '' }}>DC</option>
+                                <option value="DSD" {{ 'selected' if item.dsd_or_dc == 'DSD' else '' }}>DSD</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- <div ng-app="myApp" id="dynamicRowWrapper"> -->
+            <div id="dynamicRowWrapper">
+                <!-- <div class="row-fluid" ng-controller="DRFCtrl"> -->
+                <div class="row-fluid">
+                    <table id="tblDetails" class="table table-condensed">
+                        <thead>
+                            <tr>
+                                <th>Item Number</th>
+                                <th>Item Description</th>
+                                <th>Old Inner</th>
+                                <th>Old Outer</th>
+                                <th>New Inner</th>
+                                <th>New Outer</th>
+                                <th>Comments</th>
+                                <!-- <th ng-show="counter > 1">Action</th> -->
+                                <th class="action">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- <tr ng-repeat="item in items"> -->
+                            {% if details|length > 0 %}
+                            {% for detail in details %}
+                            <tr>
+                                <td><input type="text" name="item_number[]" class="span11 txbox numbersOnly_dynamic itemNumber conditional" maxlength="9" required value="{{detail.item_number}}"></td> <!--Originally fields are not required-->
+                                <td><input type="text" name="item_description[]" class="span11 txbox conditional" required value="{{detail.item_description}}"></td>
+                                <td><input type="text" name="old_inner[]" class="span5 txbox numbersOnly_dynamic conditional" required value="{{detail.old_inner}}"></td>
+                                <td><input type="text" name="old_outer[]" class="span5 txbox numbersOnly_dynamic conditional" required value="{{detail.old_outer}}"></td>
+                                <td><input type="text" name="new_inner[]" class="span5 txbox numbersOnly_dynamic conditional" required value="{{detail.new_inner}}"></td>
+                                <td><input type="text" name="new_outer[]" class="span5 txbox numbersOnly_dynamic conditional" required value="{{detail.new_outer}}"></td>
+                                <td><input type="text" name="comments[]" class="span11 txbox" required value="{{detail.comments}}"></td>
+                                <td class="action"><button type="button" class="btn removeRow">Remove</button></td>
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <tr>
+                                <td><input type="text" name="item_number[]" class="span11 txbox numbersOnly_dynamic itemNumber conditional" maxlength="9" required></td> <!--Originally fields are not required-->
+                                <td><input type="text" name="item_description[]" class="span11 txbox conditional" required></td>
+                                <td><input type="text" name="old_inner[]" class="span5 txbox numbersOnly_dynamic conditional" required></td>
+                                <td><input type="text" name="old_outer[]" class="span5 txbox numbersOnly_dynamic conditional" required></td>
+                                <td><input type="text" name="new_inner[]" class="span5 txbox numbersOnly_dynamic conditional" required></td>
+                                <td><input type="text" name="new_outer[]" class="span5 txbox numbersOnly_dynamic conditional" required></td>
+                                <td><input type="text" name="comments[]" class="span11 txbox" required></td>
+                                <td class="action"><button type="button" class="btn removeRow">Remove</button></td>
+                            </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+
+                    <div class="control-group">
+                        <!-- <button type="button" class="btn" ng-click="addRow(item)">Add Row</button> -->
+                        <button id="addRow" type="button" class="btn">Add Row</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="control-group">
+                    <label class="control-label" for="inputNotes">Notes</label>
+                    <div class="controls">
+                        <textarea class="span10" rows="10" name="notes" id="notes" required>{{item.notes}}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            {% if attachment != None %}
+            <div class="row-fluid">
+                <div class="control-group">
+                    <label class="control-label">Previous Attachment</label>
+                    <div class="controls">{{attachment}}</div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="row-fluid">
+                <div class="control-group">
+                    <label class="control-label" for="attachment">Attachment</label>
+                    <div class="controls">
+                        <input class="span6 field-type-blob-key-field" id="attachment" name="attachment" type="file">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="pull-right">
+                    <button id="submit" type="button" class="btn-update btn btn-primary">Update Request</button>
+                    <input id="update-request-button" type="submit" class="btn btn-primary" style="display: none;" />
+                    <a href="{{this.uri('pack_sizes:list', key=frmkey)}}" class="btn">Cancel</a>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

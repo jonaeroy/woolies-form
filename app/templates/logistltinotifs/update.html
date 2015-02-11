@@ -1,0 +1,122 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+
+    <script type="text/javascript">
+            $(function() {
+                $( "#Date_of_Incident" ).datepicker({dateFormat: 'dd-mm-yy'});
+                $( "#Date_unfit_certificate_issued" ).datepicker({dateFormat: 'dd-mm-yy'});
+                $( "#dateSent" ).datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+            });
+
+
+    </script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Logistics LTI Notification
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Loss time injury form for logistics. Communication mechanism sent to a distribution list. The form is basically an email with fields.</p>
+</div>
+<form class="form-horizontal" action="/logistltinotifs/edit_data" method="post">
+    <div class="well">
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="To">To:</label>
+                <div class="controls">
+                    <input type="text" class="span11" id="To" name="To" value="{{item.To}}" required readonly/>
+                    <input type="hidden" class="span9" id="dateSent" name="dateSent" value="">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="CC">CC:</label>
+                <div class="controls">
+                    <input class="span11 global-address" type="text" id="CC" value="{{item.CC}}" name="CC" placeholder="Enter any additional recipient email addresses not on the normal LTI distribution list"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Subject">Subject:</label>
+                <div class="controls">
+                    <input class="span11" type="text" id="Subject" name="Subject" value="Logistics LTI Notification" required/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Site">Site:</label>
+                <div class="controls">
+                    <input class="span4" type="text" id="Site" name="Site" placeholder="Enter name of your Distribution Centre" value="{{item.Site}}" required/>
+                </div>
+            </div>
+            <div class="control-group controls-row">
+                <label class="control-label" for="Pulse_Event_Number">Pulse Event Number:</label>
+                <div class="controls">
+                    <input type="text" class="span2 numbersOnly" name="Pulse_Event_Number" id="Pulse_Event_Number" value="{{item.Pulse_Event_Number}}" placeholder="Pulse event number" required/>
+                </div>
+                <label class="control-label" for="Date_of_Incident">Date of Incident:</label>
+                <div class="controls">
+                    <input type="text" class="span3 datesOnly" name="Date_of_Incident" value="{{item.Date_of_Incident}}" id="Date_of_Incident" placeholder="Date when the incident occurred" required/>
+                </div>
+                <label class="control-label" for="Date_unfit_certificate_issued">Date unfit certificate issued:</label>
+                <div class="controls">
+                    <input type="text" class="span3 datesOnly" name="Date_unfit_certificate_issued" id="Date_unfit_certificate_issued" value="{{item.Date_unfit_certificate_issued}}" placeholder="Date when the unfit certificate was issued" required/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Brief_description_of_incident">Brief description of incident:</label>
+                <div class="controls">
+                    <textarea class="span11" rows="3" name="Brief_description_of_incident" id="Brief_description_of_incident" style="resize:none" placeholder="Enter a brief description of the incident. Focus on How, What, Where, When" required>{{item.Brief_description_of_incident}}</textarea>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Care_provided_and_status_of_worker">CARE provided and status of worker</label>
+                <div class="controls">
+                    <textarea class="span11" rows="3" name="Care_provided_and_status_of_worker" id="Care_provided_and_status_of_worker" style="resize:none" placeholder="Enter the details of CARE provided to the injured person" required>{{item.Care_provided_and_status_of_worker}}</textarea>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Consideration_for_other_sites">Consideration for other sites</label>
+                <div class="controls">
+                    <textarea class="span11" rows="3" name="Consideration_for_other_sites" id="Consideration_for_other_sites" style="resize:none" placeholder="Enter any learning's from this incident which could benefit other sites" >{{item.Consideration_for_other_sites}}</textarea>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Any_additional_information">Any additional information</label>
+                <div class="controls">
+                    <textarea class="span11" rows="3" name="Any_additional_information" id="Any_additional_information" style="resize:none" placeholder="Enter any additional information your believe is relevant and is not captured in other fields" >{{item.Any_additional_information}}</textarea>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Person_leading_investigation_and_contact_details">Person leading investigation and contact details</label>
+                <div class="controls">
+                    <textarea class="span7" rows="5" name="Person_leading_investigation_and_contact_details" id="Person_leading_investigation_and_contact_details" style="resize:none" placeholder="Enter the name and contact details of the person leading the investigation and follow up." required >{{item.Person_leading_investigation_and_contact_details}}</textarea>
+                </div>
+            </div>
+            <div class="control-group">
+                <div align="right">
+                    <input type="submit" class="btn btn-primary" value="Update">
+                    <input type="hidden" name="key" value="{{item.key.urlsafe()}}">
+                    <input type="hidden" name="frmkey" value="{{frmkey}}">
+                    <input type="button" class="btn" id="backHistory" value="Cancel">
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</form>
+{% include "includes/global_address_modal.html" %} 
+{% endblock %}
+
+
+{% block layout_footer %}
+    {% include "includes/global_address_modal.html" %} 
+{% endblock %}

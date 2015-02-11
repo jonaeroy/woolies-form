@@ -1,0 +1,1528 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+    {{ super() }}
+    <script type='text/javascript' src='/js/angular/angular.js'></script>
+    <script type='text/javascript' src='/js/main.js'></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+    <script type='text/javascript' src='/js/calcfdindicativecost.js'></script>
+    <script type='text/javascript' src='/static/js/app/travel_authorisations/woolies-tabs.js'></script>
+    <style type="text/css">
+        #formtodetails .align-left{
+            text-align: left;
+        }
+    </style>
+    <script type='text/javascript' src='/js/timepicker/jquery.timepicker.js'></script>
+    <script type='text/javascript' src='/js/timepicker/jquery.timepicker.min.js'></script>
+    <script type='text/javascript' src='/js/timepicker/jquery.timepicker.css'></script>
+    <link rel="stylesheet" href='/js/timepicker/jquery.timepicker.css' />
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+            addDate();
+        });
+        function addDate(){
+            date = new Date();
+            var month = date.getMonth()+1;
+            var day = date.getDate();
+            var year = date.getFullYear();
+
+            document.getElementById('PD_Date_Completed').value = day + '-' + month + '-' + year;
+        }
+
+        $(function() {
+            
+        //$( "#PD_Date_Completed" ).datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+
+        $( "#AUT_ComBy_Date" ).datepicker({dateFormat: 'dd-mm-yy'});
+        $( "#AUT_AuthBy_Date" ).datepicker({dateFormat: 'dd-mm-yy'});
+        $( "#AUT_Exec_Date" ).datepicker({dateFormat: 'dd-mm-yy'});
+        $( "#AUT_SMG_Date" ).datepicker({dateFormat: 'dd-mm-yy'});
+        $( "#AUT_Itin_Date" ).datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate","0");;
+        $( "#AUT_SecItin_Date" ).datepicker({dateFormat: 'dd-mm-yy'});
+
+        $( ".FD_Req_Dep_Time" ).timepicker({'minTime': '5:30am',
+                                            'maxTime': '11:00pm',
+                                            'timeFormat': 'h:i A'});
+        $( ".FD_Latest_Convenient_Arrival_Time" ).timepicker({'minTime': '6:00am',
+                                                              'maxTime': '11:00pm',
+                                                              'timeFormat': 'h:i A'});
+        $( "#CD_Drop_Off_Time" ).timepicker({'minTime': '5:30am',
+                                             'maxTime': '11:00pm',
+                                             'timeFormat': 'h:i A'});
+        $( "#CD_Pick_Up_Time" ).timepicker({'minTime': '5:30am',
+                                            'maxTime': '11:00pm',
+                                            'timeFormat': 'h:i A'});
+        });
+
+        $(document).ready(function(){
+            FDhideShowRemoveBtn();
+            HDhideShowRemoveBtn();
+            CDhideShowRemoveBtn();
+
+            $('#CD_Drop_Off_Time').on('change',function(){
+
+                checkCarDetailsPickAndDropTime(this,'dot');
+            });
+
+            $('#CD_Pick_Up_Time').on('change',function(){
+
+                checkCarDetailsPickAndDropTime(this,'put');
+            });
+
+            var checkCarDetailsPickAndDropTime= function(obj,timeddown){
+
+                var obj =$(obj);
+
+                if(timeddown == 'dot'){
+
+                    var pickup_time = obj.parent().prev().prev().prev().find('#CD_Pick_Up_Time').val();
+                    var dropoff_time = obj.val();
+                    var dropOffDate = obj.parent().prev().find('.cddatedoff').datepicker("getDate");
+                    var pickUpDate = obj.parent().prev().prev().prev().prev().find('.cddatepickup').datepicker("getDate");
+                }
+                else{
+
+                    var pickup_time = obj.val();
+                    var dropoff_time = obj.parent().next().next().next().find('#CD_Drop_Off_Time').val();
+                    var dropOffDate = obj.parent().next().next().find('.cddatedoff').datepicker("getDate");
+                    var pickUpDate = obj.parent().prev().find('.cddatepickup').datepicker("getDate");
+                }
+                
+                var mdfd_pickup_time = '';
+                var mdfd_dropoff_time = '';
+                var ampm_pc_time;
+                var ampm_dp_time;
+                var daysdiff = Math.floor((dropOffDate.getTime() - pickUpDate.getTime()) / 86400000);
+
+                if((pickup_time && dropoff_time) 
+                    && (dropOffDate && pickUpDate)
+                    && (daysdiff == 0))
+                {
+
+                    mdfd_pickup_time = pickup_time.charAt(0) + pickup_time.charAt(1) + pickup_time.charAt(3) + pickup_time.charAt(4);
+                    ampm_pc_time = pickup_time.charAt(6) + pickup_time.charAt(7);
+
+                    if(ampm_pc_time == 'AM'){
+                        ampm_pc_time = '0';
+                    }
+                    else{
+                        ampm_pc_time = '500';
+                    }
+
+                    mdfd_pickup_time = parseInt(mdfd_pickup_time + ampm_pc_time);
+
+                    mdfd_dropoff_time = dropoff_time.charAt(0) + dropoff_time.charAt(1) + dropoff_time.charAt(3) + dropoff_time.charAt(4);
+                    ampm_dp_time = dropoff_time.charAt(6) + dropoff_time.charAt(7);
+
+                    if(ampm_dp_time == 'AM'){
+                        ampm_dp_time = '0';
+                    }
+                    else{
+                        ampm_dp_time = '500';
+                    }
+
+                    mdfd_dropoff_time = parseInt(mdfd_dropoff_time + ampm_dp_time);
+
+                    if(mdfd_pickup_time > mdfd_dropoff_time){
+                        alert('ERROR: Pick Up Time should be less than the Drop off Time');
+                    }
+
+                }
+            }
+
+            // Miscellaneous details Total Calculations
+            $('input[id$=FD_Indicative_Cost]').on('change', function() {
+                var txtClone = $(this).val();
+                $('input[id$=FD_Total]').val(txtClone);
+            });
+
+            var calcIndTotal = function() {
+                var airfee;
+                var bfast;
+                var dinner;
+                var total;
+
+                var indCostD = $('#ME_D_Indicative_Cost').val();
+                var indCostB = $('#ME_B_Indicative_Cost').val();
+                var indCostAP = $('#ME_AP_Indicative_Cost').val();
+
+                if(indCostD == null || indCostD == ""){
+                    dinner = 0;
+                }
+                else{
+                    dinner = parseFloat(indCostD);
+                }
+                if(indCostB == null || indCostB == "" ){
+                    bfast = 0;
+                }
+                else{
+                    bfast = parseFloat(indCostB);
+                }
+
+                if(indCostAP == null || indCostAP == ""){
+                    airfee = 0;
+                }
+                else{
+                    airfee = parseFloat(indCostAP);
+                }
+                
+                total = (airfee + dinner + bfast).toFixed(2);
+                $('#ME_Total').val(total);
+            }
+
+            $('#ME_AP_Indicative_Cost').on('change',function() {
+                calcIndTotal();
+                    
+            });
+
+            $('#ME_B_Indicative_Cost').on('change',function() {
+                calcIndTotal();
+            });
+
+            $('#ME_D_Indicative_Cost').on('change',function() {
+                calcIndTotal();
+            });
+
+
+            // calculate indicative cost for AirPort Parking
+            $('#ME_AP_Number_of_Days').on('blur',function(){
+                calcAP_indCost();
+                calcIndTotal();
+            });
+
+            $('#ME_AP_Num_of_Travellers').on('blur',function(){
+                calcAP_indCost();
+                calcIndTotal();
+            });
+
+            var calcAP_indCost = function(){
+                var travNum = $('#ME_AP_Num_of_Travellers').val();
+                var daysNum = $('#ME_AP_Number_of_Days').val();
+                var indCost = 0;
+                var app_cpd = 35.00;
+
+                if((travNum != null || travNum != "") && (daysNum != null || daysNum != "")){
+                    indCost = (app_cpd * travNum * daysNum).toFixed(2);
+                }
+
+                $('#ME_AP_Indicative_Cost').val(indCost);
+            }
+
+            // calculate indicative cost for Meal Allowance Breakfast
+            $('#ME_B_Num_of_Travellers').on('blur',function(){
+                calcB_indCost();
+                calcIndTotal();
+            });
+
+            $('#ME_B_Number_of_Days').on('blur',function(){
+                calcB_indCost();
+                calcIndTotal();
+            });
+
+            var calcB_indCost = function(){
+                var travNum = $('#ME_B_Num_of_Travellers').val();
+                var daysNum = $('#ME_B_Number_of_Days').val();
+                var indCost = 0;
+                var app_cpd = 30.00;
+
+                if((travNum != null || travNum != "") && (daysNum != null || daysNum != "")){
+                    indCost = (app_cpd * travNum * daysNum).toFixed(2);
+                }
+
+                $('#ME_B_Indicative_Cost').val(indCost);
+            }
+
+            // calculate indicative cost for Meal Allowance Dinner
+            $('#ME_D_Num_of_Travellers').on('blur',function(){
+                calcD_indCost();
+                calcIndTotal();
+            });
+
+            $('#ME_D_Number_of_Days').on('blur',function(){
+                calcD_indCost();
+                calcIndTotal();
+            });
+
+            var calcD_indCost = function(){
+                var travNum = $('#ME_D_Num_of_Travellers').val();
+                var daysNum = $('#ME_D_Number_of_Days').val();
+                var indCost = 0;
+                var app_cpd = 60.00;
+
+                if((travNum != null || travNum != "") && (daysNum != null || daysNum != "")){
+                    indCost = (app_cpd * travNum * daysNum).toFixed(2);
+                }
+
+                $('#ME_D_Indicative_Cost').val(indCost);
+            }
+
+            $("#authtab").click(function(){
+                var FD_Total;
+                var HD_Total;
+                var CD_Total;
+                var ME_Total;
+
+                if($('#FD_Total').val().toString() == null || $('#FD_Total').val().toString() == ""){
+                    FD_Total = 0;
+                }
+                else{
+                    FD_Total = parseFloat($('#FD_Total').val());
+                }
+
+                if($('#HD_Total').val().toString() == null || $('#HD_Total').val().toString() == ""){
+                    HD_Total = 0;
+                }
+                else{
+                    HD_Total = parseFloat($('#HD_Total').val());
+                }
+
+                if($('#CD_Total').val().toString() == null || $('#CD_Total').val().toString() == ""){
+                    CD_Total = 0;
+                }
+                else{
+                    CD_Total = parseFloat($('#CD_Total').val());
+                }
+
+                if($('#ME_Total').val().toString() == null || $('#ME_Total').val().toString() == ""){
+                    ME_Total = 0;
+                }
+                else{
+                    ME_Total = parseFloat($('#ME_Total').val());
+                }
+
+                var travelTotal = (FD_Total + HD_Total + CD_Total + ME_Total).toFixed(2);
+
+                $('#AUT_Total').val(travelTotal);
+
+            });
+
+            /*Flight Add Row Events*/
+            $('#addrowFD').click(function(){
+
+                var newRow = $('#FDbody tr:first-child').clone();
+                $('#FDbody').append(newRow);
+            
+                $('#FDbody tr:last-child').find('input[type=text]').val('');
+                $('#FDbody tr:last-child').find('select').val('');
+                Drafts.check_changes();
+
+                $('#FDbody tr:last-child').find('.FD_Date').removeClass('hasDatepicker');
+                $('#FDbody tr:last-child').find('.FD_Date').removeAttr('id');
+
+                $('#FDbody tr:last-child').find('.FD_Date').datepicker({dateFormat: 'dd-mm-yy'});
+                $('#FDbody tr:last-child').find('.FD_Req_Dep_Time').timepicker({'minTime': '5:30am',
+                                            'maxTime': '11:00pm',
+                                            'timeFormat': 'h:i A'});
+                $('#FDbody tr:last-child').find('.FD_Latest_Convenient_Arrival_Time').timepicker({'minTime': '6:00am',
+                                                              'maxTime': '11:00pm',
+                                                              'timeFormat': 'h:i A'});
+                $('#FDbody tr:last-child').find('.FD_Req_Dep_Time').on('changeTime', function(){calculateTime(this)});
+
+                $('#FDbody tr:last-child').find('.FD_Indicative_Cost').on('blur', function(){calcFDtotal()});
+                $('#FDbody tr:last-child').find('.FD_To').on('change', function(){checkFDto(this)});
+                $('#FDbody tr:last-child').find('.FD_From').on('change', function(){checkFDfrom(this)});
+                $('#FDbody tr:last-child').find('.FD_Fare_Type').on('change', function(){checkFDftype(this)});
+
+                $('#FDbody tr:last-child').find('.removeBtnFD').on('click',function(){
+                    var length = $('#FDbody tr').length;
+                    if(length > 1)  {
+                        $(this).parent().parent().remove();
+                        FDhideShowRemoveBtn();
+                    }
+                });
+
+                FDhideShowRemoveBtn();
+            });
+
+            
+            /*Hotel Add Row Events*/
+            $('#addrowHD').click(function(){
+
+                var newRow = $('#HDbody tr:first-child').clone();
+                $('#HDbody').append(newRow);
+                Drafts.check_changes();
+            
+                $('#HDbody tr:last-child').find('input[type=text]').val('');
+                $('#HDbody tr:last-child').find('.HD_Date_In').removeClass('hasDatepicker');
+                $('#HDbody tr:last-child').find('.HD_Date_In').removeAttr('id');
+                $('#HDbody tr:last-child').find('.HD_Date_Out').removeClass('hasDatepicker');
+                $('#HDbody tr:last-child').find('.HD_Date_Out').removeAttr('id');
+                $('#HDbody tr:last-child').find('.HD_Date_In').datepicker({dateFormat: 'dd-mm-yy',});
+                $('#HDbody tr:last-child').find('.HD_Date_Out').datepicker({dateFormat: 'dd-mm-yy'});
+
+                $('#HDbody tr:last-child').find('.HD_Date_Out').on('change', function(){checkHD(this)});
+                $('#HDbody tr:last-child').find('.HD_Indicative_Cost').on('blur', function(){calcHDtotal()});
+
+                $('#HDbody tr:last-child').find('.removeBtnHD').on('click',function(){
+                    var length = $('#HDbody tr').length;
+                    if(length > 1)  {
+                        $(this).parent().parent().remove();
+                        HDhideShowRemoveBtn();
+                    }
+                });
+
+                HDhideShowRemoveBtn();
+            });
+
+            /*Car Add Row Events*/
+            $('#addrowCD').click(function(){
+
+                var newRow = $('#CDbody tr:first-child').clone();
+                $('#CDbody').append(newRow);
+                Drafts.check_changes();
+            
+                $('#CDbody tr:last-child').find('input[type=text]').val('');
+
+                $('#CDbody tr:last-child').find('.CD_Pick_Up_Date').removeClass('hasDatepicker');
+                $('#CDbody tr:last-child').find('.CD_Pick_Up_Date').removeAttr('id');
+                $('#CDbody tr:last-child').find('.CD_Drop_Off_Date').removeClass('hasDatepicker');
+                $('#CDbody tr:last-child').find('.CD_Drop_Off_Date').removeAttr('id');
+                $('#CDbody tr:last-child').find('.CD_Pick_Up_Date').datepicker({dateFormat: 'dd-mm-yy'});
+                $('#CDbody tr:last-child').find('.CD_Drop_Off_Date').datepicker({dateFormat: 'dd-mm-yy'});
+
+                $('#CDbody tr:last-child').find('.CD_Pick_Up_Time').timepicker({'minTime': '5:30am',
+                                            'maxTime': '11:00pm',
+                                            'timeFormat': 'h:i A'});
+
+                $('#CDbody tr:last-child').find('.CD_Drop_Off_Time').timepicker({'minTime': '5:30am',
+                                            'maxTime': '11:00pm',
+                                            'timeFormat': 'h:i A'});
+
+                $('#CDbody tr:last-child').find('.CD_Drop_Off_Date').on('change', function(){checkCD(this)});
+                $('#CDbody tr:last-child').find('.CD_Indicative_Cost').on('blur', function(){calcCDtotal()});
+
+                $('#CDbody tr:last-child').find('.removeBtnCD').on('click',function(){
+                    var length = $('#CDbody tr').length;
+                    if(length > 1)  {
+                        $(this).parent().parent().remove();
+                        CDhideShowRemoveBtn();
+                    }
+                });
+                CDhideShowRemoveBtn();
+            });
+
+            function FDhideShowRemoveBtn()    {
+                var length = $('#FDbody tr').length;
+                $('.removeBtnFD').show();
+                if(length > 1)  {
+                }   else {
+                    $('.removeBtnFD').hide();
+                }
+            }
+
+            function HDhideShowRemoveBtn()    {
+                var length = $('#HDbody tr').length;
+                $('.removeBtnHD').show();
+                if(length > 1)  {
+                }   else {
+                    $('.removeBtnHD').hide();
+                }
+            }
+
+            function CDhideShowRemoveBtn()    {
+                var length = $('#CDbody tr').length;
+                $('.removeBtnCD').show();
+                if(length > 1)  {
+                }   else {
+                    $('.removeBtnCD').hide();
+                }
+            }
+
+            $('.removeBtnFD').click(function(){
+
+                var length = $('#FDbody tr').length;
+                if(length > 1)  {
+                    $(this).parent().parent().remove();
+                    FDhideShowRemoveBtn();
+                }
+            });
+
+            $('.removeBtnHD').click(function(){
+
+                var length = $('#HDbody tr').length;
+                if(length > 1)  {
+                    $(this).parent().parent().remove();
+                    HDhideShowRemoveBtn();
+                }
+            });
+
+            $('.removeBtnCD').click(function(){
+
+                var length = $('#CDbody tr').length;
+                if(length > 1)  {
+                    $(this).parent().parent().remove();
+                    CDhideShowRemoveBtn();
+                }
+            });
+            
+        });
+
+        $(document).ready(function() {
+
+            $('.FD_Req_Dep_Time').on('changeTime', function(){calculateTime(this)});
+            $('.FD_Indicative_Cost').on('blur', function(){calcFDtotal()});
+            $('.HD_Indicative_Cost').on('blur', function(){calcHDtotal()});
+            $('.CD_Indicative_Cost').on('blur', function(){calcCDtotal()});
+
+            $('.HD_Date_Out').on('change', function(){checkHD(this)});
+            $('.CD_Drop_Off_Date').on('change', function(){checkCD(this)});
+            $('.FD_To').on('change', function(){checkFDto(this)});
+            $('.FD_From').on('change', function(){checkFDfrom(this)});
+            $('.FD_Fare_Type').on('change', function(){checkFDftype(this)});
+
+            $( ".fddate" ).datepicker({dateFormat: 'dd-mm-yy'});
+            $( ".hddatein" ).datepicker({dateFormat: 'dd-mm-yy'});
+            $( ".hddateout" ).datepicker({dateFormat: 'dd-mm-yy'});
+            $( ".cddatepickup" ).datepicker({dateFormat: 'dd-mm-yy'});
+            $( ".cddatedoff" ).datepicker({dateFormat: 'dd-mm-yy'});
+        });
+
+        var checkHD = function(obj){
+
+            var obj =$(obj);
+
+            var dateIn;
+            var dateOut;
+            var diff = 1;
+            var indCost = 0.00;
+            var costperday = 180;
+
+            dateOut = obj.datepicker("getDate");
+            dateIn = obj.parent().prev().find('.hddatein').datepicker("getDate");
+
+            if(!(dateIn === null && dateOut === null)){
+
+                if(dateIn > dateOut){
+                    alert("ERROR: Date In is greater than Date Out!");
+                    obj.focus();
+                }
+
+                if (dateOut && dateIn) {
+                    //Calculate the dates in between
+                    diff = diff + Math.floor((dateOut.getTime() - dateIn.getTime()) / 86400000);
+                }
+                // Calculate the Indicative cost
+                indCost = (diff * costperday).toFixed(2);
+
+                obj.parent().next().find('.HD_Indicative_Cost').val(indCost);
+
+                // Calculate the Hotel Details Total
+                calcHDtotal();
+
+            }
+        
+        }
+
+        var checkCD = function(obj){
+
+            var obj =$(obj);
+            var dropOffDate = obj.datepicker("getDate");
+            var pickUpDate = obj.parent().prev().prev().prev().find('.cddatepickup').datepicker("getDate");
+            var diff = 1;
+            var indCost = 0.00;
+            var costperday = 40;
+
+            if(!(pickUpDate === null && dropOffDate === null)){
+
+                if(pickUpDate > dropOffDate){
+                    alert("ERROR: Drop off Date is greater than Pick Up Date!");
+                    obj.focus();
+                }
+
+                if (dropOffDate && pickUpDate) {
+                    //Calculate the dates in between
+                    diff = diff + Math.floor((dropOffDate.getTime() - pickUpDate.getTime()) / 86400000);
+                }
+                // Calculate the Indicative cost
+                indCost = (diff * costperday).toFixed(2);
+
+                obj.parent().next().next().find('.CD_Indicative_Cost').val(indCost);
+
+                // Calculate the Hotel Details Total
+                calcCDtotal();
+            }
+        
+        }
+
+        var calcFDtotal = function(){
+                var total = 0.00;
+                $.each($('.FD_Indicative_Cost'), function() {
+                    total = parseFloat(total) + parseFloat($(this).val());
+                });
+                total = parseFloat(total).toFixed(2);
+                total = (isNaN(total)) ? 0.0 : total;
+
+                $('#FD_Total').val(total);
+        }
+
+        var calcHDtotal = function(){
+                var total = 0.00;
+                $.each($('.HD_Indicative_Cost'), function() {
+                    total = parseFloat(total) + parseFloat($(this).val());
+                });
+                total = parseFloat(total).toFixed(2);
+                total = (isNaN(total)) ? 0.0 : total;
+
+                $('#HD_Total').val(total);
+        }
+
+        var calcCDtotal = function(){
+                var total = 0.00;
+                $.each($('.CD_Indicative_Cost'), function() {
+                    total = parseFloat(total) + parseFloat($(this).val());
+                });
+                total = parseFloat(total).toFixed(2);
+                total = (isNaN(total)) ? 0.0 : total;
+
+                $('#CD_Total').val(total);
+        }
+
+        // Calculate Earliest and Latest Time
+        var calculateTime = function(timeParam) {
+                timeParam = $(timeParam);
+                var strTime = timeParam.val();
+                var strTimemodified = strTime.charAt(0) + strTime.charAt(1) + strTime.charAt(3) + strTime.charAt(4);
+                var earliest_time_modified = '';
+                var latest_time_modified = '';
+
+                if(parseInt(strTimemodified) % 100 == 0){
+                    var earliest_time_int = parseInt(strTimemodified) - 70;
+                    var latest_time_int = parseInt(strTimemodified) + 30;
+                }
+                else{
+                    var earliest_time_int = parseInt(strTimemodified) - 30;
+                    var latest_time_int = parseInt(strTimemodified) + 70;
+                }
+                
+                if(parseInt(strTimemodified) >= 1000){
+                    if(parseInt(strTimemodified) == 1000){
+                        earliest_time_modified = '0' + earliest_time_int.toString() + strTime.charAt(6) + strTime.charAt(7);
+                        earliest_time_modified = earliest_time_modified.substr(0,2) + ':' + earliest_time_modified.substr(2);
+                        latest_time_modified = latest_time_int.toString() + strTime.charAt(6) + strTime.charAt(7);
+                        latest_time_modified = latest_time_modified.substr(0,2) + earliest_time_modified.substr(2);
+                    }
+                    else{
+                        earliest_time_modified = earliest_time_int.toString() + strTime.charAt(6) + strTime.charAt(7);
+                        earliest_time_modified = earliest_time_modified.substr(0,2) + ':' + earliest_time_modified.substr(2);
+                        latest_time_modified = latest_time_int.toString() + strTime.charAt(6) + strTime.charAt(7);
+                        latest_time_modified = latest_time_modified.substr(0,2) + earliest_time_modified.substr(2);
+                    }
+                }
+                else{
+                    if(parseInt(strTimemodified) == 930){
+                        earliest_time_modified = '0' + earliest_time_int.toString() + strTime.charAt(6) + strTime.charAt(7);
+                        earliest_time_modified = earliest_time_modified.substr(0,2) + ':' + earliest_time_modified.substr(2);
+                        latest_time_modified = latest_time_int.toString() + strTime.charAt(6) + strTime.charAt(7);
+                        latest_time_modified = latest_time_modified.substr(0,2) + earliest_time_modified.substr(2);
+                    }
+                    else if(strTime.charAt(0) == '0'){
+                        earliest_time_modified = strTime.charAt(0) + earliest_time_int.toString() + strTime.charAt(6) + strTime.charAt(7);
+                        earliest_time_modified = earliest_time_modified.substr(0,2) + ':' + earliest_time_modified.substr(2);
+                        latest_time_modified = strTime.charAt(0) + latest_time_int.toString() + strTime.charAt(6) + strTime.charAt(7);
+                        latest_time_modified = latest_time_modified.substr(0,2) + earliest_time_modified.substr(2);
+                    }
+                    else{
+                        earliest_time_modified = '0' + earliest_time_int.toString() + strTime.charAt(6) + strTime.charAt(7);
+                        earliest_time_modified = earliest_time_modified.substr(0,2) + ':' + earliest_time_modified.substr(2);
+                        latest_time_modified = '0' + latest_time_int.toString() + strTime.charAt(6) + strTime.charAt(7);
+                        latest_time_modified = latest_time_modified.substr(0,2) + earliest_time_modified.substr(2);
+                    }
+                }
+
+                timeParam.parent().parent().find('.FD_Earliest_Dep_Time').val(earliest_time_modified);
+                timeParam.parent().parent().find('.FD_Latest_Dep_Time').val(latest_time_modified);
+            }
+
+    </script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Domestic Travel Autorisation Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Currently filling out paper form for travel requests, we're trying to launch the process in Outlook but we're only in UAT phase.</p>
+    </div>
+
+    {% if user_fullname == None %}
+        {% set first_name = '' %}
+        {% set last_name = '' %}
+        {% set user_fullname = '' %}
+    {% endif %}
+
+    <div class="well">
+        <form action="" method="POST" id="formtodetails" class="form-horizontal">
+
+            <div class="control-group">
+                <label class="control-label align-left" for="to">Travel Booker Email:</label>
+                <div class="controls">
+                    <input type="text" class="span10 global-address" id="to" name="to" required/>        
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label align-left" for="cc">CC:</label>
+                <div class="controls">
+                    <input type="text" class="span10 global-address" id="cc" name="cc"/>        
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label align-left" for="type_of_travel">Type of Travel:</label>
+                <div class="controls">
+                    <div class="rb-combo">
+                        <input type="radio" name="type_of_travel" id="type_of_travel" value="International" checked="true">
+                        <label class="rb-button">International</label>
+                    </div>
+
+                    <div class="rb-combo">
+                        <input type="radio" name="type_of_travel" id="type_of_travel" value="Domestic">
+                        <label class="rb-button">Domestic</label>
+                    </div>
+                </div>
+            </div>
+            <input type="submit" value="Submit">
+        </form>
+        <hr>
+        <fieldset>
+            <div  class="tabbable">
+                <ul class="nav nav-tabs">
+                    <li tabs='1'>
+                        <a href ng:click="selected = 1">Passenger Details</a>
+                    </li>
+                    <li tabs=2>
+                        <a href ng:click="selected = 2">Flight Details</a>
+                    </li>
+                    <li tabs=3>
+                        <a href ng:click="selected = 3">Hotel Details</a>
+                    </li>
+                    <li tabs=4>
+                        <a href ng:click="selected = 4" id="car_rent_tab">Car Rental Details</a>
+                    </li>
+                    <li tabs=5>
+                        <a href ng:click="selected = 5">Cab Charge</a>
+                    </li>
+                    <li tabs=6>
+                        <a href ng:click="selected = 6">Miscellaneous Expenses</a>
+                    </li>
+                    <li tabs=7>
+                        <a href ng:click="selected = 7">Requirements Prior to Departure</a>
+                    </li>
+                    <li tabs=8>
+                        <a href ng:click="selected = 8" id="authtab">Authorisation</a>
+                    </li>
+                </ul>
+                <div ng-app class="tab-content">
+                    <div ng-switch="main.active.tab">
+                        <!-- PASSENGER DETAILS FORM -->
+                        <div ng:show="selected == 1" class="woolies-tab" tab="1">
+                            <form action="" method="POST" id="formtab-1" class="form-horizontal">
+                            <div class="row-fluid">
+                                <div class="control-group">
+                                    <label class="control-label" for="surname">Surname</label>
+                                    <div class="controls">
+                                        <input type="text" value="{{last_name}}" name="surname" id="surname" class="span10" placeholder="For group on the same itenerary, enter all traveller names" required>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="first_names">First Name(s)</label>
+                                    <div class="controls">
+                                        <input type="text" value="{{first_name}}" name="first_names" id="first_names" class="span10" required placeholder="For group on the same itenerary, enter all traveller names">
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="PD_Job_Title">Job Titles</label>
+                                    <div class="controls">
+                                        <input type="text" id="PD_Job_Title" name="PD_Job_Title" class="span10" placeholder="If required">
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="PD_EmpNumber">Traveller Employee Number</label>
+                                    <div class="controls">
+                                        <input type="text" id="PD_EmpNumber" name="PD_EmpNumber" class="span10" placeholder="Employee Number">
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="PD_Business_Unit">Business Unit</label>
+                                            <div class="controls">
+                                                <select name="PD_Business_Unit" id="PD_Business_Unit" class="span11" required>
+                                                    <option value="">Select</option>
+                                                    <option value="ALHGROUP">ALHGROUP</option>
+                                                    <option value="ASSETSERVICESGROUP">ASSETSERVICESGROUP</option>
+                                                    <option value="BIGW">BIGW</option>
+                                                    <option value="BIGWFINANCEADMIN">BIGWFINANCEADMIN</option>
+                                                    <option value="BIGWHARDGOODS">BIGWHARDGOODS</option>
+                                                    <option value="BIGWHR">BIGWHR</option>
+                                                    <option value="BIGWMARKETING">BIGWMARKETING</option>
+                                                    <option value="BIGWMERCHANDISE">BIGWMERCHANDISE</option>
+                                                    <option value="BIGWPROPERTY">BIGWPROPERTY</option>
+                                                    <option value="BIGWQACOMPLIANCE">BIGWQACOMPLIANCE</option>
+                                                    <option value="BIGWSOFTGOODS">BIGWSOFTGOODS</option>
+                                                    <option value="BIGWSTORECONSTRUCT">BIGWSTORECONSTRUCT</option>
+                                                    <option value="BIGWSTREOPSOPTICL">BIGWSTREOPSOPTICL</option>
+                                                    <option value="BIGWSUPPLYCHAIN">BIGWSUPPLYCHAIN</option>
+                                                    <option value="BIGWTECHNOLOGY">BIGWTECHNOLOGY</option>
+                                                    <option value="BUSINESSDEVELOPMENT">BUSINESSDEVELOPMENT</option>
+                                                    <option value="BUSINESSPLANNING">BUSINESSPLANNING</option>
+                                                    <option value="BUSREVIEWAUDIT">BUSREVIEWAUDIT</option>
+                                                    <option value="BWS">BWS</option>
+                                                    <option value="CELLARMASTERS">CELLARMASTERS</option>
+                                                    <option value="COMPANYSECRETARIAL">COMPANYSECRETARIAL</option>
+                                                    <option value="CORPORATEFINANCE">CORPORATEFINANCE</option>
+                                                    <option value="CORPORATEHR">CORPORATEHR</option>
+                                                    <option value="CORPORATEIT">CORPORATEIT</option>
+                                                    <option value="CORPORATEPERFORMANCE">CORPORATEPERFORMANCE</option>
+                                                    <option value="CORPORATEPROPERTY">CORPORATEPROPERTY</option>
+                                                    <option value="CORPORATESERVICES">CORPORATESERVICES</option>
+                                                    <option value="CORPPROPDEVELOPMENT">CORPPROPDEVELOPMENT</option>
+                                                    <option value="CORPPROPERTYFINANCE">CORPPROPERTYFINANCE</option>
+                                                    <option value="CORPPROPERTYMGT">CORPPROPERTYMGT</option>
+                                                    <option value="CUSTOMERENGAGEMENT">CUSTOMERENGAGEMENT</option>
+                                                    <option value="DANKSHARDWARE">DANKSHARDWARE</option>
+                                                    <option value="DANMURPHYS">DANMURPHYS</option>
+                                                    <!-- <option value="DICKSMITHDVLOPMENT">DICKSMITHDVLOPMENT</option>
+                                                    <option value="DICKSMITHFINANCE">DICKSMITHFINANCE</option>
+                                                    <option value="DICKSMITHHR">DICKSMITHHR</option>
+                                                    <option value="DICKSMITHINDIA">DICKSMITHINDIA</option>
+                                                    <option value="DICKSMITHIT">DICKSMITHIT</option>
+                                                    <option value="DICKSMITHMARKETING">DICKSMITHMARKETING</option>
+                                                    <option value="DICKSMITHMERCH">DICKSMITHMERCH</option>
+                                                    <option value="DICKSMITHNSWACT">DICKSMITHNSWACT</option>
+                                                    <option value="DICKSMITHNZ">DICKSMITHNZ</option>
+                                                    <option value="DICKSMITHPROPERTY">DICKSMITHPROPERTY</option>
+                                                    <option value="DICKSMITHQLDNT">DICKSMITHQLDNT</option>
+                                                    <option value="DICKSMITHSTOREOPS">DICKSMITHSTOREOPS</option>
+                                                    <option value="DICKSMITHSUPPLYCHN">DICKSMITHSUPPLYCHN</option>
+                                                    <option value="DICKSMITHVICTAS">DICKSMITHVICTAS</option>
+                                                    <option value="DICKSMITHWASA">DICKSMITHWASA</option>
+                                                    <option value="DICKSMITHWHOLESALE">DICKSMITHWHOLESALE</option> -->
+                                                    <option value="FACILITIESMANAGEMENT">FACILITIESMANAGEMENT</option>
+                                                    <option value="FINCTRLINVESTORS">FINCTRLINVESTORS</option>
+                                                    <option value="FOODLIQRPLENSHMNT">FOODLIQRPLENSHMNT</option>
+                                                    <option value="GENERALCOUNSEL">GENERALCOUNSEL</option>
+                                                    <option value="GROUPFINANCESRVICES">GROUPFINANCESRVICES</option>
+                                                    <option value="GROUPPROCUREMENT">GROUPPROCUREMENT</option>
+                                                    <option value="GROUPRISKASSURANCE">GROUPRISKASSURANCE</option>
+                                                    <option value="GROUPTAXATION">GROUPTAXATION</option>
+                                                    <option value="HOMEIMPROVCORPORATE">HOMEIMPROVCORPORATE</option>
+                                                    <option value="HOMEIMPROVOPERATIONS">HOMEIMPROVOPERATIONS</option>
+                                                    <option value="HOMEIMPRVBUYINGMERCH">HOMEIMPRVBUYINGMERCH</option>
+                                                    <option value="HOMEIMPRVCONSTPROPTY">HOMEIMPRVCONSTPROPTY</option>
+                                                    <option value="HOMESHOP">HOMESHOP</option>
+                                                    <option value="HONGKONGPROCUREMENT">HONGKONGPROCUREMENT</option>
+                                                    <option value="INTLLOGISTICS">INTLLOGISTICS</option>
+                                                    <option value="ITARCHITECTURE">ITARCHITECTURE</option>
+                                                    <option value="ITFINANCE">ITFINANCE</option>
+                                                    <option value="ITHR">ITHR</option>
+                                                    <option value="ITINFRASTRUCSERVICE">ITINFRASTRUCSERVICE</option>
+                                                    <option value="ITPROGRAMOFFICE">ITPROGRAMOFFICE</option>
+                                                    <option value="ITSECURITY">ITSECURITY</option>
+                                                    <option value="ITSERVICEDELIVERY">ITSERVICEDELIVERY</option>
+                                                    <option value="ITSYSTEMDEVELOPMENT">ITSYSTEMDEVELOPMENT</option>
+                                                    <option value="LIQUOR GROUP">LIQUOR GROUP</option>
+                                                    <option value="LOGISTICS">LOGISTICS</option>
+                                                    <option value="LOGISTICSFINANCE">LOGISTICSFINANCE</option>
+                                                    <option value="LOGISTICSHR">LOGISTICSHR</option>
+                                                    <option value="LOGISTICSPROGRAMOFF">LOGISTICSPROGRAMOFF</option>
+                                                    <option value="LOGISTICSTRANSPORT">LOGISTICSTRANSPORT</option>
+                                                    <option value="MASTERSHOMEIMPRV">MASTERSHOMEIMPRV</option>
+                                                    <option value="NATIONALDCOPS">NATIONALDCOPS</option>
+                                                    <option value="PEL">PEL</option>
+                                                    <option value="SHAREREGISTRY">SHAREREGISTRY</option>
+                                                    <option value="SMKTSCORPMKTING">SMKTSCORPMKTING</option>
+                                                    <option value="SMKTSFINANCE">SMKTSFINANCE</option>
+                                                    <option value="SMKTSFRESHFOODS">SMKTSFRESHFOODS</option>
+                                                    <option value="SMKTSHR">SMKTSHR</option>
+                                                    <option value="SMKTSLONGLIFE">SMKTSLONGLIFE</option>
+                                                    <option value="SMKTSLOSSPREV">SMKTSLOSSPREV</option>
+                                                    <option value="SMKTSMERCHSUPPORT">SMKTSMERCHSUPPORT</option>
+                                                    <option value="SMKTSNSWACT">SMKTSNSWACT</option>
+                                                    <option value="SMKTSPLQA">SMKTSPLQA</option>
+                                                    <option value="SMKTSPROGRAMOFFICE">SMKTSPROGRAMOFFICE</option>
+                                                    <option value="SMKTSQLD">SMKTSQLD</option>
+                                                    <option value="SMKTSRETAILSUPPORT">SMKTSRETAILSUPPORT</option>
+                                                    <option value="SMKTSSANT">SMKTSSANT</option>
+                                                    <option value="SMKTSSHE">SMKTSSHE</option>
+                                                    <option value="SMKTSSTOCKTAKE">SMKTSSTOCKTAKE</option>
+                                                    <option value="SMKTSSTOREDCE">SMKTSSTOREDCE</option>
+                                                    <option value="SMKTSSTOREOPS">SMKTSSTOREOPS</option>
+                                                    <option value="SMKTSSUPPORT">SMKTSSUPPORT</option>
+                                                    <option value="SMKTSTRADERELATIONS">SMKTSTRADERELATIONS</option>
+                                                    <option value="SMKTSVICTAS">SMKTSVICTAS</option>
+                                                    <option value="SMKTSWA">SMKTSWA</option>
+                                                    <option value="SUPERMARKETS">SUPERMARKETS</option>
+                                                    <option value="THOMASDUX">THOMASDUX</option>
+                                                    <option value="TREASURY">TREASURY</option>
+                                                    <option value="WOOLWORTHHOMEIMPRV">WOOLWORTHHOMEIMPRV</option>
+                                                    <option value="WOOLWORTHSPETROL">WOOLWORTHSPETROL</option>
+                                                    <option value="WOWCARE">WOWCARE</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="PD_Charge_CCNum_ProjCode">Charge Cost Centre or Project Code</label>
+                                            <div class="controls">
+                                                <input class="span8 alphaNumericOnly" type="text" id="PD_Charge_CCNum_ProjCode" name="PD_Charge_CCNum_ProjCode" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>  
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="Mobile">Travellers Mobile Number</label>
+                                            <div class="controls">
+                                                <input class="span11 numbersOnly" type="text" id="PD_Mobile" name="PD_Mobile">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="PD_Frequent_Flyer_number">Frequent Flyer Number</label>
+                                            <div class="controls">
+                                                <input class="span8 alphaNumericOnly" type="text" id="PD_Frequent_Flyer_number" name="PD_Frequent_Flyer_number" placeholder="As appears on membership card">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="PD_Email">Travellers Email Address</label>
+                                            <div class="controls">
+                                                <input class="span11" type="email" id="PD_Email" name="PD_Email" placeholder="As appears on membership card" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="PD_Date_Completed">Date of Form Completion</label>
+                                            <div class="controls">
+                                                <input class="span8" type="text" id="PD_Date_Completed" name="PD_Date_Completed" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="PD_Charge_account_number">Charge Account Number</label>
+                                            <div class="controls">
+                                                <input class="span11 numbersOnly" type="text" id="PD_Charge_account_number" name="PD_Charge_account_number">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="PD_Division">Division</label>
+                                            <div class="controls">
+                                                <input class="span8" type="text" id="PD_Division" name="PD_Division" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>                              
+                            </div>
+                            <input type="submit" value="Submit">
+                            </form>
+                        </div>
+
+                        <!-- FLIGHT DETAILS FORM -->
+                        <div ng:show="selected == 2" class="woolies-tab" tab=2>
+                            <form action="" method="POST" id="formtab-2" class="form-horizontal">
+                            <div>
+                                <div>
+                                    <table class="table table-condensed FDtable">
+                                        <thead>
+                                            <tr>
+                                                <th width="12%">Date</th>
+                                                <th width="15%">From</th>
+                                                <th width="15%">To</th>
+                                                <th>Requested Departure Time</th>
+                                                <th colspan="2">Earliest and Latest Departure Time</th>
+                                                <th>Latest Convenient Arrival Time</th>
+                                                <th width="10%">Fare Type</th>
+                                                <th>Indicative Cost</th>
+                                                <th>&nbsp;</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="FDbody">
+                                            <tr>
+                                                <td>
+                                                    <input type="text" name="FD_Date[]" class="span9 FD_Date fddate">
+                                                </td>
+                                                <td>
+                                                    <select name="FD_From[]" class="span11 FD_From">
+                                                        <option value="">Select</option>
+                                                        <option value="Adelaide">Adelaide</option>
+                                                        <option value="Albury">Albury</option>
+                                                        <option value="Armidale">Armidale</option>
+                                                        <option value="Auckland">Auckland</option>
+                                                        <option value="Brisbane">Brisbane</option>
+                                                        <option value="Bundaberg">Bundaberg</option>
+                                                        <option value="Cairns">Cairns</option>
+                                                        <option value="Canberra">Canberra</option>
+                                                        <option value="Christchurch">Christchurch</option>
+                                                        <option value="Coffs Harbour">Coffs Harbour</option>
+                                                        <option value="Darwin">Darwin</option>
+                                                        <option value="Devonport">Devonport</option>
+                                                        <option value="Dubbo">Dubbo</option>
+                                                        <option value="Frankfurt">Frankfurt</option>
+                                                        <option value="Gladstone">Gladstone</option>
+                                                        <option value="Gold Coast">Gold Coast</option>
+                                                        <option value="Hervey Bay">Hervey Bay</option>
+                                                        <option value="Hobart">Hobart</option>
+                                                        <option value="Launceston">Launceston</option>
+                                                        <option value="Hong Kong">Hong Kong</option>
+                                                        <option value="Karratha">Karratha</option>
+                                                        <option value="London">London</option>
+                                                        <option value="Los Angeles">Los Angeles</option>
+                                                        <option value="Mackay">Mackay</option>
+                                                        <option value="Melbourne">Melbourne</option>
+                                                        <option value="Mumbai">Mumbai</option>
+                                                        <option value="Newcastle">Newcastle</option>
+                                                        <option value="Perth">Perth</option>
+                                                        <option value="Port Macquarie">Port Macquarie</option>
+                                                        <option value="Rockhampton">Rockhampton</option>
+                                                        <option value="San Francisco">San Francisco</option>
+                                                        <option value="Shanghai">Shanghai</option>
+                                                        <option value="Sydney">Sydney</option>
+                                                        <option value="Tamworth">Tamworth</option>
+                                                        <option value="Townsville">Townsville</option>
+                                                        <option value="Wagga Wagga">Wagga Wagga</option>
+                                                    </select>
+                                                    
+                                                </td>
+                                                <td>
+                                                    <select name="FD_To[]" class="span10 FD_To">
+                                                        <option value="">Select</option>
+                                                        <option value="Adelaide">Adelaide</option>
+                                                        <option value="Albury">Albury</option>
+                                                        <option value="Armidale">Armidale</option>
+                                                        <option value="Auckland">Auckland</option>
+                                                        <option value="Brisbane">Brisbane</option>
+                                                        <option value="Bundaberg">Bundaberg</option>
+                                                        <option value="Cairns">Cairns</option>
+                                                        <option value="Canberra">Canberra</option>
+                                                        <option value="Christchurch">Christchurch</option>
+                                                        <option value="Coffs Harbour">Coffs Harbour</option>
+                                                        <option value="Darwin">Darwin</option>
+                                                        <option value="Devonport">Devonport</option>
+                                                        <option value="Dubbo">Dubbo</option>
+                                                        <option value="Frankfurt">Frankfurt</option>
+                                                        <option value="Gladstone">Gladstone</option>
+                                                        <option value="Gold Coast">Gold Coast</option>
+                                                        <option value="Hervey Bay">Hervey Bay</option>
+                                                        <option value="Hobart">Hobart</option>
+                                                        <option value="Launceston">Launceston</option>
+                                                        <option value="Hong Kong">Hong Kong</option>
+                                                        <option value="Karratha">Karratha</option>
+                                                        <option value="London">London</option>
+                                                        <option value="Los Angeles">Los Angeles</option>
+                                                        <option value="Mackay">Mackay</option>
+                                                        <option value="Melbourne">Melbourne</option>
+                                                        <option value="Mumbai">Mumbai</option>
+                                                        <option value="Newcastle">Newcastle</option>
+                                                        <option value="Perth">Perth</option>
+                                                        <option value="Port Macquarie">Port Macquarie</option>
+                                                        <option value="Rockhampton">Rockhampton</option>
+                                                        <option value="San Francisco">San Francisco</option>
+                                                        <option value="Shanghai">Shanghai</option>
+                                                        <option value="Sydney">Sydney</option>
+                                                        <option value="Tamworth">Tamworth</option>
+                                                        <option value="Townsville">Townsville</option>
+                                                        <option value="Wagga Wagga">Wagga Wagga</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <!-- <select name="FD_Req_Dep_Time[]" class="span10">
+                                                        <option value=""></option>
+                                                    </select> -->
+                                                    <input type="text" class="span11 FD_Req_Dep_Time" name="FD_Req_Dep_Time[]" >
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="FD_Earliest_Dep_Time[]" class="span12 FD_Earliest_Dep_Time" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="FD_Latest_Dep_Time[]" class="span12 FD_Latest_Dep_Time" readonly>
+                                                </td>
+                                                <td>
+                                                    <input type="text" class="span10 FD_Latest_Convenient_Arrival_Time" name="FD_Latest_Convenient_Arrival_Time[]" >
+                                                </td>
+                                                <td>
+                                                    <select name="FD_Fare_Type[]" class="span11 FD_Fare_Type">
+                                                        <option value="">Select</option>
+                                                        <option value="Fixed">Fixed</option>
+                                                        <option value="Flexible">Flexible</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="FD_Indicative_Cost[]" id="FD_Indicative_Cost" class="span9 FD_Indicative_Cost numbersOnly">
+                                                </td>       
+                                                <td><button type="button" class="btn removeBtnFD">Remove</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="btn" id="addrowFD">Add Row</button>
+                                </div>
+                                <br>
+                                <div class="control-group controls-row">
+                                    <label class="control-label" for="FD_Special_Instructions">Do you require check in luggage</label>
+                                    <div class="controls">
+                                        <select name="FD_Checked_Baggage" id="FD_Checked_Baggage" class="span3" required>
+                                            <option value=""></option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div>
+                                    <label class="control-label" for="FD_Special_Instructions">Total &nbsp; &nbsp; &nbsp; $ &nbsp;</label>
+                                    <div class="controls">
+                                        <input type="text" class="span3" name="FD_Total" id="FD_Total" readonly>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="FD_Special_Instructions">Special Instructions</label>
+                                    <div class="controls">
+                                        <textarea name="FD_Special_Instructions" id="FD_Special_Instructions" class="span11" rows="5" style="resize:none"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="submit" value="Submit">
+                            </form>
+                        </div>
+
+                        <!-- HOTEL DETAILS -->
+                        <div ng:show="selected == 3" class="woolies-tab" tab=3>
+                            <form action="" method="POST" id="formtab-3" class="form-horizontal">
+                            <div>
+                                <div>
+                                    <table class="table table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>City/Town</th>
+                                                <th>Area</th>
+                                                <th>Date In</th>
+                                                <th>Date Out</th>
+                                                <th>Indicative Cost</th>
+                                                <th>&nbsp;</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="HDbody">
+                                            <tr>
+                                                <td>
+                                                    <input type="text" name="HD_City_Town[]" id="HD_City_Town" class="span9 HD_City_Town">
+                                                    <!-- <select name="HD_City_Town[]" class="span10 HD_City_Town" id="HD_City_Town">
+                                                        <option value="">Select</option>
+                                                        <option value="Adelaide">Adelaide</option>
+                                                        <option value="Albury">Albury</option>
+                                                        <option value="Armidale">Armidale</option>
+                                                        <option value="Auckland">Auckland</option>
+                                                        <option value="Brisbane">Brisbane</option>
+                                                        <option value="Bundaberg">Bundaberg</option>
+                                                        <option value="Cairns">Cairns</option>
+                                                        <option value="Canberra">Canberra</option>
+                                                        <option value="Christchurch">Christchurch</option>
+                                                        <option value="Coffs Harbour">Coffs Harbour</option>
+                                                        <option value="Darwin">Darwin</option>
+                                                        <option value="Devonport">Devonport</option>
+                                                        <option value="Dubbo">Dubbo</option>
+                                                        <option value="Frankfurt">Frankfurt</option>
+                                                        <option value="Gladstone">Gladstone</option>
+                                                        <option value="Gold Coast">Gold Coast</option>
+                                                        <option value="Hervey Bay">Hervey Bay</option>
+                                                        <option value="Hobart">Hobart</option>
+                                                        <option value="Launceston">Launceston</option>
+                                                        <option value="Hong Kong">Hong Kong</option>
+                                                        <option value="Karratha">Karratha</option>
+                                                        <option value="London">London</option>
+                                                        <option value="Los Angeles">Los Angeles</option>
+                                                        <option value="Mackay">Mackay</option>
+                                                        <option value="Melbourne">Melbourne</option>
+                                                        <option value="Mumbai">Mumbai</option>
+                                                        <option value="Newcastle">Newcastle</option>
+                                                        <option value="Perth">Perth</option>
+                                                        <option value="Port Macquarie">Port Macquarie</option>
+                                                        <option value="Rockhampton">Rockhampton</option>
+                                                        <option value="San Francisco">San Francisco</option>
+                                                        <option value="Shanghai">Shanghai</option>
+                                                        <option value="Sydney">Sydney</option>
+                                                        <option value="Tamworth">Tamworth</option>
+                                                        <option value="Townsville">Townsville</option>
+                                                        <option value="Wagga Wagga">Wagga Wagga</option>
+                                                    </select> -->
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="HD_Area[]" id="HD_Area" class="span9 HD_Area">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="HD_Date_In[]" class="span9 HD_Date_In hddatein">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="HD_Date_Out[]" class="span9 HD_Date_Out hddateout">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="HD_Indicative_Cost[]" class="span9 HD_Indicative_Cost">
+                                                </td>
+                                                <td><button type="button" class="btn removeBtnHD">Remove</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="btn" id="addrowHD">Add Row</button>
+                                </div>
+                                <br>
+                                <div class="control-group controls-row">
+                                    <!-- <label class="control-label" for="HD_Corporate_Card">Does the traveller hold a Woolworths Corporate Master Card</label>
+                                    <div class="controls">
+                                        <select name="HD_Corporate_Card" id="HD_Corporate_Card" class="span3" required>
+                                            <option value=""></option>
+                                            <option value="Yes">Yes</option>
+                                            <option value="No">No</option>
+                                        </select>
+                                    </div> -->
+                                    <label class="control-label" for="HD_Total">Total &nbsp; &nbsp; &nbsp; $ &nbsp;</label>
+                                    <div class="controls">
+                                        <input type="text" class="span3" name="HD_Total" id="HD_Total" readonly>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="HD_Special_Instructions">Special Instructions</label>
+                                    <div class="controls">
+                                        <textarea name="HD_Special_Instructions" id="HD_Special_Instructions" class="span11" rows="5" style="resize:none"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="submit" value="Submit">
+                            </form>
+                        </div>
+
+                        <!-- CAR RENTAL DETAILS -->
+                        <div ng:show="selected == 4" class="woolies-tab" tab=4>
+                            <form action="" method="POST" id="formtab-4" class="form-horizontal">
+                            <div>
+                                <div>
+                                    <table class="table table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>Pick Up Location</th>
+                                                <th>Pick Up Date</th>
+                                                <th>Pick Up Time</th>
+                                                <th>Drop Off Location</th>
+                                                <th>Drop Off Date</th>
+                                                <th>Drop Off Time</th>
+                                                <th>Indicative Cost</th>
+                                                <th>&nbsp;</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="CDbody">
+                                            <tr>
+                                                <td>
+                                                    <input type="text" name="CD_Pick_Up_Location[]" class="span9">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="CD_Pick_Up_Date[]" class="span9 CD_Pick_Up_Date cddatepickup">
+                                                </td>
+                                                <td>
+                                                    <!-- <select name="CD_Pick_Up_Time[]" class="span10">
+                                                        <option value=""></option>
+                                                    </select> -->
+                                                    <input type="text" name="CD_Pick_Up_Time[]" id="CD_Pick_Up_Time" class="span10 CD_Pick_Up_Time">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="CD_Drop_Off_Location[]" class="span9">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="CD_Drop_Off_Date[]" class="span9 CD_Drop_Off_Date cddatedoff">
+                                                </td>
+                                                <td>
+                                                    <!-- <select name="CD_Drop_Off_Time[]" class="span10">
+                                                        <option value=""></option>
+                                                    </select> -->
+                                                    <input type="text" name="CD_Drop_Off_Time[]" id="CD_Drop_Off_Time" class="span10 CD_Drop_Off_Time">
+                                                </td>
+                                                <td>
+                                                    <input type="text" name="CD_Indicative_Cost[]" class="span9 CD_Indicative_Cost">
+                                                </td>
+                                                <td><button type="button" class="btn removeBtnCD">Remove</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button type="button" class="btn" id="addrowCD">Add Row</button>
+                                </div>
+                                <br>
+                                <div class="control-group controls-row">
+                                    <label class="control-label" for="CD_Fastbreak_Number">Do you Budget fastbreak number</label>
+                                    <div class="controls">
+                                        <input type="text" name="CD_Fastbreak_Number" class="span3" required>
+                                    </div>
+                                    <label class="control-label" for="CD_Total">Total &nbsp; &nbsp; &nbsp; $ &nbsp;</label>
+                                    <div class="controls">
+                                        <input type="text" class="span3" name="CD_Total" id="CD_Total" readonly>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="CD_Special_Instructions">Special Instructions</label>
+                                    <div class="controls">
+                                        <textarea name="CD_Special_Instructions" id="CD_Special_Instructions" class="span11" rows="5" style="resize:none"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <input type="submit" value="Submit">
+                            </form>
+                        </div>
+
+                        <!-- CAB CHARGE -->
+                        <div ng:show="selected == 5" class="woolies-tab" tab=5>
+                            <form action="" method="POST" id="formtab-5" class="form-horizontal">
+                            <div class="row-fluid">
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <div class="control-group">
+                                            <label class="control-label" for="Cab_Charge_Number">Number of Vouchers Required</label>
+                                            <div class="controls">
+                                                <input class="span11 numbersOnly" type="text" id="Cab_Charge_Number" name="Cab_Charge_Number">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </form>
+                        </div>
+
+                        <!-- MISCELLANEOUS EXPENSES -->
+                        <div ng:show="selected == 6" class="woolies-tab" tab=6>
+                            <form action="" method="POST" id="formtab-6" class="form-horizontal">
+                            <table id="tblExpenses" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>Expense Item</th>
+                                        <th>Approximate Cost per Day</th>
+                                        <th>Number of Travellers</th>
+                                        <th>Number of Days</th>
+                                        <th>Indicative Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Airport Parking</td>
+                                        <td>$35.00</td>
+                                        <td><input type="text" class="span10 numbersOnly" name="ME_AP_Num_of_Travellers" id="ME_AP_Num_of_Travellers"></td>
+                                        <td><input type="text" class="span10 numbersOnly" name="ME_AP_Number_of_Days" id="ME_AP_Number_of_Days"></td>
+                                        <td>$ &nbsp;<input type="text" class="span10 numbersOnly" name="ME_AP_Indicative_Cost" id="ME_AP_Indicative_Cost"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Meal Allowance - Breakfast</td>
+                                        <td>$30.00</td>
+                                        <td><input type="text" class="span10 numbersOnly" name="ME_B_Num_of_Travellers" id="ME_B_Num_of_Travellers"></td>
+                                        <td><input type="text" class="span10 numbersOnly" name="ME_B_Number_of_Days" id="ME_B_Number_of_Days"></td>
+                                        <td>$ &nbsp;<input type="text" class="span10 numbersOnly" name="ME_B_Indicative_Cost" id="ME_B_Indicative_Cost"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Meal Allowance - Dinner</td>
+                                        <td>$60.00</td>
+                                        <td><input type="text" class="span10 numbersOnly" name="ME_D_Num_of_Travellers" id="ME_D_Num_of_Travellers"></td>
+                                        <td><input type="text" class="span10 numbersOnly" name="ME_D_Number_of_Days" id="ME_D_Number_of_Days"></td>
+                                        <td>$ &nbsp;<input type="text" class="span10 numbersOnly" name="ME_D_Indicative_Cost" id="ME_D_Indicative_Cost"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td><b>Total</b></td>
+                                        <td>$ &nbsp;<input type="text" class="span10" name="ME_Total" id="ME_Total" readonly></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <input type="submit" value="Submit">
+                            </form>
+                        </div>
+
+                        <!-- REQUIREMENTS PRIOR TO DEPARTURE -->
+                        <div ng:show="selected == 7" class="woolies-tab" tab=7>
+                            <form action="" method="POST" id="formtab-7" class="form-horizontal">
+                                <strong>Foreign Currency</strong>
+                            <table id="tblRequirements" class="table table-condensed">
+                                <thead>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <th>Type of Currency</th>
+                                        <th>Number of Days Overseas</th>
+                                        <th>Total Amount Required</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Currency 1</strong></td>
+                                        <td><input type="text" class="span10" name="FC1_Type_of_Currency" id="FC1_Type_of_Currency"></td>
+                                        <td><input type="text" class="span10 numbersOnly" name="FC1_Num_of_Days_Overseas" id="FC1_Num_of_Days_Overseas"></td>
+                                        <td><input type="text" class="span10 numbersOnly" name="FC1_Total_Amount_Requiredy" id="FC1_Total_Amount_Requiredy"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Currency 2</strong></td>
+                                        <td><input type="text" class="span10" name="FC2_Type_of_Currency" id="FC2_Type_of_Currency"></td>
+                                        <td><input type="text" class="span10 numbersOnly" name="FC2_Num_of_Days_Overseas" id="FC2_Num_of_Days_Overseas"></td>
+                                        <td><input type="text" class="span10 numbersOnly" name="FC2_Total_Amount_Requiredy" id="FC2_Total_Amount_Requiredy"></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Currency 3</strong></td>
+                                        <td><input type="text" class="span10" name="FC3_Type_of_Currency" id="FC3_Type_of_Currency"></td>
+                                        <td><input type="text" class="span10 numbersOnly" name="FC3_Num_of_Days_Overseas" id="FC3_Num_of_Days_Overseas"></td>
+                                        <td><input type="text" class="span10 numbersOnly" name="FC3_Total_Amount_Requiredy" id="FC3_Total_Amount_Requiredy"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <strong>International Mobile Phone Roaming</strong>
+                            <div>
+                                <p>The use of global roaming whilst travelling overseas without the activation of an appropriate Telstra voice/data plan will result in excessive global roaming charges. When travelling overseas for Business purposes and or personal travel, where you are required to be available to respond to emails and make/receive business calls - please apply the roaming plans.</p>
+                                <p>The link to the “DataRoam and VoiceRoam - Request for Activation” form is below.</p>
+                                <a href="http://wownet/sites/MSG/Mobiles/DataRoam%20and%20VoiceRoam%20-%20Request%20for%20Activation%20Form.xls"><p>http://wownet/sites/MSG/Mobiles/DataRoam%20and%20VoiceRoam%20-%20Request%20for%20Activation%20Form.xls</p></a>
+                                <a href="http://wownet/sites/MSG/Mobiles/DataRoam%20and%20VoiceRoam%20FAQs.pdf">http://wownet/sites/MSG/Mobiles/DataRoam%20and%20VoiceRoam%20FAQs.pdf</a>
+                            </div>
+                            <br>
+                            <strong>International SOS Travel Safety Checklist</strong>
+                            <table width='100%'>
+                                <tr>
+                                    <td colspan=2><p>All travellers should be aware of these four procedures for each international journey</p></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td width='30%'><strong>TRAVEL RESTRICTIONS</strong></td>
+                                    <td width='70%'><p>Are your destinations on the current Woolworths Travel Restriction List?</p></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>PROOF OF LIFE</strong></td>
+                                    <td><p>Have you completed the "Proof of Life" form?</p></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>VACCINATIONS</strong></td>
+                                    <td><p>Have you checked the vaccination requirements for the intented locations?</p></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>TRAVEL SAFETY HANDBOOK</strong></td>
+                                    <td><p>Have you read the International Travel Safety Handbook?</p></td>
+                                </tr>
+                                <tr>
+                                    <td>Further information can be accessed at:</td>
+                                    <td><a href="http://wownet/sites/travel/International/Forms/AllItems.aspx"><p>http://wownet/sites/travel/International/Forms/AllItems.aspx</p></a></td>
+                                </tr>
+                            </table>    
+
+                            <input type="submit" value="Submit">
+                            </form>
+                        </div>
+
+                        <!-- AUTHORISATION -->
+                        <div ng:show="selected == 8" class="woolies-tab" tab=8>
+                            <form action="" method="POST" id="formtab-8">
+                            <div class="row-fluid">
+                                <div class="control-group">
+                                    <label class="control-label" for="AUT_Purpose_of_Travel">Purpose of Travel</label>
+                                    <div class="controls">
+                                        <input type="text" name="AUT_Purpose_of_Travel" id="AUT_Purpose_of_Travel" class="span10" required>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="AUT_Total">Total</label>
+                                    <div class="controls">
+                                        <input type="text" name="AUT_Total" id="AUT_Total" class="span10" readonly required>
+                                    </div>
+                                </div>
+                                <div class="control-group">
+                                    <label class="control-label" for="AUT_Travel_Authorisation">Travel Authorisation</label>
+                                    <div class="controls">
+                                        <textarea name="AUT_Travel_Authorisation" id="AUT_Travel_Authorisation" class="span10" rows="5" style="resize:none"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <table class="table table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>&nbsp;</th>
+                                                <th>Name</th>
+                                                <th>Position</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Requested/Form Completed By</td>
+                                                <td><input type="text" class="span10" name="AUT_ComBy_Name" id="AUT_ComBy_Name" required value="{{user_fullname}}"></td>
+                                                <td><input type="text" class="span10" name="AUT_ComBy_Position" id="AUT_ComBy_Position" required></td>
+                                                <td><input type="text" class="span10" name="AUT_ComBy_Date" id="AUT_ComBy_Date" required></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Authorised By</td>
+                                                <td><input type="text" class="span10" name="AUT_AuthBy_Name" id="AUT_AuthBy_Name" required></td>
+                                                <td><input type="text" class="span10" name="AUT_AuthBy_Position" id="AUT_AuthBy_Position" required></td>
+                                                <td><input type="text" class="span10" name="AUT_AuthBy_Date" id="AUT_AuthBy_Date" required></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Executive Approval</td>
+                                                <td><input type="text" class="span10" name="AUT_Exec_Name" id="AUT_Exec_Name"></td>
+                                                <td><input type="text" class="span10" name="AUT_Exec_Position" id="AUT_Exec_Position"></td>
+                                                <td><input type="text" class="span10" name="AUT_Exec_Date" id="AUT_Exec_Date"></td>
+                                            </tr>
+                                            <!-- <tr>
+                                                <td>International or SMG Approval</td>
+                                                <td><input type="text" class="span10" name="AUT_SMG_Name" id="AUT_SMG_Name"></td>
+                                                <td><input type="text" class="span10" name="AUT_SMG_Position" id="AUT_SMG_Position"></td>
+                                                <td><input type="text" class="span10" name="AUT_SMG_Date" id="AUT_SMG_Date"></td>
+                                            </tr> -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row-fluid">
+                                    <table class="table table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <th>&nbsp;</th>
+                                                <th>Name</th>
+                                                <th>Email Address</th>
+                                                <th>Phone</th>
+                                                <th>Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Itinerary to be returned to</td>
+                                                <td><input type="text" class="span10" name="AUT_Itin_Name" id="AUT_Itin_Name" required></td>
+                                                <td><input type="email" class="span10" name="AUT_Itin_Email" id="AUT_Itin_Email" required></td>
+                                                <td><input type="text" class="span10 numbersOnly" name="AUT_Itin_Phone" id="AUT_Itin_Phone"></td>
+                                                <td><input type="text" class="span10" name="AUT_Itin_Date" id="AUT_Itin_Date" required></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Second nominated Itinerary to be returned to</td>
+                                                <td><input type="text" class="span10" name="AUT_SecItin_Name" id="AUT_SecItin_Name"></td>
+                                                <td><input type="email" class="span10" name="AUT_SecItin_Email" id="AUT_SecItin_Email"></td>
+                                                <td><input type="text" class="span10 numbersOnly" name="AUT_SecItin_Phone" id="AUT_SecItin_Phone"></td>
+                                                <td><input type="text" class="span10" name="AUT_SecItin_Date" id="AUT_SecItin_Date"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <input type="submit" value="Submit">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <div class="pull-right">
+            <button type="button" id="next-btn" class="btn btn-primary">Next</button>
+            <button type="button" id="main-submit-btn" class="btn btn-primary">Create {{form_entity.name}} Request</button>
+        </div>
+        <div style="clear:both"></div>
+    </div>
+    {% include "includes/global_address_modal.html" %}
+{% endblock %}

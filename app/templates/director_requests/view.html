@@ -1,0 +1,79 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+<script type='text/javascript' src='/js/utils.js'></script>
+<style>
+.additional-details-item { 
+    border-bottom: 1px solid #d3d3d3;  
+    margin-bottom: 15px;
+}
+</style>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Director Request View
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->  
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>No description.</p>
+</div>
+<div class="well">
+    <fieldset>
+        {% import "scaffolding/macros.html" as scaffold with context %}
+        {% import 'macros/search.html' as search with context %}
+        <table class="table table-striped">
+            <tr>
+                <td>Subject:</td>
+                <td>{{subject}}</td>
+            </tr>
+            <tr>
+                <td>CC:</td>
+                <td>{{cc}}</td>
+            </tr>
+            <tr>
+                <td>Domain Name:</td>
+                <td>{{domain_name}}</td>
+            </tr>
+            <tr>
+                <td>Project Number-Name:</td>
+                <td>{{project_number_name}}</td>
+            </tr>
+            <tr>
+                <td>User Details:</td>
+                <td>
+                    {% for detail in details %}
+                    <div class="additional-details-item">
+                        <p><strong class="text-info">Username: </strong> {{ detail.username }}</p>
+                        <p><strong class="text-info">Email Address: </strong>{{ detail.email_address }}</p>
+                        <p><strong class="text-info">Role: </strong>{{ detail.role }}</p>
+                        <p><strong class="text-info">Activity: </strong>{{ detail.activity }}</p>
+                        <p><strong class="text-info">Comments: </strong>{{ detail.comment }}</p>
+                    </div>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>Special Request:</td>
+                <td>{{special_request}}</td>
+            </tr>
+        </table>
+    </fieldset>
+     <div class="row-fluid">
+        <div class="pull-right">
+            {% if form_status == 1 and is_creator == True %}
+            <a href="{{this.uri('director_requests:update', key=item.key.urlsafe(), frmkey=frmkey)}}" class="btn btn-primary">Edit</a>
+            {% endif %}
+            <a href="{{this.uri('director_requests:list', key=frmkey)}}" class="btn btn-primary">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

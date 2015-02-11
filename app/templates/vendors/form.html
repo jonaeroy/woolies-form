@@ -1,0 +1,276 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+	{{super}}
+	<link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+	<script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+	<script type='text/javascript' src='/js/utils.js'></script>
+	<script type="text/javascript">
+		var subjectSeparator = ' - ';
+		var subjectArr = new Array();
+		var dateToday = new Date;
+
+		function composeSubject(){
+			var array = new Array();
+			var subject = "";
+        	array.push(subjectInputSelectionHandler());
+        	array.push(subjectInputFieldHandler());
+        	if(array.length > 0){
+        		subject = array.join(subjectSeparator);
+        		if(subject != '')
+        			$('#subject').val(subject);
+        	}
+		}
+
+		function subjectInputFieldHandler(){
+			subjectArr = [];
+
+        	$('.auto-subject-if').each(function(){
+         		switch($(this).attr('id')){
+	        		case "po_number":
+	        			str = 'PO Number: ';
+	        		break;
+	        		case "vendor_name":
+	        			str = 'Vendor Name: ';
+	        		break;
+	        		case "vendor_number":
+	        			str = 'Vendor Number: ';
+	        		break;
+	        	}
+
+	        	if(typeof $(this).attr('name') != 'undefined'){
+		        	if($(this).val() == '')
+		        		str = str + 'N/A';
+		        	else
+		        		str = str + $(this).val();
+		        }
+	        	
+	        	subjectArr.push(str);
+        	});
+
+        	subjectArr = subjectArr.join(subjectSeparator);
+        	return subjectArr;
+		}
+
+		function subjectInputSelectionHandler(){
+        	var str = "";
+        	var obj = $('.auto-subject-dd');
+        	subjectArr = [];
+
+        	if(obj.attr('id') == 'dc'){
+        		if(obj.val() == '')
+        			str = 'DC: N/A';
+        		else
+        			str = 'DC: [' + obj.val() + '] ' + obj.find(':selected').html();
+        	}
+
+        	subjectArr.push(str);
+        	return subjectArr;
+		}
+
+		$(document).ready(function(){
+			if (DRAFT_DATA == "null"){
+				$('#to').val('vendorcapability@woolworths.com.au; lheeley@woolworths.com.au');
+			}
+			
+			$('.date_pickr').datepicker({
+				dateFormat: 'dd-mm-yy',
+				minDate: dateToday
+			});
+
+	        $('.auto-subject-dd, .auto-subject-if').change(function(){
+	        	composeSubject();
+	        });
+
+	        $('.auto-subject-if').focusout(function(){
+	        	composeSubject();
+	        });
+
+			// for now it accepts dd-mm-yyyy format
+			$('#delivery_date').keyup(function(){
+				re = /^\d{1,2}-\d{1,2}-\d{4}$/
+
+				if(!($(this).val()).match(re)){
+					$(this).val('');
+				}
+			});
+
+			$('#delivery_date').val($.datepicker.formatDate('dd-mm-yy', dateToday));
+
+			$('.compare').focusout(function(){
+				
+				var pallets_received = parseFloat($('#pallets_received').val());
+				var pallets_affected = parseFloat($('#pallets_affected').val());
+
+				if(pallets_received == '') pallets_received = 0;
+				if(pallets_affected == '') pallets_affected = 0;
+
+				if(pallets_received < pallets_affected){
+					alert('Pallets Received should be greater than or equal to Pallets Affected');
+					$('#' + $(this).attr('id')).val('');
+				}
+			});
+		});
+	</script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Vendor Capability Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+<!-- the page main content should be here -->
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Visibilty of vendor issues. All info from here goes into one mailbox (vendor capability)</p>
+</div>
+<div class="well">
+<form  class="form-horizontal" action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+	<div class="row-fluid">
+		<div class="control-group">
+			<label class="control-label" for="dc">DC</label>
+			<div class="controls">
+				<select id="dc" name="dc" class="span6 auto-subject-dd" required>
+					<option value=""></option>
+					{% for dc in dcs %}
+					<option value="{{ dc.location_number }}">{{ dc.location_name }}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="subject">Subject</label>
+			<div class="controls">
+				<input type="text" name="subject" id="subject" class="span10" required readonly placeholder="Select DC to populate Subject">
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="cc">CC</label>
+			<div class="controls">
+				<input type="text" id="cc" name="cc" class="span10 global-address" required>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="to">To</label>
+			<div class="controls">
+				<input type="text" id="to" name="to" class="span10 global-address" value="" required>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span6">
+				<div class="control-group">
+					<label class="control-label" for="po_number">Input PO Number(s)</label>
+					<div class="controls">
+						<input class="span11 auto-subject-if" type="text" id="po_number" name="po_number" required>
+					</div>
+				</div>
+			</div>
+			<div class="span6">
+				<div class="control-group">
+					<label class="control-label" for="delivery_date">Delivery Date</label>
+					<div class="controls">
+						<input class="span6 date_pickr" type="text" id="delivery_date" name="delivery_date" required placeholder="dd-mm-yyyy">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span6">
+				<div class="control-group">
+					<label class="control-label" for="vendor_number">Vendor Number</label>
+					<div class="controls">
+						<input class="span11 auto-subject-if" type="text" id="vendor_number" name="vendor_number" required>
+					</div>
+				</div>
+			</div>
+			<div class="span6">
+				<div class="control-group">
+					<label class="control-label" for="pallets_received">Pallets Received</label>
+					<div class="controls">
+						<input class="span6 numbersOnly compare" type="text" id="pallets_received" name="pallets_received" required>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="span6">
+				<div class="control-group">
+					<label class="control-label" for="vendor_name">Vendor Name</label>
+					<div class="controls">
+						<select id="vendor_name" name="vendor_name" class="span11 auto-subject-if span6" required>
+							<option value=""></option>
+							{% for item in vendors %}
+							<option value="{{item.vendor}}">{{item.vendor}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+			</div>
+			<div class="span6">
+				<div class="control-group">
+					<label class="control-label" for="pallets_affected">Pallets Affected</label>
+					<div class="controls">
+						<input class="span6 numbersOnly compare" type="text" id="pallets_affected" name="pallets_affected" required>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row-fluid">
+			<div class="control-group">
+				<label class="control-label" for="po_rejected">Was the PO Rejected?</label>
+				<div class="controls">
+					<select id="po_rejected" name="po_rejected" class="span6" required>
+						<option value=""></option>
+						<option value="Yes">Yes</option>
+						<option value="No">No</option>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="po_on_woolworths_primary_flight">Was the PO on Woolworths Primary Freight?</label>
+				<div class="controls">
+					<select id="po_on_woolworths_primary_flight" name="po_on_woolworths_primary_flight" class="span6" required>
+						<option value=""></option>
+						<option value="Yes">Yes</option>
+						<option value="No">No</option>
+					</select>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="issue_raised_in_pct">Was this issue raised in the PCT?</label>
+				<div class="controls">
+					<input type="checkbox" id="issue_raised_in_pct" name="issue_raised_in_pct" value='Yes' />
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" for="notes">Notes</label>
+				<div class="controls">
+					<textarea id="notes" name="notes" rows="10" class="span10" required></textarea>
+				</div>
+			</div>
+            <div class="control-group">
+                <label class="control-label" for="inputNotes">Attachment</label>
+                <div class="controls">
+                    <input class="span6 field-type-blob-key-field" id="attachment" name="attachment" type="file" required>
+                </div>
+            </div>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+		<div class="pull-right">
+	      	<button id="submit" type="submit" class="btn btn-primary">Send</button>
+	      	<button id="backHistory" type="button" class="btn">Cancel</button>
+		</div>
+	</div>
+
+
+	{% include "includes/global_address_modal.html" %}
+	
+</form>
+</div>
+{% endblock %}

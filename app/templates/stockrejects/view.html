@@ -1,0 +1,120 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<script type='text/javascript' src='/js/utils.js'></script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Stock Reject Details
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Communication link between the warehouse (DC) for them to enter info on a product on a delivery that is being rejected, issues with the delivery, which goes to replenishment sr mgmt team, there is a tick box to indicate who this is sent to. behind the tick box are distribution lists</p>
+    </div>
+    <div class="well">
+        <fieldset>
+            {% import "scaffolding/macros.html" as scaffold with context %}
+            {% import 'macros/search.html' as search with context %}
+            <table class="table table-striped">
+                <tr>
+                    <td>To:</td>
+                    <td>{{to}}</td>
+                </tr>
+                <tr>
+                    <td>CC:</td>
+                    <td>{{cc}}</td>
+                </tr>
+                <tr>
+                    <td>Subject:</td>
+                    <td>{{subject}}</td>
+                </tr>
+                <tr>
+                    <td>Vendor:</td>
+                    <td>{{vendor}}</td>
+                </tr>
+                <tr>
+                    <td>Return Type:</td>
+                    <td>{{returntype}}</td>
+                </tr>
+                <tr>
+                    <td>Carrier:</td>
+                    <td>{{carrier}}</td>
+                </tr>
+                <tr>
+                    <td>Date of Arrival:</td>
+                    <td>{{dateofarrival}}</td>
+                </tr>
+                <tr>
+                    <td>Time of Rejection:</td>
+                    <td>{{timeofrejection}}</td>
+                </tr>
+                <tr>
+                    <td>Product Other:</td>
+                    <td>{{productother}}</td>
+                </tr>
+                <tr>
+                    <td>Purchase Order:</td>
+                    <td>{{purchaseorder}}</td>
+                </tr>
+                <tr>
+                    <td>Load Number:</td>
+                    <td>{{loadnumber}}</td>
+                </tr>
+                <tr>
+                    <td>Pallets Received:</td>
+                    <td>{{palletsreceived}}</td>
+                </tr>
+                <tr>
+                    <td>Pallets Affected:</td>
+                    <td>{{palletsaffected}}</td>
+                </tr>
+                <tr>
+                    <td>Cartons Affected:</td>
+                    <td>{{cartonscffected}}</td>
+                </tr>
+                <tr>
+                    <td>Replenishment Contacted:</td>
+                    <td>{{replenishmentcontacted}}</td>
+                </tr>
+                <tr>
+                    <td>Woolworths Primary Freight:</td>
+                    <td>{{woolworthsprimaryfreight}}</td>
+                </tr>
+                <tr>
+                    <td>Comments:</td>
+                    <td>{{comments}}</td>
+                </tr>
+                <tr>
+                    <td>Attachments:</td>
+                    <td>{{download_link}}</td>
+                </tr>
+                <tr>
+                    <td>From:</td>
+                    <td>{{from}}</td>
+                </tr>
+                <tr>
+                    <td>Phone:</td>
+                    <td>{{phone}}</td>
+                </tr>
+                <tr>
+                    <td>Fax:</td>
+                    <td>{{fax}}</td>
+                </tr>
+                <tr>
+                    <td>Email:</td>
+                    <td>{{email}}</td>
+                </tr>
+                <tr>
+                    <td>DC:</td>
+                    <td>{{dc}}</td>
+                </tr>
+            </table>
+            <div align="right">
+                <input type="button" class="btn btn-primary" id="backHistory" value="Back"></div>
+        </fieldset>
+    </div>
+{% endblock %}

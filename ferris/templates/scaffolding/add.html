@@ -1,0 +1,41 @@
+{% import 'scaffolding/macros.html' as s with context %}
+{% import 'macros/form.html' as f with context %}
+{% extends s.admin_or_default() %}
+
+{% block layout_head %}
+    {{ super() }}
+    {% include 'elements/admin/datepicker.html' %}
+    {% include 'elements/admin/chosen.html' %}
+    {% include 'elements/admin/formrefresh.html' %}
+    {% include 'elements/admin/continue_editing.html' %}
+
+    {% if ferris.has_plugin('tiny_mce') %}
+        {% import 'macros/tiny_mce.html' as tiny_mce with context %}
+        {{tiny_mce.scripts()}}
+    {% endif %}
+{% endblock %}
+
+{% block layout_content %}
+
+{% block form_tag %}
+<form method="POST" action="{{scaffolding.form_action|default(this.uri(_pass_all=True), True)}}" class="form" enctype="{{scaffolding.form_encoding|default('application/x-www-form-urlencoded', True)}}">
+{% endblock %}
+    <fieldset>
+
+        {% block form_fields %}
+            {% for field in form %}
+                {% if not field.name in scaffolding.excluded_form_fields %}
+                    {{ f.form_control(form, field, class='span6') }}
+                {% endif %}
+            {% endfor %}
+        {% endblock %}
+
+            {% block form_button %}
+            <button class='btn-flat primary' type='submit'>
+                {% block submit_text %}Create{% endblock %}
+            </button>
+            {% endblock %}
+
+    </fieldset>
+</form>
+{% endblock %}

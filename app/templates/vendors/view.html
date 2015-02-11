@@ -1,0 +1,99 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+<script type='text/javascript' src='/js/utils.js'></script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Vendors Capability Request View
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->  
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Visibility of vendor issues. All info from here goes into one mailbox (vendor capability)</p>
+</div>
+<div class="well">
+    <fieldset>
+        {% import "scaffolding/macros.html" as scaffold with context %}
+        {% import 'macros/search.html' as search with context %}
+        <table class="table table-striped">
+            <tr>
+                <td>Subject:</td>
+                <td>{{subject}}</td>
+            </tr>
+            <tr>
+                <td>CC:</td>
+                <td>{{cc}}</td>
+            </tr>
+            <tr>
+                <td>To:</td>
+                <td>{{to}}</td>
+            </tr>
+            <tr>
+                <td>DC:</td>
+                <td>{{dc}}</td>
+            </tr>
+            <tr>
+                <td>PO Number:</td>
+                <td>{{po_number}}</td>
+            </tr>
+            <tr>
+                <td>Delivery Date:</td>
+                <td>{{delivery_date}}</td>
+            </tr>
+            <tr>
+                <td>Vendor Number:</td>
+                <td>{{vendor_number}}</td>
+            </tr>
+            <tr>
+                <td>Vendor Name:</td>
+                <td>{{vendor_name}}</td>
+            </tr>
+            <tr>
+                <td>Pallets Received:</td>
+                <td>{{pallets_received}}</td>
+            </tr>
+            <tr>
+                <td>Pallets Affected:</td>
+                <td>{{pallets_affected}}</td>
+            </tr>
+            <tr>
+                <td>Was the PO Rejected?:</td>
+                <td>{{po_rejected}}</td>
+            </tr>
+            <tr>
+                <td>Was the PO on Woolworths Primary Flight?:</td>
+                <td>{{po_on_woolworths_primary_flight}}</td>
+            </tr>
+            <tr>
+                <td>Was the issue raised in the PCT?:</td>
+                <td>{{issue_raised_in_pct}}</td>
+            </tr>
+            <tr>
+                <td>Notes:</td>
+                <td>{{notes}}</td>
+            </tr>
+            <tr>
+                <td>Attachment:</td>
+                <td>{{download_link}}</td>
+            </tr>
+        </table>
+    </fieldset>
+     <div class="row-fluid">
+        <div class="pull-right">
+            {% if form_status == 1 and is_creator == True %}
+            <a href="/vendors/page/edit/{{keyid}}/{{frmkey}}" class="btn btn-primary">Edit</a>
+            {% endif %}
+            <a href="{{this.uri('vendors:list', key=frmkey)}}" class="btn btn-primary">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

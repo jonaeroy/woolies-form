@@ -1,0 +1,29 @@
+{% macro scripts(picker=True, content_css='/ferris/css/bootstrap.min.css') -%}
+
+<script type="text/javascript" src="/plugins/tiny_mce/tinymce/jquery.tinymce.min.js"></script>
+{% if picker %}
+<script type="text/javascript" src="/plugins/tiny_mce/media_picker.js"></script>
+{% endif %}
+<script type="text/javascript">
+    $(function() {
+        $('textarea.flag_tinymce_true, textarea.tinymce').tinymce({
+            script_url : '/plugins/tiny_mce/tinymce/tinymce.min.js',
+            keep_styles: true,
+            paste_remove_styles: false,
+            paste_remove_spans: false,
+            paste_strip_class_attributes: 'none',
+            paste_text_use_dialog: true,
+            relative_urls : false,
+            content_css: {{content_css|json}},
+            apply_source_formatting: false,
+            plugins: [
+                "advlist autolink lists link image preview hr anchor pagebreak",
+                "searchreplace wordcount visualblocks visualchars code fullscreen",
+                "insertdatetime media nonbreaking save table contextmenu",
+                "template paste"],
+            file_browser_callback : tinymce_file_browser
+        });
+    });
+</script>
+
+{%- endmacro %}

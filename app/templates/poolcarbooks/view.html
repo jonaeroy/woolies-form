@@ -1,0 +1,73 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<script type='text/javascript' src='/js/utils.js'></script>
+<style type="text/css">
+.table { clear: both;}
+.table-responses tr { padding: 20px 0 !important; border-top: 20px solid transparent; border-bottom: 20px solid transparent; }
+.table tr td {
+    word-wrap: break-word;
+}
+.table tr td:nth-child(odd) { width: 500px !important; }
+.table tr td:nth-child(even) { max-width: 180px !important; text-align: left; padding: 0 0 10px 70px; vertical-align: middle;}
+</style>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Stock Reject Details
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>No Description.</p>
+    </div>
+    <div class="well">
+        <fieldset>
+            <table class="table table-striped">
+                <tr>
+                    <td>Driver Name:</td>
+                    <td>{{item.Driver_Name}}</td>
+                </tr>
+                <tr>
+                    <td>Driver Licence No.:</td>
+                    <td>{{item.Driver_Licence_No}}</td>
+                </tr>
+                <tr>
+                    <td>Division/Region:</td>
+                    <td>{{item.Division_Region}}</td>
+                </tr>
+                <tr>
+                    <td>Cost Centre No.:</td>
+                    <td>{{item.Cost_Centre_No}}</td>
+                </tr>
+                <tr>
+                    <td>Authorising Line Manager:</td>
+                    <td>{{item.Authorising_Line_Manager}}</td>
+                </tr>
+                <tr>
+                    <td>Authorising Line Manager Position:</td>
+                    <td>{{item.Line_Manager_Pos}}</td>
+                </tr>
+                <tr>
+                    <td>Start Date & Time of Journey:</td>
+                    <td>{{item.Start_Date_Time_Journey}}</td>
+                </tr>
+                <tr>
+                    <td>End Date & Time of Journey:</td>
+                    <td>{{item.End_Date_Time_Journey}}</td>
+                </tr>
+                <tr>
+                    <td>Purpose of Journey:</td>
+                    <td>{{item.Purpose_of_Journey}}</td>
+                </tr>
+            </table>
+            <div align="right">
+                <!-- <a href="{{this.uri('poolcarbooks:update', key=item.key.urlsafe(), frmkey=frmkey)}}" class="btn btn-primary">Edit</a> -->
+                <a href="{{this.uri('poolcarbooks:list', key=frmkey)}}" class="btn btn-primary">Back</a>
+            </div>
+        </fieldset>
+    </div>
+{% endblock %}

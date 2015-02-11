@@ -1,0 +1,114 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<script type='text/javascript' src='/js/utils.js'></script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+QA Test Store Request Details
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Starting point where buyers will load on a project overview. It begins the process for quality assurance.</p>
+    </div>
+    <div class="well">
+        <fieldset>
+            <table class="table table-striped">
+                <tr>
+                    <td>To:</td>
+                    <td>{{qasubmission.To}}</td>
+                </tr>
+                <tr>
+                    <td>Product Range Name:</td>
+                    <td>{{qasubmission.Product_Range_Name}}</td>
+                </tr>
+                <tr>
+                    <td>Is a Product Brief Required:</td>
+                    <td>{{qasubmission.Is_a_product_brief_required}}</td>
+                </tr>
+                <tr>
+                    <td>Number of SKUs to Launch:</td>
+                    <td>{{qasubmission.Number_of_SKUs_to_launch}}</td>
+                </tr>
+                <tr>
+                    <td>Brand:</td>
+                    <td>{{qasubmission.Brand}}</td>
+                </tr>
+                <tr>
+                    <td>Country of Sale:</td>
+                    <td>{{qasubmission.Country_of_sale}}</td>
+                </tr>
+                <tr>
+                    <td>In Store Date:</td>
+                    <td>{{qasubmission.In_Store_Date}}</td>
+                </tr>
+                <tr>
+                    <td>In DC Date:</td>
+                    <td>{{qasubmission.In_DC_Date}}</td>
+                </tr>
+                <tr>
+                    <td>Planned first ship date(if product being indented):</td>
+                    <td>{{qasubmission.Planned_lst_Ship_Date}}</td>
+                </tr>
+                <tr>
+                    <td>Vendor Name:</td>
+                    <td>{{qasubmission.Vendor_Name}}</td>
+                </tr>
+                <tr>
+                    <td>Trading Division:</td>
+                    <td>{{qasubmission.Trading_Division}}</td>
+                </tr>
+                <tr>
+                    <td>Senior Business Manager:</td>
+                    <td>{{qasubmission.Senior_Business_Manager}}</td>
+                </tr>
+                <tr>
+                    <td>Business Manager:</td>
+                    <td>{{qasubmission.Business_Manager}}</td>
+                </tr>
+                <tr>
+                    <td>Sourcing Manager:</td>
+                    <td>{{qasubmission.Sourcing_Manager}}</td>
+                </tr>
+                <tr>
+                    <td>Is Vendor Currently Supplying to Woolworths?:</td>
+                    <td>{{qasubmission.Is_Vendor_Currently_Supplying_to_Woolworths}}</td>
+                </tr>
+                <tr>
+                    <td>If No, has Factory Pre Audit Questionnaire (FPAQ) been issued?:</td>
+                    <td>{{qasubmission.Is_FPAQ_been_issued}}</td>
+                </tr>
+                <tr>
+                    <td>Brief description of range (or attach document outlining range):</td>
+                    <td>{{qasubmission.Brief_description_of_range}}</td>
+                </tr>
+                <tr>
+                    <td>Product details, descriptions, article numbers<br>
+                    (eg. Keycodes, referral numbers, and item numbers):</td>
+                    <td>{{qasubmission.Product_details}}</td>
+                </tr>
+                <tr>
+                    <td>Attachments:</td>
+                    <td>{{download_link}}</td>
+                </tr>
+                <tr>
+                    <td><strong>QA Number:</strong></td>
+                    <td><strong>{{QA_number}}</strong></td>
+                </tr>
+            </table>
+            <div align="right">
+                {% if QA_number == "Pending QA Number Designation" and is_requestor %}
+                    <a href="/qasubmissions/page/edit/{{keyid}}/{{frmkey}}" class="btn btn-primary">Edit</a>
+                {% endif %}
+                <input type="button" class="btn btn-primary" id="backHistory" value="Back"></div>
+        </fieldset>
+    </div>
+{% endblock %}

@@ -1,0 +1,197 @@
+{% extends 'layouts/default.html' %}
+
+{% block layout_head %}
+	{{super}}
+	<script type='text/javascript' src='/js/angular/angular.js'></script>
+    <script type='text/javascript' src='/js/main.js'></script>
+{% endblock %}
+
+{% block layout_content %}
+
+	{% raw %}
+		<div ng-app>
+			<div class="container-fluid">
+				<form class="well form-horizontal" action="/corporate_ex_order/form_handler" method="post">
+					<legend>Corporate Express Order Form</legend>
+					<div class="row-fluid">
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group">
+									<h5>Your Details</h5>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="control-group">
+									<h5>Delivery Address</h5>
+								</div>
+							</div>
+						</div>
+
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group">
+									<label class="control-label" for="inputContactName">Contact Name</label>
+									<div class="controls">
+										<input class="span11" type="text" id="inputContactName" required>
+									</div>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="control-group">
+									<label class="control-label" for="inputStreetNO">Street Number</label>
+									<div class="controls">
+							            <select class="span11" name="inputStreetNO" id="inputStreetNO">
+							            	<option></option>
+						            	</select>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group">
+									<label class="control-label" for="inputContactNO">Contact Number</label>
+									<div class="controls">
+										<input class="span11" type="text" id="inputContactNO">
+									</div>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="control-group">
+									<label class="control-label" for="inputStreetNameType">Street Name & Type</label>
+									<div class="controls">
+										<input class="span11" type="text" id="inputStreetNameType">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group">
+									<label class="control-label" for="inputDivision">Division</label>
+									<div class="controls">
+										<select class="span11" id="inputDivision">
+											<option></option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="control-group">
+									<label class="control-label" for="inputSuburb">Suburb</label>
+									<div class="controls">
+										<input class="span11" type="text" id="inputSuburb">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group">
+									<label class="control-label" for="inputBusinessUnit">Business Unit</label>
+									<div class="controls">
+										<select class="span11" id="inputBusinessUnit">
+											<option></option>
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="control-group">
+									<label class="control-label" for="inputState">State</label>
+									<div class="controls">
+										<input class="span11" type="text" id="inputState">
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row-fluid">
+							<div class="span6">
+								<div class="control-group">
+									<label class="control-label" for="inputCostProjCode">Cost Center or Project Code</label>
+									<div class="controls">
+										<input class="span11" type="text" id="inputCostProjCode">
+									</div>
+								</div>
+							</div>
+							<div class="span6">
+								<div class="control-group">
+									<label class="control-label" for="inputPostCode">Post Code</label>
+									<div class="controls">
+										<input class="span11" type="text" id="inputPostCode">
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<legend>Product Details</legend>
+						<div ng-controller="DRFCtrl">
+			          		<table class="table table-condensed">
+							    <thead>
+							        <tr>
+							            <th>Corp Ex Ref No.</th>
+							            <th>Product Description</th>
+							            <th>Qty</th>
+							            <th>Cost Each</th>
+							            <th>Total Cost</th>
+							            <th>Purchase Type</th>
+							            <th>Justification</th>
+							            <th>Action</th>
+							        </tr>
+							    </thead>
+							    <tbody>
+							        <tr ng-repeat="item in items">
+							            <td><input type="text" id="inputRefNO" class="span11" required></td>
+							            <td><input type="text" id="inputProdDesc" class="span11" required></td>
+							            <td><input type="text" id="inputQty" class="span11" required></td>
+							            <td><input type="text" id="inputUnitCost" class="span11" required></td>
+							            <td><input type="text" id="inputTotalCost" class="span11" required></td>
+							            <td>
+								            <select class="span11" name="inputPurchaseType" id="inputPurchaseType">
+								            	<option></option>
+							            	</select>
+										</td>
+							            <td><input type="text" class="span11" id="inputJustification"></td>
+							            <td><button type="button" class="btn" ng-click="removeRow($index)">Remove</button></td>
+							        </tr>
+							    </tbody>
+							</table>
+
+							<button type="button" class="btn" ng-click="addRow(item)">Add Row</button>
+						</div>
+					</div>
+
+					<p>&nbsp;</p> <!--Spacer-->
+
+					<legend>Cost Centre Manager's Approval</legend>
+					<div class="control-group">
+						<label class="control-label">Manager's Name</label>
+						<div class="controls">
+							<input class="span5" type="text" id="inputManagerName">
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">Title</label>
+						<div class="controls">
+							<input class="span5" type="text" id="inputTitle">
+						</div>
+					</div>
+
+					<legend>Business Rules for adding Item to the basket</legend>
+					<ul>
+						<li>Item requested is business critical</li>
+						<li>Item requested will be required on a regular basis</li>
+						<li>Item requested is not just a "substitute" to an item already in the basket</li>
+						<li>Group procurement will review the request and advise of the decision by return e-mail</li>
+					</ul>
+
+					<p>&nbsp;</p> <!--Spacer-->
+
+					<button type="submit" class="btn btn-primary">Save</button>
+					<button type="button" class="btn">Cancel</button>
+				</form>
+			</div>
+		</div>
+	{% endraw %}
+
+{% endblock %}

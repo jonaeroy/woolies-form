@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+    <title>Master Data Request Page</title>
+    <link rel="stylesheet" type="text/css" href="/ferris/css/bootstrap.min.css">
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/ferris/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Staff use this form if they want to request data or to change data around certain products.</p>
+</div>
+    <div class="well container">
+        <fieldset>
+            <legend>
+                <h3>Master Data Request Details</h3>
+            </legend>
+            {% import "scaffolding/macros.html" as scaffold with context %}
+            {% import 'macros/search.html' as search with context %}
+            <table class="table table-striped">
+                <tr>
+                    <td>Requested By:</td>
+                    <td>{{reqBy}}</td>
+                </tr>
+                <tr>
+                    <td>Submission Date:</td>
+                    <td>{{subDate}}</td>
+                </tr>
+                <tr>
+                    <td>Buyer:</td>
+                    <td>{{buyer}}</td>
+                </tr>
+                <tr>
+                    <td>Subject:</td>
+                    <td>{{subj}}</td>
+                </tr>
+                <tr>
+                    <td>Request Type:</td>
+                    <td>{{reqType}}</td>
+                </tr>
+                <tr>
+                    <td>Request Area:</td>
+                    <td>{{reqArea}}</td>
+                </tr>
+                <tr>
+                    <td>Status:</td>
+                    <td>{{status}}</td>
+                </tr>
+                <tr>
+                    <td>Comments:</td>
+                    <td>{{comments}}</td>
+                </tr>
+                <tr>
+                    <td>Attachments:</td>
+                    <td>{{atch}}</td>
+                </tr>
+            </table>
+            <div align="right">
+                <input type="button" class="btn btn-primary" onclick="history.back()" value="Back"></div>
+        </fieldset>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,254 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+	{{super}}
+	<link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+	<script type="text/javascript" src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+	<script type="text/javascript" src="/js/utils.js"></script>
+	<script type="text/javascript">
+		var now = new Date();
+
+		function formatAMPM(date) {
+			var hours = date.getHours();
+			var minutes = date.getMinutes();
+			var seconds = date.getSeconds();
+			var ampm = hours >= 12 ? 'PM' : 'AM';
+
+			hours = hours % 12;
+			hours = hours ? hours : 12; // the hour '0' should be '12'
+			minutes = minutes < 10 ? '0' + minutes : minutes;
+
+			var strTime = hours + ':' + minutes + ':' + seconds + ' ' + ampm;
+
+			return strTime;
+		}
+
+		function arrayMerge(array1, array2){
+			list = new Array();
+			for(x in array1){
+				list.push(array1[x])
+			}
+
+			for (i = 0; i < array2.length; ++i) {
+			    index = list.indexOf(array2[i]);
+			    if (index === -1) {
+			        // Add the element to array1 if it's unique
+			        list.push(array2[i]);
+			    } else {
+			        // Remove it if it already exists
+			        list.splice(index,1);
+			    }
+			}
+
+			return list
+		}
+
+		(function(jQuery) {
+		    jQuery.fn.getDateTime = function () {
+		        return this.each(function () {
+		           var curr_date = new Date();
+		           var time = formatAMPM(curr_date);
+
+		           $(this).val($.datepicker.formatDate('dd/mm/yy', curr_date) + ' ' + time);
+		        });
+		    };
+
+		})(jQuery);
+
+		$(document).ready(function(){
+			var previous_selected_email = new Array();
+			var previous_email_list = new Array();
+			var previous = "";
+			var temp = "";
+			var current_from_draft = ""
+			var initial = true;
+
+			if (DRAFT_DATA != '' && DRAFT_DATA!='null'){
+            	data = $.parseJSON(DRAFT_DATA);
+            	current_from_draft = data.draft_current_selected_email;
+            }
+
+			$('#date_time').getDateTime();
+
+			$('#dc').focus(function(){
+				previous = temp;
+			}).change(function(){
+				var dc_name = $(this).val();
+				
+				if(dc_name != ''){
+					$.ajax({
+						url: '../retrieve/' + dc_name,
+						success: function(data){
+							if (data != ''){
+								previous_email_list = $('#to').val().split(';')
+
+								var new_list = arrayMerge(previous_selected_email, previous_email_list);
+								new_list.push(data)
+
+								if(current_from_draft != ""){
+									for(var i = new_list.length-1; i--;){
+										if (new_list[i] === current_from_draft) new_list.splice(i, 1);
+									}
+								}
+
+								$('#to').val(new_list.join(';'))
+								
+								$('.global-address-emailInput').each(function(){
+									var obj = $(this);
+									var span_obj = obj.find("span");
+									span_obj.parent().remove();
+								});
+								previous_selected_email = data.split(';');
+								globalAddress.load_exist();
+
+								if(initial)
+									$('#draft_previous_selected_email').val(data);
+								else
+									$('#draft_previous_selected_email').val(previous);
+								
+								$('#draft_current_selected_email').val(data);
+
+								temp = data;
+								initial = false;
+							}
+						}
+					})
+				}else{
+					$('#to').val('');
+				}
+			});
+		});
+	</script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+DC Maintenance Request Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+<!-- the page main content should be here -->
+
+<div class="form-description fd-form-view" id="form-description">
+	<p><i class="icon-pencil"></i>Maintenance request form. Used to capture work requests in a DC. It has urgency levels and can attach additional information.</p>
+</div>
+
+{% if user_fullname == None %}
+	{% set user_fullname = '' %}
+{% endif %}
+
+<div class="well">
+<form class="form-horizontal" action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+	<input id="draft_previous_selected_email" name="draft_previous_selected_email" type="hidden" value="" />
+	<input id="draft_current_selected_email" name="draft_current_selected_email" type="hidden" value="" />
+	<div class="row-fluid">
+		<div class="control-group">
+			<label class="control-label" for="dc">DC</label>
+			<div class="controls">
+				<select id="dc" name="dc" required class="span10">
+					<option value=""></option>
+					{% for info in dc_warehouse_info %}
+					<!-- <option value="{{info.location_name}}">{{info.location_name}}</option> -->
+					<option value="{{info.dc_name}}">{{info.dc_name}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="to">To</label>
+			<div class="controls">
+				<input type="text" id="to" name="to" class="span10 global-address" required>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="cc">CC</label>
+			<div class="controls">
+				<input type="text" id="cc" name="cc" class="span10 global-address">
+			</div>
+		</div>
+		<!--<div class="control-group">
+			<label class="control-label" for="warehouse_location">Warehouse Location</label>
+			<div class="controls">
+				<select id="warehouse_location" name="warehouse_location" required class="span10">
+					<option value=""></option>
+					<option value="ARDC">ARDC</option>
+					<option value="MLDC">MLDC</option>
+					<option value="MNDC">MNDC</option>
+					<option value="TRDC">TRDC</option>
+					<option value="TRDC">Wyong</option>
+					<option value="TRDC">Wodonga MRDC</option>
+				</select>
+			</div>
+		</div>-->
+		<div class="control-group">
+			<label class="control-label" for="requestor_name">Name of Requestor</label>
+			<div class="controls">
+				<input value='{{user_fullname}}' class="span10" type="text" id="requestor_name" name="requestor_name" required>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="priority">Priority</label>
+			<div class="controls">
+				<select id="priority" name="priority" required class="span10">
+					<option value=""></option>
+					<option value="Urgent">Urgent</option>
+					<option value="ASAP">ASAP</option>
+					<option value="Routine">Routine</option>
+				</select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="date_time">Date/Time</label>
+			<div class="controls">
+				<input class="span10" type="text" id="date_time" name="date_time" readonly="readonly">
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="department">Department</label>
+			<div class="controls">
+				<select id="department" name="department" required class="span10">
+					<option value=""></option>
+					<option value="Admin">Admin</option>
+					<option value="Produce">Produce</option>
+					<option value="Recycling">Recycling</option>
+					<option value="Security">Security</option>
+					<option value="Transport">Transport</option>
+					<option value="Safety">Safety</option>
+					<option value="Operations">Operations</option>
+					<option value="Chilled">Chilled</option>
+				</select>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="notes">Description of Fault/Defect/ <br> Task/Equipment</label>
+			<div class="controls">
+				<textarea id="notes" name="notes" rows="10" class="span10" required></textarea>
+			</div>
+		</div>
+		<div class="control-group">
+			<label class="control-label" for="attachment">Attach Document if Required</label>
+			<div class="control-group">
+                <div class="controls">
+                    <input class="span6 field-type-blob-key-field" id="attachment" name="attachment" type="file">
+                </div>
+            </div>
+		</div>
+	</div>
+
+	<div class="row-fluid">
+		<div class="pull-right">
+	      	<button id="submit" type="submit" class="btn btn-primary">Create Request</button>
+	      	<button id="backHistory" type="button" class="btn">Cancel</button>
+		</div>
+	</div>
+
+
+	{% include "includes/global_address_modal.html" %}
+	
+</form>
+</div>
+{% endblock %}

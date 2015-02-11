@@ -1,0 +1,118 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+            $('.details').hide();
+            
+        });
+
+        $(document).on("click", "#Approved", function(){
+
+            var selectedApprovalID = document.getElementById('Approved');
+            var selectedApproval = selectedApprovalID.options[selectedApprovalID.selectedIndex].value;
+
+            if(selectedApproval == 'No'){
+                $('.details').show('slow');
+            }
+            else{
+                $('.details').hide('slow');
+            }
+        
+        });
+    </script>
+{% endblock %}
+
+
+{% block layout_page_title %}
+<!-- page title here -->
+Replenishment Change Request (RCR) - Approval Detail
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Appraisal form, when a change is made (pre-defined set of criteria, impacting multiple areas of the business). Within support office, within replenishment teams space with impacts into warehouses and stores. People in Norwest would be filling in the forms (internal). Impacts all banners except Big W and Masters.</p>
+</div>
+<form class="form-horizontal" action="/replenishments/sendNotif" method="post">
+    <div class="well">
+        <fieldset>
+            <table width='100%'>
+                <tr>
+                    <td width="20%">&nbsp;</td>
+                    <td width="20%">&nbsp;</td>
+                    <td width="20%">&nbsp;</td>
+                    <td width="15%"><label class="control-label" for="DateAndTime"><center>Date/Time of Request:</center></label></td>
+                    <td width="25%"><div class="input-append">
+                        <input class="span12" type="text" value="{{selectedItem.DateAndTime}}" name="DateAndTime" id="DateAndTime"  readonly>
+                        <span class="add-on"> <i class="icon-th"></i>
+                        </span>
+                        <input type="hidden" id="keyid" name="keyid" value="{{selectedItem.key.urlsafe()}}" readonly />
+                    </div></td>
+                </tr>
+
+            </table>
+        </fieldset>
+        <fieldset>
+            <legend><strong>Nominated Manager Approval</strong></legend>
+            <div class="control-group">
+                <label class="control-label" for="Requested_By">Requested By:</label>
+                <div class="controls">
+                    <input type="text" class="span4" id="Requested_By" name="Requested_By" value="{{selectedItem.Requested_By}}"  required readonly/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Approver_Details">Reviewer Details:</label>
+                <div class="controls">
+                    <input type="text" class="span8" id="Approver_Details" name="Approver_Details" value="{{selectedItem.Approver_Details}}" required readonly/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Implementer_Details">Implementer Details:</label>
+                <div class="controls">
+                    <input type="text" class="span8" id="Implementer_Details" name="Implementer_Details" value="{{selectedItem.Implementer_Details}}" readonly/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Approved">Approved (Yes/No):</label>
+                <div class="controls">
+                    <select class="span4" id="Approved" name="Approved" required>
+                            <option value="">Select</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group details">
+                <label class="control-label" for="Details_if_no">If No, please provide details below:</label>
+                <div class="controls">
+                    <textarea rows="3" class="span8" name="Details_if_no" style="resize:none"></textarea>
+                </div>
+            </div>
+            <div class="control-group comments">
+                <label class="control-label" for="Comments">Approver Additional Comments:</label>
+                <div class="controls">
+                    <textarea rows="3" class="span8" name="Comments" style="resize:none"></textarea>
+                </div>
+            </div>
+        </fieldset>
+        <br>
+         <div class="control-group">
+            <div align="right">
+                <input type="submit" class="btn btn-primary creatbtn" value="Submit">
+                <input type="button" class="btn" value="Cancel" id="backHistory">
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

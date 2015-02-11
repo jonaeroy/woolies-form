@@ -1,0 +1,349 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+    <script>
+        function addDate(){
+            date = new Date();
+            var month = date.getMonth()+1;
+            var day = date.getDate();
+            var year = date.getFullYear();
+
+            var currentTime = new Date()
+            var hours = currentTime.getHours()
+            var minutes = currentTime.getMinutes()
+
+            if (minutes < 10)
+                minutes = "0" + minutes
+
+            var suffix = "AM";
+            if (hours >= 12) {
+                suffix = "PM";
+                hours = hours - 12;
+            }
+            if (hours == 0) {
+                hours = 12;
+            }
+
+            var time = hours + ":" + minutes + " " + suffix;
+
+            document.getElementById('DateAndTime').value = day + '-' + month + '-' + year + '  ' + time;
+        }
+    </script>
+
+    <script type="text/javascript">
+        function display_t(){
+            var refresh=3000; //updates every 3 secs
+            mytime=setInterval('addDate()',refresh)
+        }
+
+        $(document).ready(function(){
+            display_t();
+            $('.backout').hide();
+            $('.backoutdetails').hide();
+
+            $('.toCheck').click(function() {
+                var ctype = "";
+                $('input[class=toCheck]:checked').each(function(){
+                ctype = ctype + ", " + $(this).val();
+                });
+                var rctype = ctype.substring(1);
+                document.getElementById("Change_Type_cbox").value = rctype;
+            });
+            
+        });
+
+        $(document).on("click", ".createReqBtn", function (){
+
+            // Validate Implementation and End Date
+            if(!($("#End_date").datepicker("getDate") === null)){
+                
+                if ($("#Implementation_date").datepicker("getDate") > $("#End_date").datepicker("getDate")){
+                    alert("ERROR: Implementation Date is greater than End date!");
+                    $("#Implementation_date").focus();
+                    return false;
+                }
+            }
+
+            // Validate required Checkbox
+            if ($("#Change_Type_cbox").val() == "")
+            {
+                alert("ERROR: Please select at least one Change Type checkbox.");
+                $("#toCheck").focus();
+                return false;
+            }
+
+            var selectedRiskID = document.getElementById('Risk');
+            var selectedRisk = selectedRiskID.options[selectedRiskID.selectedIndex].value;
+            var selectedPriorityID = document.getElementById('Priority');
+            var selectedPriority = selectedPriorityID.options[selectedPriorityID.selectedIndex].value;
+            var selectedBack_out_planID = document.getElementById('Back_out_plan');
+            var selectedBack_out_plan = selectedBack_out_planID.options[selectedBack_out_planID.selectedIndex].value;
+
+            if((selectedRisk == 'High' || selectedPriority == '1') && (selectedBack_out_plan == '')){
+                alert('Back Out Plan in place Field is required!');
+                $('#Back_out_plan').focus();
+                return false;
+            }
+
+        });
+
+
+        $(function() {
+                $( "#Implementation_date" ).datepicker({
+                    dateFormat: 'dd-mm-yy',
+                    minDate: 0,
+                }).datepicker("setDate", "0");
+                $( "#End_date" ).datepicker({
+                    dateFormat: 'dd-mm-yy',
+                    minDate: 0,
+                });
+                $( "#currentDate" ).datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+        });
+
+        $(document).on("click", "#Risk", function(){
+
+            var selectedRiskID = document.getElementById('Risk');
+            var selectedRisk = selectedRiskID.options[selectedRiskID.selectedIndex].value;
+            var selectedPriorityID = document.getElementById('Priority');
+            var selectedPriority = selectedPriorityID.options[selectedPriorityID.selectedIndex].value;
+
+            if(selectedRisk == 'High' || selectedPriority == '1'){
+                $('.backout').show('slow');
+                $('.backoutdetails').show('slow');
+
+
+            }
+            else{
+                $('.backout').hide('slow');
+                $('.backoutdetails').hide('slow');
+                $('#Back_out_plan').val('');
+                $('#Back_out_plan_details').val('');
+            }
+        
+            var backout = $('.backout').attr('draft-data');
+            $('.backout').val(backout);
+            var backoutdetails = $('.backoutdetails').attr('draft-data');
+            $('.backoutdetails').val(backoutdetails);
+
+        });
+
+        $(document).on("click", "#Priority", function(){
+
+            var selectedRiskID = document.getElementById('Risk');
+            var selectedRisk = selectedRiskID.options[selectedRiskID.selectedIndex].value;
+            var selectedPriorityID = document.getElementById('Priority');
+            var selectedPriority = selectedPriorityID.options[selectedPriorityID.selectedIndex].value;
+
+            if(selectedPriority == '1' || selectedRisk == 'High'){
+                $('.backout').show('slow');
+                $('.backoutdetails').show('slow');
+            }
+            else{
+                $('.backout').hide('slow');
+                $('.backoutdetails').hide('slow');
+                $('#Back_out_plan').val('');
+                $('#Back_out_plan_details').val('');
+            }
+        
+        });
+    </script>
+{% endblock %}
+
+
+{% block layout_page_title %}
+<!-- page title here -->
+Buyer's New Line Declaration Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Appraisal form, when a change is made (pre-defined set of criteria, impacting multiple areas of the business). Within support office, within replenishment teams space with impacts into warehouses and stores. People in Norwest would be filling in the forms (internal). Impacts all banners except Big W and Masters.</p>
+</div>
+
+<form class="form-horizontal repform" name="replenishmentForm" id="replenishmentForm" action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+    <div class="well">
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="Requested_By">Requested By:</label>
+                <div class="controls">
+                    <input type="text" class="span4" id="Requested_By" name="Requested_By" value="{{user}}" required readonly/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="DateAndTime">Date:</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input class="span12" type="text" value="" name="DateAndTime" id="DateAndTime" required readonly>
+                        <span class="add-on"> <i class="icon-th"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend><h3>RCR Communication - Notification Recipients</h3></legend>
+            <div class="control-group">
+                <label class="control-label" for="Approver_Details">Approver Details:</label>
+                <div class="controls">
+                    <input type="text" class="span11" id="Approver_Details" name="Approver_Details" value="{{approver_details}}" required readonly/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Copy_to">Copy To:</label>
+                <div class="controls">
+                    <input type="text" class="span8 global-address" id="Copy_to" name="Copy_to" />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Implementer_Details">Implementer Details:</label>
+                <div class="controls">
+                    <input type="text" class="span8 global-address" id="Implementer_Details" name="Implementer_Details" />
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend><h3>RCR Communication - Change Detail</h3></legend>
+            <table border="0" width="90%" cellpadding="5">
+                <tr>
+                    <td >&nbsp;</td>
+                    <td colspan="2"><strong>Change Area</strong></td>
+                    <td colspan="2"><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Change Type</strong></td>
+                </tr>
+                <tr>
+                    <td width="5%">&nbsp;</td>
+                    <td width="10%">Change Type:</td>
+                    <td width="30%">
+                        <select class="span8 selectpicker" id="Change_Type_ddown" name="Change_Type_ddown" required>
+                            <option value="">Select</option>
+                            <option value="Major Change">Major Change</option>
+                            <option value="AROP Change">AROP Change</option>
+                            <option value="Safety Stock Change">Safety Stock Change</option>
+                            <option value="EOQ Change">EOQ Change</option>
+                            <option value="Store Splits Change">Store Splits Change</option>
+                            <option value="Mass Maintenance">Mass Maintenance</option>
+                            <option value="Stock Build">Stock Build</option>
+                            <option value="Move Stock Request">Move Stock Request</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </td>
+                    <td width="2%">&nbsp;</td>
+                    <td width="25%">Change Type:</td>
+                </tr>
+                <tr>
+                    <td >&nbsp;</td>
+                    <td colspan=2>Please add detail regarding the change to be requested: </td>
+                    <td >&nbsp;</td>
+                    <td ><input type="checkbox" id="toCheck" name="toCheck" class="toCheck" value="System Change"> - System Change</td>
+                </tr>
+                <tr>
+                    <td >&nbsp;</td>
+                    <td colspan=2 rowspan=4><textarea rows="5" class="span11" name="Change_Type_Detail" style="resize:none"></textarea></td>
+                    <td >&nbsp;</td>
+                    <td ><input type="checkbox" id="toCheck" name="toCheck" class="toCheck" value="Process Change"> - Process Change</td>
+                </tr>
+                <tr>
+                    <td >&nbsp;</td>
+                    <td >&nbsp;</td>
+                    <td ><input type="checkbox" id="toCheck" name="toCheck" class="toCheck" value="Parameter Change"> - Parameter Change</td>
+                </tr>
+                <tr>
+                    <td >&nbsp;</td>
+                    <td >&nbsp;</td>
+                    <td ><input type="checkbox" id="toCheck" name="toCheck" class="toCheck"  value="New System"> - New System</td>
+                </tr>
+                <tr>
+                    <td >&nbsp;</td>
+                    <td >&nbsp;</td>
+                    <td ><input type="checkbox" id="toCheck" name="toCheck" class="toCheck" value="New Process"> - New Process</td>
+                    <input type="hidden" class="span8" id="Change_Type_cbox" name="Change_Type_cbox" value="">
+                </tr>
+            </table>
+            
+        </fieldset>
+        <fieldset>
+            <legend><h3>RCR Communication - Risk, Migration and Contingencies</h3></legend>
+            <div class="control-group">
+                <label class="control-label" for="Risk">Risk:</label>
+                <div class="controls">
+                    <select class="span8 selectpicker" id="Risk" name="Risk" required>
+                            <option value="">Select</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Priority">Priority (1-4):</label>
+                <div class="controls">
+                    <select class="span8 selectpicker" id="Priority" name="Priority" required>
+                        <option value="">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group backout">
+                <label class="control-label" for="Back_out_plan">Back out plan in place:</label>
+                <div class="controls">
+                    <select class="span8 selectpicker" id="Back_out_plan" name="Back_out_plan">
+                        <option value="">Select</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+            <div class="control-group backoutdetails">
+                <label class="control-label" for="Back_out_plan_details">Please add the detail of the back out plan:</label>
+                <div class="controls">
+                    <textarea rows="3" class="span8" id="Back_out_plan_details" name="Back_out_plan_details" style="resize:none"></textarea>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <legend>
+                <h3>RCR Communication - Timing of Change</h3>
+            </legend>
+            <div class="control-group">
+                <label class="control-label" for="Implementation_date">Implementation date:</label>
+                <div class="controls">
+                    <input type="text" class="span3 datesOnly" name="Implementation_date" id="Implementation_date" required/> 
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="End_date">End date (if applicable):</label>
+                <div class="controls">
+                    <input type="text" class="span3 datesOnly" name="End_date" id="End_date" /> 
+                    <input type="hidden" class="span3 datesOnly" name="currentDate" id="currentDate" /> 
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Attachment">(Free text and/or attached documents):</label>
+                <div class="controls">
+                    <textarea rows="3" class="span8" name="ReqComments" style="resize:none"></textarea>
+                    <input class="span6 field-type-blob-key-field" id="Attachment" name="Attachment" type="file">
+                </div>
+            </div>
+        </fieldset>
+        <br>
+         <div class="control-group">
+                <div align="right">
+                    <input type="submit" class="btn btn-primary createReqBtn" value="Create Request">
+                    <input type="button" class="btn" value="Cancel" id="backHistory">
+                </div>
+            </div>
+    </div>
+    {% include "includes/global_address_modal.html" %}
+</form>
+{% endblock %}

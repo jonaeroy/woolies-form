@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+    <title>Master Cost Change List Page</title>
+    <link rel="stylesheet" type="text/css" href="/ferris/css/bootstrap.min.css">
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/ferris/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <br>
+    <div class="well container">
+        <fieldset>
+            <legend>
+                <h3>Cost Change Request Details</h3>
+            </legend>
+            {% import "scaffolding/macros.html" as scaffold with context %}
+            {% import 'macros/search.html' as search with context %}
+            <table class="table table-striped">
+                <tr>
+                    <td>Buyer:</td>
+                    <td>{{buyer}}</td>
+                </tr>
+                <tr>
+                    <td>Submission Date:</td>
+                    <td>{{subDate}}</td>
+                </tr>
+                <tr>
+                    <td>Effective Date:</td>
+                    <td>{{effDate}}</td>
+                </tr>
+                <tr>
+                    <td>Department:</td>
+                    <td>{{dept}}</td>
+                </tr>
+                <tr>
+                    <td>Merchandise Manager:</td>
+                    <td>{{merchMngr}}</td>
+                </tr>
+                <tr>
+                    <td>Status:</td>
+                    <td>{{status}}</td>
+                </tr>
+                <tr>
+                    <td>Comments:</td>
+                    <td>{{comments}}</td>
+                </tr>
+            </table>
+            <div align="right">
+                <input type="button" class="btn btn-primary" onclick="history.back()" value="Back"></div>
+        </fieldset>
+    </div>
+
+</body>
+</html>

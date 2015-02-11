@@ -1,0 +1,83 @@
+{% import "scaffolding/add.html" as scaffold with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+<script src="http://jquery.bassistance.de/validate/jquery.validate.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#category').attr('readonly', true);
+    });
+</script>
+{% if banner_category %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#category').val('{{banner_category}}');
+
+        $( "#banner-form" ).validate({
+          rules: {
+            field: {
+              required: true,
+              url: true
+            }
+          }
+        });
+
+        $.validator.messages.url = 'Please enter a valid URL e.g.(http://www.site.com).';
+
+
+    });
+
+
+</script>
+{% endif %}
+<style>
+    .error { font-weight: bold; color: #f00; }
+    .content { margin-left: 0 !important; }
+</style>
+{% endblock %}
+
+
+{% block layout_page_title %}
+<!-- page title here -->
+Add New Banner
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+<form enctype="application/x-www-form-urlencoded" class="form" action="/banners/add" method="POST" id="banner-form">
+    <fieldset>
+        <div class="control-group ">
+            <label for="url" class="control-label">Url</label>
+            <div class="controls">
+                 <input type="url" value="" name="url" id="url" class="span6 field-type-text-field  flag_required_true" required placeholder="http://">
+            </div>
+        </div>
+        <div class="control-group ">
+            <label for="display_text" class="control-label">Display Text</label>
+            <div class="controls">
+                 <input type="text" value="" name="display_text" id="display_text" class="span6 field-type-text-field  flag_required_true" required>
+            </div>
+        </div>
+
+        <div class="control-group ">
+            <label for="description" class="control-label">Description</label>
+            <div class="controls">
+                 <textarea name="description" id="description" class="span6 field-type-text-area-field  flag_required_true" required></textarea>            
+            </div>
+        </div>
+        <div class="control-group ">
+            <label for="category" class="control-label">Category</label>
+            <div class="controls">
+                 <input type="text" value="" name="category" id="category" class="span6 field-type-text-field  flag_required_true" required>
+            </div>
+        </div>
+        <button type="submit" class="btn-flat primary">
+            Create
+        </button>
+    </fieldset>
+</form>
+{% endblock %}

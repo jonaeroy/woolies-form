@@ -1,0 +1,220 @@
+<!doctype html>
+<html>
+<head>
+    <title>Master Data Request List Page</title>
+    <link rel="stylesheet" type="text/css" href="/ferris/css/bootstrap.min.css">
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <script type="text/javascript" src="/ferris/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        function setApprove(){
+            document.getElementById('action').value = "approve";
+        }
+        function setReject(){
+            document.getElementById('action').value = "reject"
+        }
+        $(document).on("click", ".open-modal", function () {
+            var reqBy = $(this).data('reqBy ');
+            var subDate = $(this).data('subDate  ');
+            var buyer = $(this).data('buyer  ');
+            var subj = $(this).data('subj  ');
+            var reqType = $(this).data('reqType  ');
+            var reqArea = $(this).data('reqArea ');
+            var comments = $(this).data('comments');
+            var atch = $(this).data('atch ');
+            var status = $(this).data('status ');
+            var keyid = $(this).data('keyid');
+            $(".modal-body #reqBy").val(reqBy);
+            $(".modal-body #subDate").val(subDate);
+            $(".modal-body #buyer").val(buyer);
+            $(".modal-body #subj").val(subj);
+            $(".modal-body #reqType").val(reqType);
+            $(".modal-body #reqArea").val(reqArea);
+            $(".modal-body #comments").val(comments);
+            $(".modal-body #atch").val(atch);
+            $(".modal-body #status").val(status);
+            $(".modal-body #keyid").val(keyid);
+        });
+    </script>
+</head>
+<body>
+    <br>
+
+    <div class="form-description">
+        <p><i class="icon-pencil"></i>Staff use this form if they want to request data or to change data around certain products.</p>
+    </div>
+    <div class="well container">
+        {% import "scaffolding/macros.html" as scaffold with context %}
+        {% import 'macros/search.html' as search with context %}
+        <div align="right">
+            <a href="/mains/mainform">Home</a>
+        </div>
+        <fieldset>
+            <legend>
+                <h3>Master Data Request List</h3>
+            </legend>
+            <table class="table table-striped table-hover">
+                <thead>
+                    <tr>
+                    {% if cb_order_by=='asc'%}
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_by_asc=True)}}">Created By</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_desc=True)}}">Creation Date</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_status_asc=True)}}">Status</a>
+                        </th>
+                    {% elif cb_order_by=='desc'%}
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_by_desc=True)}}">Created By</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_desc=True)}}">Creation Date</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_status_desc=True)}}">Status</a>
+                        </th>
+                    {% elif c_order_by=='asc'%}
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_by_asc=True)}}">Created By</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_asc=True)}}">Creation Date</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_status_asc=True)}}">Status</a>
+                        </th>
+                     {% elif c_order_by=='desc'%}
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_by_asc=True)}}">Created By</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_desc=True)}}">Creation Date</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_status_asc=True)}}">Status</a>
+                        </th>
+                     {% elif status_order_by=='asc'%}
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_by_asc=True)}}">Created By</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_asc=True)}}">Creation Date</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_status_asc=True)}}">Status</a>
+                        </th>
+                     {% else %}
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_by_asc=True)}}">Created By</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_created_desc=True)}}">Creation Date</a>
+                        </th>
+                        <th>
+                            <a href="{{this.uri('datarequests:list', order_by_status_desc=True)}}">Status</a>
+                        </th>
+                    {% endif %}
+                        <th>For Users</th>
+                        <th>For Managers</th>
+                    </tr>
+                </thead>
+                {% for datarequest in datarequests %}
+                <tr>
+                    <td>{{datarequest.created_by}}</td>
+                    <td>{{datarequest.created}}</td>
+
+                    {% if int(datarequest.Status) == 1 %}
+                    <td>Pending Approval</td>
+                    {% endif %}
+                    {% if int(datarequest.Status) == 2 %}
+                    <td>Temporarily Approved</td>
+                    {% endif %}
+                    {% if int(datarequest.Status) == 3 %}
+                    <td>Approved</td>
+                    {% endif %}
+                    {% if int(datarequest.Status) == 4 %}
+                    <td>Rejected</td>
+                    {% endif %}
+                    {% if int(datarequest.Status) == 0 %}
+                    <td>No Action Required</td>
+                    {% endif %}
+
+                    <td>
+                        <a href="{{this.uri('datarequests:view', key=datarequest.key.urlsafe())}}" class="btn btn-primary">View</a>
+                    </td>
+                    <td>
+                        <a href="#actionModal" role="button" 
+                        data-reqBy={{datarequest.Requested_By}} 
+                        data-subDate={{datarequest.Submission_Date}} 
+                        data-buyer={{datarequest.Buyer}} 
+                        data-subj={{datarequest.Subject}}  
+                        data-reqType={{datarequest.Please_Select_Request_Type}}  
+                        data-reqArea={{datarequest.Please_Select_Request_Area}}  
+                        data-atch={{datarequest.Attachments}}  
+                        data-comments={{datarequest.Comments}} 
+                        data-status={{datarequest.Status}}
+                        data-keyid={{datarequest.key.urlsafe()}}
+                        class="open-modal btn btn-primary" data-toggle="modal">Approve/Reject</a>
+
+                        <div id="actionModal" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                <h4 id="myModalLabel">Merchandise Team Approval</h4>
+                            </div>
+                            <div class="modal-body">
+                                <form class="form-horizontal" action="/datarequests/sendNotif" method="post">
+                                    <div class="well">
+                                        <fieldset>
+                                            <table align="center">
+                                                <tr>
+                                                    <td>
+                                                        An e-mail will be sent to the person that completed the 'Masters Cost Change Form' and to the 'Masters Merchandise Support'
+                                                    </td>
+                                                    <td>
+                                                        <input type="submit" onclick="setApprove()" class="btn btn-primary" value="Approve"></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>&nbsp;</td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        An e-mail will be sent to the person  that completed the 'Masters Cost Change Form'
+                                                    </td>
+                                                    <td>
+                                                        <input type="submit" onclick="setReject()" class="btn btn-primary" value="Reject"></td>
+                                                </tr>
+                                            </table>
+                                            <br/>
+                                            <div align="left" class="control-group">
+                                                <label class="control-label" for="merchManger">Additional Comments:</label>
+                                                <div class="controls">
+                                                    <textarea class="span4" rows="5" name="addcomments" style="resize:none"></textarea>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" id="action" name="action" value="">
+                                            <input type="hidden" id="reqBy" name="reqBy" value="">
+                                            <input type="hidden" id="subDate" name="subDate" value="">
+                                            <input type="hidden" id="buyer" name="buyer" value="">
+                                            <input type="hidden" id="subj" name="subj" value="">
+                                            <input type="hidden" id="reqType" name="reqType" value="">
+                                            <input type="hidden" id="reqArea" name="reqArea" value="">
+                                            <input type="hidden" id="comments" name="comments" value="">
+                                            <input type="hidden" id="atch" name="atch" value="">
+                                            <input type="hidden" id="status" name="status" value="">
+                                            <input type="hidden" id="keyid" name="keyid" value="">
+                                        </fieldset>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </fieldset>
+    </div>
+</body>
+</html>

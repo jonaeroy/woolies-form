@@ -1,0 +1,213 @@
+{% import 'scaffolding/list.html' as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+<script type='text/javascript' src='/js/utils.js'></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('.delete-button').click(function(){
+            var data = $(this).attr('key');
+            response = confirm('Delete?');
+            if(response){
+                document.location.href="/pack_sizes/delete/" + data + "?key={{frmkey}}&status={{tab}}";
+            }
+            return false;
+        });
+    });
+</script>
+<style type="text/css">
+    #list td:hover{ cursor: pointer; }
+</style>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Masters Inner &amp; Outer Pack Size Change Request List
+{% endblock %}
+
+{% block layout_page_buttons %}
+ 
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description">
+    <p><i class="icon-pencil"></i>When product is changing carton configurations, aka packaging changes from the vendors.</p>
+</div>
+<div class="well">
+    <table class="table table-striped table-hover" id="list">
+        <thead>
+            <tr>
+                {% set order_by_created = request.GET['order_by_created'] == 'desc' and 'asc' or 'desc'  %}
+                {% set order_by_date = request.GET['order_by_date'] == 'desc' and 'asc' or 'desc'  %}
+                {% set order_by_status = request.GET['order_by_status'] == 'desc' and 'asc' or 'desc'  %}
+                <th>
+                    <a href="/pack_sizes?order_by_created={{ order_by_created }}">Created By
+                        <b class="caret c-custom {% if order_by_created == 'asc' %}caret-up{% endif %}"></b>
+                    </a>
+                </th>
+                <th>
+                    <a href="/pack_sizes?order_by_date={{ order_by_date }}">Created Date
+                        <b class="caret c-custom {% if order_by_date == 'asc' %}caret-up{% endif %}"></b>
+                    </a>
+                </th>
+                <th>
+                    <a href="/pack_sizes?order_by_status={{ order_by_status }}">Status
+                        <b class="caret c-custom {% if order_by_status == 'asc' %}caret-up{% endif %}"></b>
+                    </a>
+                </th>
+                <th>Request Cancellation</th>
+                {% if is_Merch_Manager or is_second_group_approver %}
+                <th>Actions</th>
+                {% endif %}
+            </tr>
+        </thead>
+
+        {% for result in pack_sizes %}
+
+            <!-- Rules for status -->
+            {% set status_text = '-' %}
+            {% set label_class = '' %}
+
+            {% if result.status == 1 %}
+                {% set status_text = 'Pending Approval' %}
+                {% set label_class = 'label-warning' %}
+            {% elif result.status == 2 %}
+                {% set status_text = 'Temporarily Approved' %}
+                {% set label_class = 'label-info' %}
+            {% elif result.status == 3 %}
+                {% set status_text = 'Approved' %}
+                {% set label_class = 'label-success' %}
+            {% elif result.status == 4 %}
+                {% set status_text = 'Rejected' %}
+                {% set label_class = 'label-danger' %}
+            {% elif result.status == 0 %}
+                {% set status_text = 'No Action Required' %}             
+            {% endif %}
+
+            <!--Rules for Delete and Approve/Reject button-->
+            {% set modal = 'href="#actionModal"' %}
+            {% set button_delete = 'delete-button' %}
+            {% set delete_disabled = 'disabled="disabled"' %}
+            {% set forward_reject_disabled = '' %}
+
+            {% if user_email != str(result.created_by).lower() and not isManager %}
+                {% set delete_disabled = '' %}
+                {% set case = '1' %}
+            {% elif user_email == str(result.created_by).lower() and not isManager %}
+                {% if result.status == 2 or result.status == 3 or result.status == 4 %}
+                    {% set button_delete = '' %}
+                {% else %}
+                    {% set delete_disabled = '' %}
+                    {% set case = '2' %}
+                {% endif %}
+            {% elif isManager %}
+                {% set button_delete = '' %}
+
+                {% if result.status == 3 or result.status == 4 %}
+                    {% set forward_reject_disabled = 'disabled="disabled"' %}
+                    {% set modal = '' %}
+                {% elif result.status == 2 and str(user) == str(result.replenisher) %}
+                    {% set forward_reject_disabled = 'disabled="disabled"' %}
+                    {% set modal = '' %}
+                {% elif result.status == 1 and is_second_group_approver %}
+                    {% set forward_reject_disabled = 'disabled="disabled"' %}
+                    {% set modal = '' %}
+                    {% if user_email == str(result.created_by).lower() and result.status != 2 %}
+                        {% set button_delete = 'delete-button' %}
+                        {% set delete_disabled = '' %}
+                        {% set case = '3' %}
+                    {% endif %}
+                {% else %}
+                    {% if user_email == str(result.created_by).lower() and result.status != 2 %}
+                        {% set button_delete = 'delete-button' %}
+                        {% set delete_disabled = '' %}
+                        {% set case = '4' %}
+                    {% endif %}
+                {% endif %}
+            {% endif %}
+        <tr>
+            <td>{{result.created_by}}<a href="{{this.uri('pack_sizes:view', key=result.key.urlsafe(), frmkey=frmkey)}}"></a></td>
+            <td>{{localize_datetime(result.created)}}<a href="{{this.uri('pack_sizes:view', key=result.key.urlsafe(), frmkey=frmkey)}}"></a></td>
+            <td><span class="label {{label_class}}">{{status_text}}</span><a href="{{this.uri('pack_sizes:view', key=result.key.urlsafe(), frmkey=frmkey)}}"></a></td>
+            <td>
+                <!-- <a href="#" key={{result.key.urlsafe()}} class="btn btn-danger {{button_delete}}" {{delete_disabled}}>Delete</a> -->
+                {% if str(user) == str(result.created_by) and int(result.status) < 2 %}
+                <a href="#" key={{result.key.urlsafe()}} frmkey={{frmkey}} class="btn btn-danger {{button_delete}}">Delete</a>
+                {% endif %}
+            </td>
+            <td>
+                {% if ((str(user) == str(result.replenisher) and int(result.status) < 2) or (is_second_group_approver and int(result.status) == 2)) and user_isFormAdmin != True %}
+                {% if forward_reject_disabled == '' %}
+                <a {{modal}} role="button"
+                data-keyid={{result.key.urlsafe()}} {{forward_reject_disabled}}
+                class="open-modal btn btn-primary" data-toggle="modal">Approve/Reject</a>
+                {% endif %}
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+    <!--Pagination Here-->
+    {{s.next_page_link()}}
+
+    <!--Modal-->
+    <div id="actionModal" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h4 id="myModalLabel">Approval/Rejection</h4>
+        </div>
+        <div class="modal-body">
+            <form class="form-horizontal" action="/pack_sizes/sendNotif" method="post">
+                <div class="well">
+                    <fieldset>
+                        {% set button_id = 'setFirstLineApprove' %}
+                        {% set notice = 'An email will be sent to the person who completed this request' %}
+                        
+                        {% if second_group_approver and is_Merch_Manager %}
+                            {% set notice = 'An email will be sent to <b>' + second_group_approver.name + '</b> to action request' %}
+                        {% endif %}
+                        
+                        {% if is_second_group_approver %}
+                            {% set button_id = 'setSecondLineApprove' %}
+                        {% endif %}
+                        <table align="center">
+                            <tr>
+                                <td>
+                                    {{notice}}
+                                </td>
+                                <td>
+                                    <input id="{{button_id}}" type="submit" class="btn btn-primary" value="Approve">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td>&nbsp;</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    An email will be sent to the person who completed this request
+                                </td>
+                                <td>
+                                    <input id="setReject" type="submit" class="btn btn-primary" value="Reject">
+                                </td>
+                            </tr>
+                        </table>
+                        <br/>
+                        <div align="left" class="control-group">
+                            <label class="control-label" for="merchManger">Additional Comments:</label>
+                            <div class="controls">
+                                <textarea class="span12" rows="5" name="additional_comments" style="resize:none"></textarea>
+                            </div>
+                        </div>
+                        <input type="hidden" id="action" name="action" value="">
+                        <input type="hidden" id="keyid" name="keyid" value="">
+                    </fieldset>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!--Modal-->
+</div>
+{% endblock %}

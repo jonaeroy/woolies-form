@@ -1,0 +1,4 @@
+*.pyc
+ds
+*.coverage.appengine_data
+.appengine_data

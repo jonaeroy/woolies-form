@@ -1,0 +1,45 @@
+{% macro next_page_link(numbers=True, class=None) -%}
+{% if paging %}
+
+<div class='paging-container'>
+	<ul class="pager single-pager pagination-centered">
+		<li class="next" {% if not paging.next_cursor %}class='disabled'{% endif %}>
+			<a href="{{this.uri(cursor=paging.next_cursor, *args, **kwargs)}}">More  &rarr;</a>
+		</li>
+	</ul>
+
+	{% set class = class or 'pagination-centered' %}
+	<div class='pagination {{class}}' style='display: none'>
+	<ul>
+		<li class="previous">
+			<a class='paging-previous-link'>&laquo;</a>
+		</li>
+		{% if numbers %}
+		<li class="active">
+			<!-- <a onclick='return false;' class=''>{{ paging.current }} of {{ paging.total }}</a> -->
+			<a onclick='return false;' class='paging_text'></a>
+		</li>
+		{% endif %}
+		<li class="next">
+			<a class='paging-next-link'>&raquo;</a>
+		</li>
+	</ul>
+	</div>
+</div>
+
+<script type="text/javascript">
+var paging_config = {
+	cursor: {{paging.cursor|json}},
+	next_cursor: {{paging.next_cursor|json}},
+	current: {{paging.current|json}},
+	limit: {{paging.limit|json}},
+	uri: {{this.uri(_pass_all=True, cursor=None, limit=None, *args, **kwargs)|json}},
+	storage_key: 'paging_' + {{this.uri(*args, **kwargs)|json}} + '_' + {{paging.limit|json}},
+	results: {{paging.count|json}}
+};
+console.log(paging_config)
+</script>
+<script type="text/javascript" src='/ferris/js/ferris/pagination.js'></script>
+    
+{% endif %}
+{%- endmacro %}

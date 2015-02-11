@@ -1,0 +1,454 @@
+{% extends 'layouts/main.html' %}
+{% import "scaffolding/macros.html" as scaffold with context %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+
+    <script type="text/javascript">
+
+        $(document).on("click", ".setbanner1", function (){
+            checkBanner("Banner1","Sub_Banner1","SCO1");
+        });
+
+        $(document).ready(function() {
+
+            $("#Banner1 option[value={{item.Banner1}}]").attr("selected", "selected");
+            checkBanner("Banner1","Sub_Banner1","SCO1");
+            $("#Sub_Banner1 option[value='{{item.Sub_Banner1}}']").attr("selected", "selected");
+            $("#SCO1 option[value='{{item.SCO1}}']").attr("selected", "selected");
+            $("#Environment1 option[value='{{item.Environment1}}']").attr("selected", "selected");
+            
+            $("#Banner2 option[value='{{item.Banner2}}']").attr("selected", "selected");
+            checkBanner("Banner2","Sub_Banner2","SCO2");
+            $("#Sub_Banner2 option[value='{{item.Sub_Banner2}}']").attr("selected", "selected");
+            $("#SCO2 option[value='{{item.SCO2}}']").attr("selected", "selected");
+            $("#Environment2 option[value='{{item.Environment2}}']").attr("selected", "selected");
+
+            $("#Banner3 option[value='{{item.Banner3}}']").attr("selected", "selected");
+            checkBanner("Banner3","Sub_Banner3","SCO3");
+            $("#Sub_Banner3 option[value='{{item.Sub_Banner3}}']").attr("selected", "selected");
+            $("#SCO3 option[value='{{item.SCO3}}']").attr("selected", "selected");
+            $("#Environment3 option[value='{{item.Environment3}}']").attr("selected", "selected");
+
+            $("#Banner4 option[value='{{item.Banner4}}']").attr("selected", "selected");
+            checkBanner("Banner4","Sub_Banner4","SCO4");
+            $("#Sub_Banner4 option[value='{{item.Sub_Banner4}}']").attr("selected", "selected");
+            $("#SCO4 option[value='{{item.SCO4}}']").attr("selected", "selected");
+            $("#Environment4 option[value='{{item.Environment4}}']").attr("selected", "selected");
+        });
+        
+        $(document).on("click", ".setbanner2", function (){
+            checkBanner("Banner2","Sub_Banner2","SCO2");
+            $("#Sub_Banner2")[0].setAttribute("required", "true");
+            $('#SCO2')[0].setAttribute("required", "true");
+            $('#Environment2')[0].setAttribute("required", "true");
+            $('#Start_Date2')[0].setAttribute("required", "true");
+            $('#End_Date2')[0].setAttribute("required", "true");
+            $('#Software_Version_Level2')[0].setAttribute("required", "true");
+        });
+
+        $(document).on("click", ".setbanner3", function (){
+            checkBanner("Banner3","Sub_Banner3","SCO3");
+            $('#Sub_Banner3')[0].setAttribute("required", "true");
+            $('#SCO3')[0].setAttribute("required", "true");
+            $('#Environment3')[0].setAttribute("required", "true");
+            $('#Start_Date3')[0].setAttribute("required", "true");
+            $('#End_Date3')[0].setAttribute("required", "true");
+            $('#Software_Version_Level3')[0].setAttribute("required", "true");
+        });
+        $(document).on("click", ".setbanner4", function (){
+            checkBanner("Banner4","Sub_Banner4","SCO4");
+            $('#Sub_Banner4')[0].setAttribute("required", "true");
+            $('#SCO4')[0].setAttribute("required", "true");
+            $('#Environment4')[0].setAttribute("required", "true");
+            $('#Start_Date4')[0].setAttribute("required", "true");
+            $('#End_Date4')[0].setAttribute("required", "true");
+            $('#Software_Version_Level4')[0].setAttribute("required", "true");
+        });
+
+        function checkBanner(bannerID, subBannerID, scoID){
+
+            var selectBanner = document.getElementById(bannerID);
+            var selectSubBanner = document.getElementById(subBannerID);
+            var selectSCO = document.getElementById(scoID);
+            var selBanner = selectBanner.options[selectBanner.selectedIndex].value;
+
+            if (selBanner == "Supermarkets") {
+                document.getElementById(subBannerID).disabled = false;
+                selectSubBanner.options.length = 0;
+                selectSubBanner.options[selectSubBanner.options.length] = new Option('PEL', 'PEL');
+                selectSubBanner.options[selectSubBanner.options.length] = new Option('ISIS', 'ISIS');
+                selectSubBanner.options[selectSubBanner.options.length] = new Option('TDG', 'TDG');
+                selectSubBanner.options[selectSubBanner.options.length] = new Option('SFS', 'SFS');
+                selectSCO.options.length = 0;
+                document.getElementById(scoID).disabled = false;
+                selectSCO.options[selectSCO.options.length] = new Option('Yes', 'Yes');
+                selectSCO.options[selectSCO.options.length] = new Option('No', 'No');
+            }
+
+            else if (selBanner == "Liquor") {
+                document.getElementById(subBannerID).disabled = false;
+                selectSubBanner.options.length = 0;
+                selectSubBanner.options[selectSubBanner.options.length] = new Option('BWS', 'BWS');
+                selectSubBanner.options[selectSubBanner.options.length] = new Option('Dan Murphys', 'Dan Murphys');
+                selectSCO.options.length = 0;
+                document.getElementById(scoID).disabled = true;
+            }
+            else if (selBanner == "Big W") {
+                document.getElementById(scoID).disabled = false;
+                selectSCO.options.length = 0;
+                selectSCO.options[selectSCO.options.length] = new Option('Yes', 'Yes');
+                selectSCO.options[selectSCO.options.length] = new Option('No', 'No');
+                selectSubBanner.options.length = 0;
+                document.getElementById(subBannerID).disabled = true;
+            }
+            else if (selBanner == "Petrol") {
+                selectSubBanner.options.length = 0;
+                document.getElementById(subBannerID).disabled = true;
+                selectSCO.options.length = 0;
+                document.getElementById(scoID).disabled = true;
+            }
+            else {
+                selectSubBanner.options.length = 0;
+                document.getElementById(subBannerID).disabled = false;
+                selectSCO.options.length = 0;
+                document.getElementById(scoID).disabled = false;
+            }
+        }
+    </script>
+    <script>
+        $(document).on("click", ".btn-update", function (){
+            var Start_Date1 = $("#Start_Date1").val();
+            var End_Date1 = $("#End_Date1").val();
+            var Start_Date2 = $("#Start_Date2").val();
+            var End_Date2 = $("#End_Date2").val();
+            var Start_Date3 = $("#Start_Date3").val();
+            var End_Date3 = $("#End_Date3").val();
+            var Start_Date4 = $("#Start_Date4").val();
+            var End_Date4 = $("#End_Date4").val();
+
+            if (Start_Date1 > End_Date1){
+
+                if(End_Date1 == ''){
+                    alert("ERROR: End Date is Required!");
+                    $("#End_Date1").focus();
+                    return false;
+                }
+                else{
+                    alert("ERROR: Start date is greater than End date!");
+                    $("#Start_Date1").focus();
+                    return false;
+                }
+                
+            }
+            if (Start_Date2 > End_Date2){
+                if(End_Date2 == ''){
+                    alert("ERROR: End Date is Required!");
+                    $("#End_Date2").focus();
+                    return false;
+                }
+                else{
+                    alert("ERROR: Start date is greater than End date!");
+                    $("#Start_Date2").focus();
+                    return false;
+                }
+                
+            }
+            if (Start_Date3 > End_Date3){
+                if(End_Date3 == ''){
+                    alert("ERROR: End Date is Required!");
+                    $("#End_Date3").focus();
+                    return false;
+                }
+                else{
+                    alert("ERROR: Start date is greater than End date!");
+                    $("#Start_Date3").focus();
+                    return false;
+                }
+                
+            }
+            if (Start_Date4 > End_Date4){
+                if(End_Date4 == ''){
+                    alert("ERROR: End Date is Required!");
+                    $("#End_Date4").focus();
+                    return false;
+                }
+                else{
+                    alert("ERROR: Start date is greater than End date!");
+                    $("#Start_Date4").focus();
+                    return false;
+                }
+                
+            }
+        });
+        $(function() {
+            $( "#dateSent" ).datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+        });
+        $(function() {
+            $( "#Start_Date1" ).datepicker({dateFormat: 'dd-mm-yy'});
+        });
+        $(function() {
+            $( "#End_Date1" ).datepicker({dateFormat: 'dd-mm-yy'});
+        });
+        $(function() {
+            $( "#Start_Date2" ).datepicker({dateFormat: 'dd-mm-yy'});
+        });
+        $(function() {
+            $( "#End_Date2" ).datepicker({dateFormat: 'dd-mm-yy'});
+        });
+        $(function() {
+            $( "#Start_Date3" ).datepicker({dateFormat: 'dd-mm-yy'});
+        });
+        $(function() {
+            $( "#End_Date3" ).datepicker({dateFormat: 'dd-mm-yy'});
+        });
+        $(function() {
+            $( "#Start_Date4" ).datepicker({dateFormat: 'dd-mm-yy'});
+        });
+        $(function() {
+            $( "#End_Date4" ).datepicker({dateFormat: 'dd-mm-yy'});
+        });
+    </script>
+
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+QA Test Store Request Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Stores Test Lab - Anyone that wants to book a store for testing new system/process they will use this form to fill out details and goes to the specific mailbox to allocate a store and send form back with store information.</p>
+    </div>
+    <form class="well form-horizontal" action="/teststores/edit_data" method="post">
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="Project_Name">Project Name:</label>
+                <div class="controls">
+                    <input type="text" class="span3" id="Project_Name" name="Project_Name" value="{{item.Project_Name}}" required />
+                    <input type="hidden" class="span3" id="createdby" name="createdby" value="{{user}}" required />
+                    <input type="hidden" class="span9" id="dateSent" name="dateSent" value="">
+                    <input type="hidden" class="span9" id="fg_approver" name="fg_approver" value="{{fg_approver}}" />
+                </div>
+            </div>
+            <div class="control-group controls-row">
+                <label class="control-label" for="Requested_By">Requested By:</label>
+                <div class="controls">
+                    <input type="text" class="span3" id="Requested_By" name="Requested_By" value="{{item.Requested_By}}" required />
+                    
+                </div>
+                <label class="control-label" for="Project_No_ER">Project No./ER:</label>
+                <div class="controls">
+                    <input type="text" class="span3" id="Project_No_ER" name="Project_No_ER" value="{{item.Project_No_ER}}" required />
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend></legend>
+        <table width="100%" cellpadding="3" cellspacing="3">
+            <tr align="center">
+                <td style="width:15%"><strong>Banner</strong></td>
+                <td style="width:10%"><strong>Sub Banner</strong></td>
+                <td style="width:10%"><strong>SCO</strong></td>
+                <td style="width:5%"><strong>Environment</strong></td>
+                <td style="width:10%"><strong>Start Date</strong></td>
+                <td style="width:10%"><strong>End Date</strong></td>
+                <td style="width:25%"><strong>Software Version level</strong></td>
+                <td style="width:30%"><strong>Store Allocated</strong></td>
+            </tr>
+            <tr align="center">
+                <td>
+                    <select class="setbanner1 span12" id="Banner1" name="Banner1" required>
+                        <option value=""> </option>
+                        <option {{ 'selected' if item.Banner1 == 'Supermarkets' else '' }} value="Supermarkets">Supermarkets</option>
+                        <option {{ 'selected' if item.Banner1 == 'Petrol' else '' }} value="Petrol">Petrol</option>
+                        <option {{ 'selected' if item.Banner1 == 'Liquor' else '' }} value="Liquor">Liquor</option>
+                        <option {{ 'selected' if item.Banner1 == 'Big W' else '' }} value="Big W">Big W</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="Sub_Banner1" name="Sub_Banner1" required >
+                        <option value=""></option>
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="SCO1" name="SCO1" required>
+                        <option value=""></option>
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="Environment1" name="Environment1" required>
+                        <option value=""></option>  
+                        <option value="Test">Test</option>
+                        <option value="ACPT">ACPT</option>
+                    </select>
+                </td>
+                <td>
+                    <input class="datesOnly span12" type="text" value="{{item.Start_Date1}}" name="Start_Date1" id="Start_Date1" required/>
+                </td>
+                <td>
+                    <input class="datesOnly span12" type="text" value="{{item.End_Date1}}" name="End_Date1" id="End_Date1" required/>
+                </td>
+                <td>
+                    <input type="text" class="span12" id="Software_Version_Level1" name="Software_Version_Level1" value="{{item.Software_Version_Level1}}" required/>
+                </td>
+                <td>
+                    <input type="text" class="span12" id="Store_Allocated1" name="Store_Allocated1" value="{{item.Store_Allocated1}}" readonly/>
+                </td>
+            </tr>
+            <tr align="center">
+                <td>
+                    <select class="setbanner2 span12" id="Banner2" name="Banner2" >
+                        <option value="none"> </option>
+                        <option {{ 'selected' if item.Banner2 == 'Supermarkets' else '' }} value="Supermarkets">Supermarkets</option>
+                        <option {{ 'selected' if item.Banner2 == 'Petrol' else '' }} value="Petrol">Petrol</option>
+                        <option {{ 'selected' if item.Banner2 == 'Liquor' else '' }} value="Liquor">Liquor</option>
+                        <option {{ 'selected' if item.Banner2 == 'Big W' else '' }} value="Big W">Big W</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="Sub_Banner2" name="Sub_Banner2" >
+                        <option value=""></option>
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="SCO2" name="SCO2" >
+                        <option value=""></option>
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="Environment2" name="Environment2" >
+                        <option value=""></option>  
+                        <option value="Test">Test</option>
+                        <option value="ACPT">ACPT</option>
+                    </select>
+                </td>
+                <td>
+                        <input class="datesOnly span12" type="text" value="{{item.Start_Date2}}" name="Start_Date2" id="Start_Date2" />
+
+                </td>
+                <td>
+                        <input class="datesOnly span12" type="text" value="{{item.End_Date2}}" name="End_Date2" id="End_Date2" />
+                </td>
+                <td>
+                    <input type="text" class="span12" id="Software_Version_Level2" name="Software_Version_Level2" value="{{item.Software_Version_Level2}}" />
+                </td>
+                <td>
+                    <input type="text" class="span12" id="Store_Allocated2" name="Store_Allocated2" value="{{item.Store_Allocated2}}" readonly/>
+                </td>
+            </tr>
+            <tr align="center">
+                <td>
+                    <select class="setbanner3 span12" id="Banner3" name="Banner3" >
+                        <option value="none"> </option>
+                        <option {{ 'selected' if item.Banner3 == 'Supermarkets' else '' }} value="Supermarkets">Supermarkets</option>
+                        <option {{ 'selected' if item.Banner3 == 'Petrol' else '' }} value="Petrol">Petrol</option>
+                        <option {{ 'selected' if item.Banner3 == 'Liquor' else '' }} value="Liquor">Liquor</option>
+                        <option {{ 'selected' if item.Banner3 == 'Big W' else '' }} value="Big W">Big W</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="Sub_Banner3" name="Sub_Banner3"  onchange="">
+                        <option value=""></option>
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="SCO3" name="SCO3" >
+                        <option value=""></option> 
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="Environment3" name="Environment3" >
+                        <option value=""></option>  
+                        <option value="Test">Test</option>
+                        <option value="ACPT">ACPT</option>
+                    </select>
+                </td>
+                <td>
+                        <input class="datesOnly span12" type="text" value="{{item.Start_Date3}}" name="Start_Date3" id="Start_Date3" />
+                </td>
+                <td>
+                        <input class="datesOnly span12" type="text" value="{{item.End_Date3}}" name="End_Date3" id="End_Date3" />
+                </td>
+                <td>
+                    <input type="text" class="span12" id="Software_Version_Level3" name="Software_Version_Level3" value="{{item.Software_Version_Level3}}"/>
+                </td>
+                <td>
+                    <input type="text" class="span12" id="Store_Allocated3" name="Store_Allocated3" value="{{item.Store_Allocated3}}" readonly/>
+                </td>
+            </tr>
+            <tr align="center">
+                <td>
+                    <option value=""> </option>
+                    <select class="setbanner4 span12" id="Banner4" name="Banner4" >
+                        <option value="none"> </option>
+                        <option {{ 'selected' if item.Banner4 == 'Supermarkets' else '' }} value="Supermarkets">Supermarkets</option>
+                        <option {{ 'selected' if item.Banner4 == 'Petrol' else '' }} value="Petrol">Petrol</option>
+                        <option {{ 'selected' if item.Banner4 == 'Liquor' else '' }} value="Liquor">Liquor</option>
+                        <option {{ 'selected' if item.Banner4 == 'Big W' else '' }} value="Big W">Big W</option>
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="Sub_Banner4" name="Sub_Banner4" >
+                        <option value=""></option>
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="SCO4" name="SCO4" >
+                        <option value=""></option>
+
+                    </select>
+                </td>
+                <td>
+                    <select class="span12" id="Environment4" name="Environment4" >
+                        <option value=""></option>  
+                        <option value="Test">Test</option>
+                        <option value="ACPT">ACPT</option>
+                    </select>
+                </td>
+                <td>
+                        <input class="datesOnly span12" type="text" value="{{item.Start_Date4}}" name="Start_Date4" id="Start_Date4" />
+                </td>
+                <td>
+                        <input class="datesOnly span12" type="text" value="{{item.End_Date4}}" name="End_Date4" id="End_Date4" />
+
+                </td>
+                <td>
+                    <input type="text" class="span12" name="Software_Version_Level4" id="Software_Version_Level4" value="{{item.Software_Version_Level4}}" />
+                </td>
+                <td>
+                    <input type="text" class="span12" name="Store_Allocated4" id="Store_Allocated4" value="{{item.Store_Allocated4}}" readonly/>
+                </td>
+            </tr>
+
+        </table>
+        </fieldset>
+        <fieldset>
+            <legend></legend>
+                <div class="control-group">
+                    <label class="control-label" for="Test_Purpose_Applications_Required">Test Purpose / Applications Required:</label>
+                     <div class="controls">
+                        <textarea rows="7" id="Test_Purpose_Applications_Required" name="Test_Purpose_Applications_Required" class="span12" style="resize: none">{{item.Test_Purpose_Applications_Required}}</textarea>
+                    </div>
+                </div>
+        </fieldset>
+        <div class="control-group">
+            <div align="right">
+                <br>
+                <input type="submit" class="btn btn-primary btn-update" value="Update">
+                <input type="hidden" name="key" value="{{item.key.urlsafe()}}">
+                <input type="hidden" name="frmkey" value="{{frmkey}}">
+                <input type="button" class="btn" id="backHistory" value="Cancel"></div>
+        </div>
+    </form>
+{% endblock %}

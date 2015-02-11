@@ -1,0 +1,245 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<script type='text/javascript' src='/js/utils.js'></script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Buyer's New Line Declaration Request Details
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Allows Users to get manager approval for leave and forms automatically sent to payroll.</p>   
+    </div>
+    <div class="well">
+        <fieldset>
+            {% import "scaffolding/macros.html" as scaffold with context %}
+            {% import 'macros/search.html' as search with context %}
+            <table class="table table-striped">
+                {% if status == 'Rejected' or status =='Approved' %}
+                <tr>
+                    <td>Status:</td>
+                    <td>
+                        <b>{{status}}</b> by <b>{{item.modified_by}}</b> on <b>{{localize_datetime(item.modified)}}</b>
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>Line Manager:</td>
+                    <td>{{item.Line_Manager}}</td>
+                </tr>
+                <tr>
+                    <td>HR Manager:</td>
+                    <td>{{item.HR_Managers}}</td>
+                </tr>
+                <tr>
+                    <td>Payroll Office:</td>
+                    <td>{{payroll_office}}</td>
+                </tr>
+                <tr>
+                    <td>Location Name:</td>
+                    <td>{{item.Location_Name}}</td>
+                </tr>
+                <tr>
+                    <td>Region/Division:</td>
+                    <td>{{item.Region_Division}}</td>
+                </tr>
+                <tr>
+                    <td>Employee ID Number:</td>
+                    <td>{{item.Employee_ID_Number}}</td>
+                </tr>
+                <tr>
+                    <td>Position:</td>
+                    <td>{{item.Position}}</td>
+                </tr>
+                <tr>
+                    <td>Location No. or Cost Centre:</td>
+                    <td>{{item.Location_Cost_Center}}</td>
+                </tr>
+                <tr>
+                    <td>Employee Type:</td>
+                    <td>{{item.Employee_Type}}</td>
+                </tr>
+                <tr>
+                    <td>Pay Frequency:</td>
+                    <td>{{item.Pay_Frequency}}</td>
+                </tr>
+            </table>
+
+            <legend>Leave Details</legend>
+            <!-- Select Basic -->
+
+            <table class="table table-striped table-bordered">
+                <thead style="text-align: center;">
+                    <th><br/>Type of Leave</th>
+                    <th>First Working<br/>Date of Leave</th>
+                    <th>Last Working<br/>Date of Leave</th>
+                    <th>Total No. of<br/>Working Days</th>
+                    <th>Date Returning<br/>to Work</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{item.LD_TOL_Grp1}}</td>
+                        <td>
+                            {{item.LD_First_Working_DOL1}}
+                        </td>
+                        <td>
+                            {{item.LD_Last_Working_DOL1}}
+                        </td>
+                        <td>
+                            {{item.LD_Total_Number_WH1}}
+                        </td>
+                        <td>
+                            {{item.LD_Date_RTW1}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{item.LD_TOL_Grp2}}
+                        </td>
+
+                        <td>
+                            {{item.LD_First_Working_DOL2}}
+                        </td>
+                        <td>
+                            {{item.LD_Last_Working_DOL2}}
+                        </td>
+                        <td>
+                            {{item.LD_Total_Number_WH2}}
+                        </td>
+                        <td>
+                            {{item.LD_Date_RTW2}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{item.LD_TOL_Grp3}}
+                        </td>
+
+                        <td>
+                            {{item.LD_First_Working_DOL3}}
+                        </td>
+                        <td>
+                            {{item.LD_Last_Working_DOL3}}
+                        </td>
+                        <td>
+                            {{item.LD_Total_Number_WH3}}
+                        </td>
+                        <td>
+                            {{item.LD_Date_RTW3}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {{item.LD_TOL_Grp4}}
+                        </td>
+                        <td>
+                            {{item.LD_First_Working_DOL4}}
+                        </td>
+                        <td>
+                            {{item.LD_Last_Working_DOL4}}
+                        </td>
+                        <td>
+                            {{item.LD_Total_Number_WH4}}
+                        </td>
+                        <td>
+                            {{item.LD_Date_RTW4}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <legend>Roster Details</legend>
+            <table class="table table-striped">
+                <tr>
+                    <td width='60%'>For full time employees, does the employee work a 20 day month?</td>
+                    <td width='10%'>{{item.Full_Time_Question}}</td>
+                    <td width='10%'>&nbsp;</td>
+                    <td width='10%'>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><strong>Loading - Annual Leave Only</strong><br/><sup>(If applicable - Refer to EBA) <br/> Please specify any loadings applicable to the above weekly roster, OR where less than one week is taken, the hours applicable to the part week taken</sup></td>
+                    <td align='center'>Hours <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{item.Annual_Leave_Only_Hours1}} <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{item.Annual_Leave_Only_Hours2}} <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{item.Annual_Leave_Only_Hours3}} <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{item.Annual_Leave_Only_Hours4}}
+
+                    </td>
+                    <td align='center'>% <br>
+                        {{item.Annual_Leave_Percentage1}} <br>
+                        {{item.Annual_Leave_Percentage2}} <br>
+                        {{item.Annual_Leave_Percentage3}} <br>
+                        {{item.Annual_Leave_Percentage4}}
+
+                    </td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td><strong>Public Holidays</strong> <br/>
+                    <sup>Please specify any Public Holidays that fall during the period of leave</sup></td>
+                    <td align='center'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Date <br>
+                        {{item.Public_Holiday_Dates1}} <br>
+                        {{item.Public_Holiday_Dates2}} <br>
+                        {{item.Public_Holiday_Dates3}} <br>
+                        {{item.Public_Holiday_Dates4}}
+
+                    </td>
+                    <td align='center'>Hours <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{item.Public_Holiday_Hours1}} <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{item.Public_Holiday_Hours2}} <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{item.Public_Holiday_Hours3}} <br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;{{item.Public_Holiday_Hours4}}
+
+                    </td>
+                    <td align='center'>% <br>
+                        {{item.Public_Holidays_Percentage1}} <br>
+                        {{item.Public_Holidays_Percentage2}} <br>
+                        {{item.Public_Holidays_Percentage3}} <br>
+                        {{item.Public_Holidays_Percentage4}}
+
+                    </td>
+                </tr>
+            </table>
+
+            <table class="table table-bordered table-striped tbl">
+                <thead>
+                    <th>&nbsp;</th> <th>MON</th> <th>TUE</th> <th>WED</th> <th>THURS</th> <th>FRI</th> <th>SAT</th> <th>SUN</th> <th>TOTAL</th>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td>Hours on Week</td>
+                        <td>{{item.RD_On_Mon}}</td>
+                        <td>{{item.RD_On_Tues}}</td>
+                        <td>{{item.RD_On_Wed}}</td>
+                        <td>{{item.RD_On_Thurs}}</td>
+                        <td>{{item.RD_On_Fri}}</td>
+                        <td>{{item.RD_On_Sat}}</td>
+                        <td>{{item.RD_On_Sun}}</td>
+                        <td>{{item.RD_On_Total}}</td>
+                    </tr>
+                    <tr>
+                        <td>Hours off Week <br/><sup>(where applicable)</sup></td>
+                        <td>{{item.RD_Off_Mon}}</td>
+                        <td>{{item.RD_Off_Tues}}</td>
+                        <td>{{item.RD_Off_Wed}}</td>
+                        <td>{{item.RD_Off_Thurs}}</td>
+                        <td>{{item.RD_Off_Fri}}</td>
+                        <td>{{item.RD_Off_Sat}}</td>
+                        <td>{{item.RD_Off_Sun}}</td>
+                        <td>{{item.RD_Off_Total}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div align="right">
+                {% if item.Status < 2 and is_requestor %}
+                    <a href="{{this.uri('leaveapps:update', key=key, frmkey=frmkey)}}" class="btn btn-primary">Edit</a>
+                {% endif %}
+                <input type="button" class="btn btn-primary" id="backHistory" value="Back"></div>
+        </fieldset>
+    </div>
+{% endblock %}

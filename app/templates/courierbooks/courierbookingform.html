@@ -1,0 +1,301 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+<link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+<script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+<script type='text/javascript' src='/js/utils.js'></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+    var stores = {{stores}};
+    var stores_list = [];
+
+    console.log(stores);
+
+    $.each(stores, function() {
+        $("#Store_No_Pick_Up").append("<option value="+this.number+">"+this.number+"</option>")
+        $("#Store_No_Dest").append("<option value="+this.number+">"+this.number+"</option>")
+        var store = {
+            number : this.number,
+            name : this.name,
+            address1 : this.address1,
+            address2 : this.address2,
+            suburb : this.suburb,
+            state : this.state,
+            postcode : this.postcode
+        }
+        stores_list[this.number] = store
+    });
+
+    $('#Store_No_Pick_Up').change(function() {
+        var store_number = $(this).val();
+        var name = stores_list[store_number].name;
+        var address1 = stores_list[store_number].address1;
+        var address2 = stores_list[store_number].address2;
+        var suburb = stores_list[store_number].suburb;
+        var state = stores_list[store_number].state;
+        var postcode = stores_list[store_number].postcode;
+
+        $('input[name="Store_Name_Pick_Up"]').val(name);
+        $('input[name="Address1_Pick_Up"]').val(address1);
+        $('input[name="Address2_Pick_Up"]').val(address2);
+        $('input[name="Suburb_Pick_Up"]').val(suburb);
+        $('input[name="State_Pick_Up"]').val(state);
+        $('input[name="Post_Code_Pick_Up"]').val(postcode);
+    });
+
+    $('#Store_No_Dest').change(function() {
+        var store_number = $(this).val();
+        var name = stores_list[store_number].name;
+        var address1 = stores_list[store_number].address1;
+        var address2 = stores_list[store_number].address2;
+        var suburb = stores_list[store_number].suburb;
+        var state = stores_list[store_number].state;
+        var postcode = stores_list[store_number].postcode;
+
+        $('input[name="Store_Name_Dest"]').val(name);
+        $('input[name="Address1_Dest"]').val(address1);
+        $('input[name="Address2_Dest"]').val(address2);
+        $('input[name="Suburb_Dest"]').val(suburb);
+        $('input[name="State_Dest"]').val(state);
+        $('input[name="Post_Code_Dest"]').val(postcode);
+    });
+});
+
+    $(function() {
+        $( "#dateSent" ).datepicker({dateFormat: 'dd-mm-yy'}).datepicker("setDate", "0");
+    });
+
+</script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Dan Murphy's Courier Booking Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Users request courier booking for goods delivery. The store fills out the form to order courier to pick up/drop off product.</p>
+</div>
+<form class="form-horizontal" action="/courierbooks/add" method="post">
+    <div class="well">
+        <fieldset>
+            <fieldset>
+                <legend>
+                    <h3>Booking Details</h3>
+                </legend>
+                <table width="100%">
+                    <tr>
+                        <td width="18%">Full name of person requesting courier <br/> (no nickname)</td>
+                        <td width="2%"/>
+                        <td width="30%">
+                            <input type="text" class="span11" name="Full_Name" id="Full_Name" value="{{user_fullname}}" required/>
+                            <input type="hidden" class="span9" id="dateSent" name="dateSent" value="">
+                        </td>
+                        <td width="18%">Contact No.</td>
+                        <td width="2%"/>
+                        <td width="15%">
+                            <input type="text" class="span11 numbersOnly" style="color:black" name="Contact_Number" id="Contact_Number" required/>  
+                        </td>
+                         <td width="15%"/>
+                    </tr>
+                    
+                    <tr>
+                        <td>Cost Centre</td>
+                        <td/>
+                        
+                        <td>
+		                      <select class="span5 selectpicker" name="Cost_Centre" id="Cost_Centre" required>
+		                          {% for costcentre in costcentres %}
+    		                        <option value="{{costcentre.store_name}}">{{costcentre.number}}</option>
+	                              {% endfor %}
+		                      </select>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <br/>
+            <fieldset>
+                <legend>
+                    <h3>Pick Up and Destinations</h3>
+                </legend>
+                <table width="100%" cellpadding="5">
+                <tr>
+                    <td width="20%"><h4>PICK UP STORE</h4></td>
+                    <td width="30%">&nbsp;</td>
+                    <td width="20%"><h4>DESTINATION STORE</h4></td>
+                    <td width="30%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Store No.</td>
+                    <td>
+                        <select class="span11" id="Store_No_Pick_Up" name="Store_No_Pick_Up" required>
+                            <option value="">Select</option>
+                        </select>
+                    </td>
+                    <td>Store No.</td>
+                    <td>
+                        <select class="span11" name="Store_No_Dest" id="Store_No_Dest" required>
+                            <option value="">Select</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Store Name</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" id="Store_Name_Pick_Up" name="Store_Name_Pick_Up" readonly/>                    
+                    </td>
+                    <td>Store Name</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" id="Store_Name_Dest" name="Store_Name_Dest" readonly/>                    
+                    </td>
+                </tr>
+                <tr>
+                    <td>Address 1</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" name="Address1_Pick_Up" id="Address1_Pick_Up" readonly/>                
+                    </td>
+                    <td>Address 1</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" name="Address1_Dest" id="Address1_Dest" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Address 2</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" name="Address2_Pick_Up" id="Address2_Pick_Up" readonly/>                
+                    </td>
+                    <td>Address 2</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" name="Address2_Dest" id="Address2_Dest" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Suburb</td>
+                    <td>
+                        <input type="text" class="span6" style="color:black" name="Suburb_Pick_Up" id="Suburb_Pick_Up" readonly/> 
+                    </td>
+                    
+                    <td>Suburb</td>
+                    <td>
+                        <input type="text" class="span6" style="color:black" name="Suburb_Dest" id="Suburb_Dest" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>State</td>
+                    <td>
+                        <input type="text" class="span4" style="color:black" name="State_Pick_Up" id="State_Pick_Up" readonly/> 
+                    </td>
+                    <td>State</td>
+                    <td>
+                        <input type="text" class="span4" style="color:black" name="State_Dest" id="State_Dest" readonly/> 
+                    </td>
+                </tr>
+                <tr>
+                    <td>Postcode</td>
+                    <td>
+                        <input type="text" class="span4" style="color:black" name="Post_Code_Pick_Up" id="Post_Code_Pick_Up" readonly/>                
+                    </td>
+                    <td>Postcode</td>
+                    <td>
+                        <input type="text" class="span4" style="color:black" name="Post_Code_Dest" id="Post_Code_Dest" readonly/>
+                    </td>
+                </tr>
+            </table> 
+            </fieldset><br>
+            <fieldset>
+                <legend>
+                    <h3>Reason for Courier</h3>
+                </legend>
+                <div class="navbar">
+                    <textarea rows="3" class="span12" name="Reason_For_Courier" id="Reason_For_Courier" style="resize:none" placeholder="eg. IBT's / Moving Fixtures" required></textarea>
+                </div>
+            </fieldset>
+            <br>
+            <fieldset>
+                <legend>
+                    <h3>Package Details</h3>
+                </legend>
+                <table width="100%" cellpadding="5">
+                    <tr>
+                        <td>Description of Package</td>
+                        <td colspan="3"><textarea rows="2" class="span12" name="Description_of_Package" id="Description_of_Package" style="resize:none" placeholder="Please indicate if Full / Half Size Pallets" required></textarea></td>
+                    </tr>
+                    <tr>
+                        <td width="20%">Length
+                        </td>
+                        <td width="30%"><input type="text" class="span11 numbersOnly" name="Length" id="Length" placeholder="Enter length in centimetres(cm)" required/></td>
+                        <td width="20%">Width
+                        </td>
+                        <td width="30%"><input type="text" class="span11 numbersOnly" name="Width" id="Width" placeholder="Enter width in centimetres(cm)" required/></td>
+                    </tr>
+                    <tr>
+                        <td>Height
+                        </td>
+                        <td><input type="text" class="span11 numbersOnly" name="Height" id="Height" placeholder="Enter height in centimetres  (cm)" required/></td>
+                        <td >Weight
+                        </td>
+                        <td ><input type="text" class="span11 numbersOnly" name="Weight" id="Weight" placeholder="Estimate weight in whole kg" required/></td>
+                    </tr>
+                    <tr>
+                        <td>Quantity
+                        </td>
+                        <td><input type="text" class="span11" name="Quantity" id="Quantity" placeholder="Eg. 1 box / 1 pallet" required/></td>
+                        <td >Please select the Courier <br> Vehicle size required
+                        </td>
+                        <td >
+                            <select class="span11 selectpicker" name="Please_select_the_Courier_Vehicle_size_required" id="Please_select_the_Courier_Vehicle_size_required" required>
+                                <option value="">Select</option>
+                                <option value="Small Van 1.2m">Small Van 1.2m</option>
+                                <option value="1 Tonne Truck 1.2m (1 Pallet)">1 Tonne Truck 1.2m (1 Pallet)</option>
+                                <option value="2 Tonne Truck 1.2m (2 Pallets)">2 Tonne Truck1.2m (2 Pallets)</option>
+                                <option value="4 Tonne Truck 2.1m (3-6 Pallets)">4 Tonne Truck 2.1m (3-6 Pallets)</option>
+                                <option value="6 Tonne Truck 2.2m (7-8 Pallets)">6 Tonne Truck 2.2m (7-8 Pallets)</option>
+                                <option value="8 Tonne Truck 2.3m (8-10 Pallets)">8 Tonne Truck 2.3m (8-10 Pallets)</option>
+                                <option value="12 Tonne Truck 2.4m (10-12 Pallets)">12 Tonne Truck 2.4m (10-12 Pallets)</option>
+                                <option value="Semi Trailer 2.65m (20 Pallets)">Semi Trailer 2.65m (20 Pallets)</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Insurance required</td>
+                        <td>
+                            <select class="span11 selectpicker" name="Insurance_required" id="Insurance_required" required>
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td >Ready to be collected</td>
+                        <td>
+                            <select class="span11 selectpicker" name="Ready_to_be_collected" id="Ready_to_be_collected" required>
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>From</td>
+                        <td colspan="3"><textarea rows="2" class="span12" name="From" id="From" style="resize:none" placeholder="Eg. Back Dock / Front Counter" required></textarea></td>
+                    </tr>
+                </table>
+            </fieldset>
+        </fieldset>
+        <br><br>
+        <div class="control-group">
+            <div align="right">
+                <input type="submit" class="btn btn-primary" value="Create Request">
+                <input type="button" class="btn" id="backHistory" value="Cancel"></div>
+        </div>
+        <center>If you have any inquiries, please call - 03 9497 6035</center>
+    </div>
+</form>
+{% endblock %}

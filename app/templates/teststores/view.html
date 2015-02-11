@@ -1,0 +1,201 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<script type='text/javascript' src='/js/utils.js'></script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+QA Test Store Request Details
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Stores Test Lab - Anyone that wants to book a store for testing new system/process they will use this form to fill out details and goes to the specific mailbox to allocate a store and send form back with store information.</p>
+    </div>
+
+    <div class="well">
+        <fieldset>
+            <table class="table table-striped">
+                <tr>
+                    <td>Request Creator:</td>
+                    <td>{{teststore.created_by}}</td>
+                </tr>
+                <tr>
+                    <td>Project Name:</td>
+                    <td>{{teststore.Project_Name}}</td>
+                </tr>
+                <tr>
+                    <td>Requested By:</td>
+                    <td>{{teststore.Requested_By}}</td>
+                </tr>
+                <tr>
+                    <td>Project No./ER:</td>
+                    <td>{{teststore.Project_No_ER}}</td>
+                </tr>
+                <tr>
+                    <td>Banner:</td>
+                    <td>{{teststore.Banner1}}</td>
+                </tr>
+                <tr>
+                    <td>Sub Banner:</td>
+                    <td>{{teststore.Sub_Banner1}}</td>
+                </tr>
+                <tr>
+                    <td>SCO:</td>
+                    <td>{{teststore.SCO1}}</td>
+                </tr>
+                <tr>
+                    <td>Environment:</td>
+                    <td>{{teststore.Environment1}}</td>
+                </tr>
+                <tr>
+                    <td>Start Date:</td>
+                    <td>{{teststore.Start_Date1}}</td>
+                </tr>
+                <tr>
+                    <td>End Date:</td>
+                    <td>{{teststore.End_Date1}}</td>
+                </tr>
+                <tr>
+                    <td>Software Version Level:</td>
+                    <td>{{teststore.Software_Version_Level1}}</td>
+                </tr>
+                <tr>
+                    <td><strong>Store Allocated:</strong></td>
+                    <td><strong>{{storeallocated1}}</strong></td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                </tr>
+                {% if str(teststore.Banner2) != "none" %}
+                    <tr>
+                        <td>Banner:</td>
+                        <td>{{teststore.Banner2}}</td>
+                    </tr>
+                    <tr>
+                        <td>Sub Banner:</td>
+                        <td>{{teststore.Sub_Banner2}}</td>
+                    </tr>
+                    <tr>
+                        <td>SCO:</td>
+                        <td>{{teststore.SCO2}}</td>
+                    </tr>
+                    <tr>
+                        <td>Environment:</td>
+                        <td>{{teststore.Environment2}}</td>
+                    </tr>
+                    <tr>
+                        <td>Start Date:</td>
+                        <td>{{teststore.Start_Date2}}</td>
+                    </tr>
+                    <tr>
+                        <td>End Date:</td>
+                        <td>{{teststore.End_Date2}}</td>
+                    </tr>
+                    <tr>
+                        <td>Software Version Level:</td>
+                        <td>{{teststore.Software_Version_Level2}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Store Allocated:</strong></td>
+                        <td><strong>{{storeallocated2}}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                {% endif %}
+                {% if str(teststore.Banner3) != "none" %}
+                    <tr>
+                        <td>Banner:</td>
+                        <td>{{teststore.Banner3}}</td>
+                    </tr>
+                    <tr>
+                        <td>Sub Banner:</td>
+                        <td>{{teststore.Sub_Banner3}}</td>
+                    </tr>
+                    <tr>
+                        <td>SCO:</td>
+                        <td>{{teststore.SCO3}}</td>
+                    </tr>
+                    <tr>
+                        <td>Environment:</td>
+                        <td>{{teststore.Environment3}}</td>
+                    </tr>
+                    <tr>
+                        <td>Start Date:</td>
+                        <td>{{teststore.Start_Date3}}</td>
+                    </tr>
+                    <tr>
+                        <td>End Date:</td>
+                        <td>{{teststore.End_Date3}}</td>
+                    </tr>
+                    <tr>
+                        <td>Software Version Level:</td>
+                        <td>{{teststore.Software_Version_Level3}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Store Allocated:</strong></td>
+                        <td><strong>{{storeallocated3}}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                {% endif %}
+                {% if str(teststore.Banner4) != "none" %}
+                    <tr>
+                        <td>Banner:</td>
+                        <td>{{teststore.Banner4}}</td>
+                    </tr>
+                    <tr>
+                        <td>Sub Banner:</td>
+                        <td>{{teststore.Sub_Banner4}}</td>
+                    </tr>
+                    <tr>
+                        <td>SCO:</td>
+                        <td>{{teststore.SCO4}}</td>
+                    </tr>
+                    <tr>
+                        <td>Environment:</td>
+                        <td>{{teststore.Environment4}}</td>
+                    </tr>
+                    <tr>
+                        <td>Start Date:</td>
+                        <td>{{teststore.Start_Date4}}</td>
+                    </tr>
+                    <tr>
+                        <td>End Date:</td>
+                        <td>{{teststore.End_Date4}}</td>
+                    </tr>
+                    <tr>
+                        <td>Software Version Level:</td>
+                        <td>{{teststore.Software_Version_Level4}}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Store Allocated:</strong></td>
+                        <td><strong>{{storeallocated4}}</strong></td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td>&nbsp;</td>
+                    </tr>
+                {% endif %}
+                <tr>
+                    <td>Test Purpose Applications Required:</td>
+                    <td>{{teststore.Test_Purpose_Applications_Required}}</td>
+                </tr>
+            </table>
+            <div align="right">
+                {% if teststore.Store_Allocated1 == "Pending for QA Team Allocation" and is_requestor %}
+                <a href="{{this.uri('teststores:update', key=teststore.key.urlsafe(), frmkey=frmkey)}}" class="btn btn-primary">Edit</a>
+                {% endif%}
+                <a href="{{this.uri('teststores:list', key=frmkey)}}" class="btn btn-primary">Back</a>
+            </div>
+        </fieldset>
+    </div>
+{% endblock %}

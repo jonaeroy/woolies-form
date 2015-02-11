@@ -1,0 +1,106 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<script type='text/javascript' src='/js/utils.js'></script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Masters Inner &amp; Outer Pack Size Change Request View
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->  
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>When product is changing carton configurations, aka packaging changes from the vendors.</p>
+</div>
+<div class="well">
+    <fieldset>
+        {% import "scaffolding/macros.html" as scaffold with context %}
+        {% import 'macros/search.html' as search with context %}
+        <table class="table table-striped">
+            {% if status == 'Rejected' or status =='Approved' %}
+            <tr>
+                <td>Status:</td>
+                <td>{{status}} by {{modified_by}} on {{localize_datetime(modified)}}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td>Buyer or BAA Name:</td>
+                <td>{{buyer_or_baa_name}}</td>
+            </tr>
+            <tr>
+                <td>Replenisher:</td>
+                <td>{{replenisher}}</td>
+            </tr>
+            <tr>
+                <td>Viewer:</td>
+                <td>{{viewer}}</td>
+            </tr>
+            <tr>
+                <td>Department:</td>
+                <td>{{department}}</td>
+            </tr>
+            <tr>
+                <td>Submission Date:</td>
+                <td>{{submission_date}}</td>
+            </tr>
+            <tr>
+                <td>Effective Date:</td>
+                <td>{{effective_date}}</td>
+            </tr>
+            <tr>
+                <td>DSD or DC:</td>
+                <td>{{dsd_or_dc}}</td>
+            </tr>
+            <tr>
+                <td>Reason for Pack Size Change:</td>
+                <td>{{reason_for_change}}</td>
+            </tr>
+            <tr>
+                <td>Supplier Number:</td>
+                <td>{{supplier_number}}</td>
+            </tr>
+            <tr>
+                <td>Supplier Name:</td>
+                <td>{{supplier_name}}</td>
+            </tr>
+            <tr>
+                <td>Item Details:</td>
+                <td>
+                    {% for detail in details %}
+                    <p><strong class="text-info">Item Number: </strong> {{ detail.item_number }}</p>
+                    <p><strong class="text-info">Item Description: </strong>{{ detail.item_description }}</p>
+                    <p><strong class="text-info">Old Inner: </strong>{{ detail.old_inner }}</p>
+                    <p><strong class="text-info">Old Outer: </strong>{{ detail.old_outer }}</p>
+                    <p><strong class="text-info">New Inner: </strong>{{ detail.new_inner }}</p>
+                    <p><strong class="text-info">New Outer: </strong>{{ detail.new_outer }}</p>
+                    <p><strong class="text-info">Comments: </strong>{{ detail.comments }}</p> <br>
+                    {% endfor %}
+                </td>
+            </tr>
+            <tr>
+                <td>Notes</td>
+                <td>{{notes}}</td>
+            </tr>
+            <tr>
+                <td>Attachment</td>
+                <td>{{download_link}}</td>
+            </tr>
+        </table>
+    </fieldset>
+    <div class="row-fluid">
+        <div class="pull-right">
+            {% if form_status == 1 and is_creator == True %}
+            <a href="/pack_sizes/page/edit/{{keyid}}/{{frmkey}}" class="btn btn-primary">Edit</a>
+            {% endif %}
+            <a href="{{this.uri('pack_sizes:list', key=frmkey)}}" class="btn btn-primary">Back</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

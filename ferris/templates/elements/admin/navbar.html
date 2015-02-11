@@ -1,0 +1,22 @@
+
+<div class="navbar navbar-fixed-top navbar-inverse">
+    <div class="navbar-inner">
+        <div class="container-fluid">
+            <a class="brand" href="/admin">Ferris<span style="color: #AAF">²</span></a>
+            <ul class='nav'>
+                {% if autoadmin %}
+                {% for v in autoadmin.links|dictsort %}
+                    {% if this.name == inflector.underscore(v.0) %}
+                    <li class='active'>
+                    {% else %}
+                    <li>
+                    {% endif %}
+                        <a href='{{v.1}}'>{{inflector.titleize(v.0)}}</a>
+                    </li>
+                {% endfor %}
+                {% endif %}
+            </ul>
+            {% include 'elements/admin/user_info.html' %}
+        </div>
+    </div>
+</div>

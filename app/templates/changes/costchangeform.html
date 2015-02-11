@@ -1,0 +1,74 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+{% endblock %}
+
+
+{% block layout_page_title %}
+<!-- page title here -->
+Masters Cost Change Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+
+{% endblock %}
+
+{% block layout_content %}
+<!-- the page main content should be here -->
+
+
+<form class="form-horizontal" action="/changes/add" method="post">
+    <br/>
+    <div class="well">
+        <fieldset>
+           
+            <div class="control-group controls-row">
+                <label class="control-label" for="buyer">Buyer or BAA Name:</label>
+                <div class="controls">
+                    <input type="text" class="span3" name="Buyer_or_BAA_Name" value="{{user}}" readonly required/>
+                </div>
+                <label class="control-label" for="subDate">Submission Date &nbsp;&nbsp;&nbsp;</label>
+                <div class="controls">
+                    <input type="text" id="datepicker" class="span3" name="Submission_Date" readonly/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="dept">Department:</label>
+                <div class="controls">
+                    <input type="text" class="span3" id="dept" name="Department" required/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="date-picker">Effective Date:</label>
+                <div class="controls">
+                    <input type="text" id="date-picker" class="span3" name="Effective_Date" placeholder="dd/mm/yyyy" required/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="merchManger">Merchandise Manager:</label>
+                <div class="controls">
+                    <input type="email" class="span3" id="merchManger" name="Merchandise_Manager" required/>
+                </div>
+            </div>
+            <br/>
+            <div class="control-group">
+                <label class="control-label" for="comments">Comments:</label>
+                <div class="controls">
+                    <textarea class="span8" rows="5" id="comments" name="Comments" style="resize:none"></textarea>
+                </div>
+            </div>
+            <br/>
+            <br/>
+            <div class="control-group">
+                <div align="right">
+                    <input type="submit" class="btn btn-primary" value="Save">
+                    <input type="button" class="btn" value="Cancel" onclick="history.back()">
+                </div>
+            </div>
+        </fieldset>
+    </div>
+</form>
+{% endblock %}
+

@@ -1,0 +1,503 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+    {{ super() }}
+    <link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+    <script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+    <script type='text/javascript' src='/js/angular/angular.js'></script>
+    <script type='text/javascript' src='/js/main.js'></script>
+    <script type='text/javascript' src='/js/utils.js'></script>
+    <script type='text/javascript'>
+        var dateToday = new Date;
+
+        function checkRowCount(){
+            var count = 0;
+            obj = $('#dynamicTable .removeRow');
+            obj.each(function(){
+                count++;
+            });
+
+            //alert("Count : " + count);
+
+            if(count <= 1){
+                $('.removeRow').hide();
+            }else{
+                $('.removeRow').show();
+            }
+        }
+
+        function reset_fields(){
+            var reference = $('#dynamicTable tr:nth-last-child(1)');
+            var second_to_the_last_tr = reference.prev();
+            var third_to_the_last_tr = second_to_the_last_tr.prev();
+            var fourth_to_the_last_tr = third_to_the_last_tr.prev();
+
+            second_to_the_last_tr.find('input:text').val('');
+            third_to_the_last_tr.find('input:text').val('');
+            fourth_to_the_last_tr.find('input:text').val('');
+
+            /*Clear drop down fields*/
+            fourth_to_the_last_tr.find('.ddown').prop('selectedIndex', 0);
+        }
+
+        $(document).ready(function(){
+
+            var numberOfRows = {{details|length}}
+
+            if(numberOfRows <= 1)
+                $('.removeRow').hide();
+
+            $("#reason_for_change option[value='{{item.reason_for_change}}']").attr("selected", "selected");
+            $("#dc_agreement option[value='{{item.dc_agreement}}']").attr("selected", "selected");
+            $("#department_name option[value='{{item.department_name}}']").attr("selected", "selected");
+            $("#passed_business_rules option[value='{{item.passed_business_rules}}']").attr("selected", "selected");
+
+            $('.date_pickr').datepicker({
+                dateFormat: 'dd-mm-yy',
+                minDate: dateToday
+            });
+
+            $('#submission_date').change(function(){
+                var bits = $(this).val().split('-');
+                var end = new Date(bits[2], bits[1] - 1, bits[0])
+
+                $('#effective_date').val($.datepicker.formatDate('dd-mm-yy', end));
+                $('#effective_date').datepicker("option", "minDate", end);
+
+            });
+
+            $('#dynamicTable').on('click', '.removeRow', function(){
+                var thisButtonsRoot = $(this).parent().parent();
+                var thisButtonsRoot_Sibling = thisButtonsRoot.next();
+                var thisButtonsRoot_Other_Sibling = thisButtonsRoot_Sibling.next();
+                var thisButtonsRoot_Other_Sibling_Border = thisButtonsRoot_Other_Sibling.next();
+                thisButtonsRoot.remove();
+                thisButtonsRoot_Sibling.remove();
+                thisButtonsRoot_Other_Sibling.remove();
+                thisButtonsRoot_Other_Sibling_Border.remove();
+
+                checkRowCount();
+            });
+
+            $('#addRow').click(function(){
+                var layout = '<tr>' + $('#dynamicTable tr:nth-child(1)').html() + '</tr>';
+                layout += '<tr>' + $('#dynamicTable tr:nth-child(2)').html() + '</tr>';
+                layout += '<tr>' + $('#dynamicTable tr:nth-child(3)').html() + '</tr>';
+                layout += '<tr>' + $('#dynamicTable tr:nth-child(4)').html() + "</tr>";
+                $('#dynamicTable').append(layout);
+
+                reset_fields();
+                checkRowCount();
+            });
+
+            $('.btn-update').click(function(){
+                $.ajax({
+                    url: '/multiple_changes/fetch_request_status/{{key}}'
+                }).done(function(data){
+                    if(data == 1){
+                        $('#update-request-button').click();
+                    }else{
+                        window.location.href = '/multiple_changes/edit_locked?frmkey={{frmkey}}';
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Masters Store Owner Multiple Change Request Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Allows Warehouse network to request a change to an item for the store order multiple. As masters has matured, the DCs have identified products that need to go to a store by pallet.</p>
+    </div>
+    <form class="well form-horizontal" method="post" action="/multiple_changes/edit_data">
+        <input type="hidden" id="details" name="details" value="[]">
+        
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="control-group">
+                    <label class="control-label" for="requestor_name">Requestor Name</label>
+                    <div class="controls">
+                        <input class="span11" type="text" id="requestor_name" name="requestor_name" value='{{item.requestor_name}}' required>
+                        <input class="span11" type="hidden" id="status" name="status" value='{{item.status}}' required>
+                    </div>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="control-group">
+                    <label class="control-label" for="reason_for_change">Reason for Change</label>
+                    <div class="controls">
+                        <select id="reason_for_change" name="reason_for_change" class="span11" required>
+                            <option value=""></option>
+                            <option value="Sales Volume">Sales Volume</option>
+                            <option value="Forecast Volume">Forecast Volume</option>
+                            <option value="Weight/Cube Consideration">Weight/Cube Consideration</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="control-group">
+                    <label class="control-label" for="dc_agreement">DC Agreement (HP &amp; HC)</label>
+                    <div class="controls">
+                        <select id="dc_agreement" name="dc_agreement" class="span11" required>
+                            <option value=""></option>
+                            <option value="Agree">Agree</option>
+                            <option value="Disagree">Disagree</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="control-group">
+                    <label class="control-label" for="department_name">Department Name</label>
+                    <div class="controls">
+                        <select id="department_name" name="department_name" class="span11" required>
+                            <option value=""></option>
+                            <option value="Adhesives">Adhesives</option>
+                            <option value="Art &amp; Craft">Art &amp; Craft</option>
+                            <option value="Assembly">Assembly</option>
+                            <option value="Bathroom Fixtures">Bathroom Fixtures</option>
+                            <option value="Bathroom Accessories">Bathroom Accessories</option>
+                            <option value="Bathroom Electric Fixtures">Bathroom Electric Fixtures</option>
+                            <option value="BBQ's">BBQ's</option>
+                            <option value="Books &amp; Magazines">Books &amp; Magazines</option>
+                            <option value="Building Aids">Building Aids</option>
+                            <option value="Building Boards">Building Boards</option>
+                            <option value="Cabinet Hardware">Cabinet Hardware</option>
+                            <option value="Cabinetry">Cabinetry</option>
+                            <option value="Carpet">Carpet</option>
+                            <option value="Ceiling Fans">Ceiling Fans</option>
+                            <option value="Cement &amp; Bagged">Cement &amp; Bagged</option>
+                            <option value="Ceramic Tiles">Ceramic Tiles</option>
+                            <option value="Chain">Chain</option>
+                            <option value="Rope &amp; Wire">Rope &amp; Wire</option>
+                            <option value="Charity Collections">Charity Collections</option>
+                            <option value="Curtains &amp; Accessories">Curtains &amp; Accessories</option>
+                            <option value="Decor Wall Art">Decor Wall Art</option>
+                            <option value="Delivery">Delivery</option>
+                            <option value="Door Furniture">Door Furniture</option>
+                            <option value="Door Hardware">Door Hardware</option>
+                            <option value="Door Hinges">Door Hinges</option>
+                            <option value="Doors">Doors</option>
+                            <option value="Drain Waste Vent">Drain Waste Vent</option>
+                            <option value="Dressed &amp; Mouldings">Dressed &amp; Mouldings</option>
+                            <option value="Enamels">Enamels</option>
+                            <option value="Engineered">Engineered</option>
+                            <option value="Extended Warranty">Extended Warranty</option>
+                            <option value="Exterior Paint">Exterior Paint</option>
+                            <option value="Fertilisers and Plant Food">Fertilisers and Plant Food</option>
+                            <option value="Fibre Cement">Fibre Cement</option>
+                            <option value="Fillers">Fillers</option>
+                            <option value="Fixings">Fixings</option>
+                            <option value="Floor Covers">Floor Covers</option>
+                            <option value="Flooring Accessories">Flooring Accessories</option>
+                            <option value="Fluorescent Tubes &amp; Fittings">Fluorescent Tubes &amp; Fittings</option>
+                            <option value="Garden Care">Garden Care</option>
+                            <option value="Garden Hand Tools">Garden Hand Tools</option>
+                            <option value="Garden Pest Control">Garden Pest Control</option>
+                            <option value="Garden Sundries">Garden Sundries</option>
+                            <option value="Gas Bottle Exchange">Gas Bottle Exchange</option>
+                            <option value="General Hardware">General Hardware</option>
+                            <option value="Greenlife">Greenlife</option>
+                            <option value="GST Exemption">GST Exemption</option>
+                            <option value="Hand Tools">Hand Tools</option>
+                            <option value="Hand Watering">Hand Watering</option>
+                            <option value="Hard Flooring">Hard Flooring</option>
+                            <option value="Heating &amp; Cooling">Heating &amp; Cooling</option>
+                            <option value="Home Electrical">Home Electrical</option>
+                            <option value="Home Media">Home Media</option>
+                            <option value="Household Pest Control">Household Pest Control</option>
+                            <option value="Housewares">Housewares</option>
+                            <option value="Indoor Blinds">Indoor Blinds</option>
+                            <option value="Indoor Lighting">Indoor Lighting</option>
+                            <option value="Install Appliances">Install Appliances</option>
+                            <option value="Install Flooring">Install Flooring</option>
+                            <option value="Install Irrigation">Install Irrigation</option>
+                            <option value="Installation">Installation</option>
+                            <option value="Insulation">Insulation</option>
+                            <option value="Interior Paint">Interior Paint</option>
+                            <option value="Irrigation">Irrigation</option>
+                            <option value="Joinery">Joinery</option>
+                            <option value="Kitchen Accessories">Kitchen Accessories</option>
+                            <option value="Kitchen Appliances">Kitchen Appliances</option>
+                            <option value="Kitchen Sinks">Kitchen Sinks</option>
+                            <option value="Ladders">Ladders</option>
+                            <option value="Landscape Features">Landscape Features</option>
+                            <option value="Landscaping Sundries">Landscaping Sundries</option>
+                            <option value="Laundry Appliances">Laundry Appliances</option>
+                            <option value="Laundry Sinks &amp; Cabinets">Laundry Sinks &amp; Cabinets</option>
+                            <option value="Lawn">Lawn</option>
+                            <option value="Leisure">Leisure</option>
+                            <option value="Light Globes">Light Globes</option>
+                            <option value="Mulch and Cover">Mulch and Cover</option>
+                            <option value="Outdoor Blinds">Outdoor Blinds</option>
+                            <option value="Outdoor Buildings">Outdoor Buildings</option>
+                            <option value="Outdoor Furniture">Outdoor Furniture</option>
+                            <option value="Outdoor Landscape">Outdoor Landscape</option>
+                            <option value="Outdoor Lighting">Outdoor Lighting</option>
+                            <option value="Outdoor Power Tools">Outdoor Power Tools</option>
+                            <option value="Outdoor Structures">Outdoor Structures</option>
+                            <option value="Paint Application">Paint Application</option>
+                            <option value="Paint Protection">Paint Protection</option>
+                            <option value="Paint Tools">Paint Tools</option>
+                            <option value="Pallet Hire">Pallet Hire</option>
+                            <option value="Planting Media &amp; Soil Improvers">Planting Media &amp; Soil Improvers</option>
+                            <option value="Plasterboard">Plasterboard</option>
+                            <option value="Plastic Bags">Plastic Bags</option>
+                            <option value="Pool">Pool</option>
+                            <option value="Power Tool Accessories">Power Tool Accessories</option>
+                            <option value="Power Tools">Power Tools</option>
+                            <option value="Powered Cleaning">Powered Cleaning</option>
+                            <option value="Preparation &amp; Cleaning">Preparation &amp; Cleaning</option>
+                            <option value="Primers / Undercoats">Primers / Undercoats</option>
+                            <option value="Promotion">Promotion</option>
+                            <option value="Promotion Leisure">Promotion Leisure</option>
+                            <option value="Repairs">Repairs</option>
+                            <option value="Roofing">Roofing</option>
+                            <option value="Rough Plumbing">Rough Plumbing</option>
+                            <option value="Safety">Safety</option>
+                            <option value="Sanitary Ware">Sanitary Ware</option>
+                            <option value="Sealants">Sealants</option>
+                            <option value="Security">Security</option>
+                            <option value="Shelving">Shelving</option>
+                            <option value="Showering">Showering</option>
+                            <option value="Small Domestic Appliances">Small Domestic Appliances</option>
+                            <option value="SODI Install Flooring">SODI Install Flooring</option>
+                            <option value="SODI Install Kitchens">SODI Install Kitchens</option>
+                            <option value="SOGI BBQ's">SOGI BBQ's</option>
+                            <option value="SOGI Building Aids">SOGI Building Aids</option>
+                            <option value="SOGI Building Boards">SOGI Building Boards</option>
+                            <option value="SOGI Cabinetry">SOGI Cabinetry</option>
+                            <option value="SOGI Carpet">SOGI Carpet</option>
+                            <option value="SOGI Ceramic Tiles">SOGI Ceramic Tiles</option>
+                            <option value="SOGI Chain">SOGI Chain</option>
+                            <option value="SOGI Consumer Electronics">SOGI Consumer Electronics</option>
+                            <option value="SOGI Curtains &amp; Accessories">SOGI Curtains &amp; Accessories</option>
+                            <option value="SOGI Door Furniture">SOGI Door Furniture</option>
+                            <option value="SOGI Door Hardware">SOGI Door Hardware</option>
+                            <option value="SOGI Door Hinges">SOGI Door Hinges</option>
+                            <option value="SOGI Dressed &amp; Mouldings">SOGI Dressed &amp; Mouldings</option>
+                            <option value="SOGI Engineered">SOGI Engineered</option>
+                            <option value="SOGI Fibre Cement">SOGI Fibre Cement</option>
+                            <option value="SOGI Fixings">SOGI Fixings</option>
+                            <option value="SOGI Floor Covers">SOGI Floor Covers</option>
+                            <option value="SOGI Flooring Accessories">SOGI Flooring Accessories</option>
+                            <option value="SOGI Garden Sundries">SOGI Garden Sundries</option>
+                            <option value="SOGI General Hardware">SOGI General Hardware</option>
+                            <option value="SOGI Greenlife">SOGI Greenlife</option>
+                            <option value="SOGI Hand Tools">SOGI Hand Tools</option>
+                            <option value="SOGI Hard Flooring">SOGI Hard Flooring</option>
+                            <option value="SOGI Heating &amp; Cooling">SOGI Heating &amp; Cooling</option>
+                            <option value="SOGI Home Electrical">SOGI Home Electrical</option>
+                            <option value="SOGI Home Media">SOGI Home Media</option>
+                            <option value="SOGI Housewares">SOGI Housewares</option>
+                            <option value="SOGI Indoor Blinds">SOGI Indoor Blinds</option>
+                            <option value="SOGI Install Bathroom">SOGI Install Bathroom</option>
+                            <option value="SOGI Install Flooring">SOGI Install Flooring</option>
+                            <option value="SOGI Install Kitchens">SOGI Install Kitchens</option>
+                            <option value="SOGI Insulation">SOGI Insulation</option>
+                            <option value="SOGI Irrigation">SOGI Irrigation</option>
+                            <option value="SOGI Joinery">SOGI Joinery</option>
+                            <option value="SOGI Kitchen Accessories">SOGI Kitchen Accessories</option>
+                            <option value="SOGI Kitchen Sinks">SOGI Kitchen Sinks</option>
+                            <option value="SOGI Ladders">SOGI Ladders</option>
+                            <option value="SOGI Landscape Features">SOGI Landscape Features</option>
+                            <option value="SOGI Light Globes">SOGI Light Globes</option>
+                            <option value="SOGI Mulch &amp; Cover">SOGI Mulch &amp; Cover</option>
+                            <option value="SOGI Outdoor Buildings">SOGI Outdoor Buildings</option>
+                            <option value="SOGI Outdoor Furniture">SOGI Outdoor Furniture</option>
+                            <option value="SOGI Outdoor Landscape">SOGI Outdoor Landscape</option>
+                            <option value="SOGI Outdoor Power Tools">SOGI Outdoor Power Tools</option>
+                            <option value="SOGI Outdoor Structures">SOGI Outdoor Structures</option>
+                            <option value="SOGI Paint">SOGI Paint</option>
+                            <option value="SOGI Plasterboard">SOGI Plasterboard</option>
+                            <option value="SOGI Power Tool Accessories">SOGI Power Tool Accessories</option>
+                            <option value="SOGI Power Tools">SOGI Power Tools</option>
+                            <option value="SOGI Powered Cleaning">SOGI Powered Cleaning</option>
+                            <option value="SOGI Rough plumbing">SOGI Rough plumbing</option>
+                            <option value="SOGI Safety">SOGI Safety</option>
+                            <option value="SOGI Sanitary Ware">SOGI Sanitary Ware</option>
+                            <option value="SOGI Security">SOGI Security</option>
+                            <option value="SOGI Shelving">SOGI Shelving</option>
+                            <option value="SOGI Showering">SOGI Showering</option>
+                            <option value="SOGI Steel">SOGI Steel</option>
+                            <option value="SOGI Storage &amp; Organisation">SOGI Storage &amp; Organisation</option>
+                            <option value="SOGI Stormwater">SOGI Stormwater</option>
+                            <option value="SOGI Structural Timber">SOGI Structural Timber</option>
+                            <option value="SOGI Tapware">SOGI Tapware</option>
+                            <option value="SOGI Tool Equipment">SOGI Tool Equipment</option>
+                            <option value="SOGI Tool Storage">SOGI Tool Storage</option>
+                            <option value="SOGI Trade Electrical">SOGI Trade Electrical</option>
+                            <option value="SOGI Wardrobe Organisation">SOGI Wardrobe Organisation</option>
+                            <option value="SOGI Wheelbarrows">SOGI Wheelbarrows</option>
+                            <option value="SOGI Windows">SOGI Windows</option>
+                            <option value="SOS Cooking Appliances">SOS Cooking Appliances</option>
+                            <option value="SOS Doors">SOS Doors</option>
+                            <option value="SOS Kitchen Appliances">SOS Kitchen Appliances</option>
+                            <option value="SOS Laundry Appliances">SOS Laundry Appliances</option>
+                            <option value="SOS Roofing">SOS Roofing</option>
+                            <option value="SOS Water Filtration">SOS Water Filtration</option>
+                            <option value="Speciality Paint">Speciality Paint</option>
+                            <option value="Steel">Steel</option>
+                            <option value="Storage &amp; Organisation">Storage &amp; Organisation</option>
+                            <option value="Store Consumables">Store Consumables</option>
+                            <option value="Stormwater">Stormwater</option>
+                            <option value="Structural Timber">Structural Timber</option>
+                            <option value="Tapware">Tapware</option>
+                            <option value="Tiling Sundries">Tiling Sundries</option>
+                            <option value="Tool Equipment">Tool Equipment</option>
+                            <option value="Tool Storage">Tool Storage</option>
+                            <option value="Trade Electrical">Trade Electrical</option>
+                            <option value="Trade Paint">Trade Paint</option>
+                            <option value="Ute Hire / Trailer Hire">Ute Hire / Trailer Hire</option>
+                            <option value="Vinyl Flooring">Vinyl Flooring</option>
+                            <option value="Wallcoverings">Wallcoverings</option>
+                            <option value="Wardrobe Organisation">Wardrobe Organisation</option>
+                            <option value="Water/Beverages">Water/Beverages</option>
+                            <option value="Wheeled Tools">Wheeled Tools</option>
+                            <option value="Windows">Windows</option>
+                            <option value="Woodcare">Woodcare</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="control-group">
+                    <label class="control-label" for="supplier_site_number">Supplier Site Number</label>
+                    <div class="controls">
+                        <input class="span11 numbersOnly" type="text" id="supplier_site_number" name="supplier_site_number" value='{{item.supplier_site_number}}' required>
+                    </div>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="control-group">
+                    <label class="control-label" for="passed_business_rules">Passed Business Rules</label>
+                    <div class="controls">
+                        <select id="passed_business_rules" name="passed_business_rules" class="span11" required>
+                            <option value=""></option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="control-group">
+                    <label class="control-label" for="submission_date">Submission Date</label>
+                    <div class="controls">
+                        <input class="span11 date_pickr" type="text" id="submission_date" name="submission_date" value='{{item.submission_date}}' required>
+                    </div>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="control-group">
+                    <label class="control-label" for="supplier_name">Supplier Name</label>
+                    <div class="controls">
+                        <input class="span11" type="text" id="supplier_name" name="supplier_name" value='{{item.supplier_name}}' required maxlength="40">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="control-group">
+                    <label class="control-label" for="effective_date">Effective Date</label>
+                    <div class="controls">
+                        <input class="span11 date_pickr" type="text" id="effective_date" name="effective_date" value='{{item.effective_date}}' required>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <p>&nbsp;</p> <!-- Spacer -->
+
+        <div>
+            <div>
+                <table id="dynamicTable" class="table table-condensed">
+                    {% for data in details %}
+                        <tr>
+                            <td><input type="text" name="item_number[]" class="span9 txbox" required placeholder="Item Number" value='{{data.item_number}}' maxlength="9"></td>
+                            <td><input type="text" name="item_description[]" class="span12 txbox" required placeholder="Item Description" value='{{data.item_description}}' maxlength="40"></td>
+                            <td>
+                                <select name="indent_v_domestic[]" class="ddown span11" required>
+                                    <option value="">Select Indent v Domestic</option>
+                                    <option value="Indent" {{ 'selected' if data.indent_v_domestic == 'Indent' else '' }}>Indent</option>
+                                    <option value="Domestic" {{ 'selected' if data.indent_v_domestic == 'Domestic' else '' }}>Domestic</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="old_som[]" class="ddown span11" required>
+                                    <option value="">Select Old SOM</option>
+                                    <option value="Pallet" {{ 'selected' if data.old_som == 'Pallet' else '' }}>Pallet</option>
+                                    <option value="Case" {{ 'selected' if data.old_som == 'Case' else '' }}>Case</option>
+                                    <option value="Inner" {{ 'selected' if data.old_som == 'Inner' else '' }}>Inner</option>
+                                    <option value="Each" {{ 'selected' if data.old_som == 'Each' else '' }}>Each</option>
+                                    <option value="Unknown" {{ 'selected' if data.old_som == 'Unknown' else '' }}>Unknown</option>
+                                </select>
+                            </td>
+                            <td>
+                                <select name="new_som[]" class="ddown span11" required>
+                                    <option value="">Select New SOM</option>
+                                    <option value="Pallet" {{ 'selected' if data.new_som == 'Pallet' else '' }}>Pallet</option>
+                                    <option value="Case" {{ 'selected' if data.new_som == 'Case' else '' }}>Case</option>
+                                    <option value="Inner" {{ 'selected' if data.new_som == 'Inner' else '' }}>Inner</option>
+                                    <option value="Each" {{ 'selected' if data.new_som == 'Each' else '' }}>Each</option>
+                                </select>
+                            </td>
+                            <td style="vertical-align: middle;" rowspan="3"><button class="removeRow" type="button" class="btn">Remove</button></td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" name="buyer[]" class="span12 txbox" required placeholder="Buyer" value='{{data.buyer}}' maxlength="40"></td>
+                            <td><input type="text" name="sps[]" class="span12 txbox" placeholder="SPS" maxlength="40" value='{{data.sps}}' required></td>
+                            <td><input type="text" name="outer_pack[]" class="span5 txbox" required placeholder="Outer Pack" value='{{data.outer_pack}}' maxlength="4"></td>
+                            <td><input type="text" name="ti[]" class="span5 txbox" value='{{data.ti}}' required placeholder="TI"></td>
+                            <td><input type="text" name="hi[]" class="span5 txbox" value='{{data.hi}}' required placeholder="HI"></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td><input type="text" name="weight[]" class="span6 txbox" value='{{data.weight}}' required placeholder="Weight" maxlength="8"></td>
+                            <td><input type="text" name="order_point[]" class="span6 txbox" value='{{data.order_point}}' required placeholder="Order Point" maxlength="6"></td>
+                            <td><input type="text" name="pallet_quantity[]" class="span6 txbox" value='{{data.pallet_quantity}}' required placeholder="Pallet Quantity" maxlength="4"></td>
+                            <td colspan="2"><input type="text" name="comments[]" class="span5 txbox" value='{{data.comments}}' required placeholder="Comments"></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td colspan="6"><hr style="border: 1px solid #DAE1E8; box-shadow: 0 2px 1px -1px #FFFFFF;"></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+                <button type="button" class="btn" id="addRow">Add Set</button>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="pull-right">
+                <input type="button" class="btn-update btn btn-primary" value="Update Request">
+                <input id="update-request-button" type="submit" class="btn btn-primary" style="display: none;" />
+                <input type="hidden" name="entity_key" value="{{item.key.urlsafe()}}">
+                <input type="hidden" name="frmkey" value="{{frmkey}}">
+                <a href="{{this.uri('multiple_changes:list', key=frmkey)}}" class="btn">Cancel</a>
+                </div>
+            </div>
+    </form>
+{% endblock %}

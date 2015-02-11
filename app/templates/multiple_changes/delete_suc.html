@@ -1,0 +1,27 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+{% endblock %}
+
+{% block layout_page_buttons %}
+
+{% endblock %}
+
+{% block layout_content %}
+    <div class="form-description fd-form-view" id="form-description">
+        <p><i class="icon-pencil"></i>Allows Warehouse network to request a change to an item for the store order multiple. As masters has matured, the DCs have identified products that need to go to a store by pallet.</p>
+    </div>
+    <div class="well">
+        <fieldset>
+            <br><br><br><br>
+            <center><h3>Form request has been cancelled! Back to <a href="/multiple_changes?key={{frmkey}}&status={{tab}}">list.</a></h3></center>
+        </fieldset>
+    </div>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<!-- page specific scripts/css should be added in this block -->
+<link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+<script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+<script type='text/javascript' src='/js/utils.js'></script>
+
+<script type="text/javascript">
+$(document).on("click", ".createReqBtn", function (){
+
+      var driver_name = $('#Driver_Name').val();
+      var DLN = $('#Driver_Licence_No').val();
+      var div_reg = $('#Division_Region').val();
+      var ccn = $('#Cost_Centre_No').val();
+
+      if(driver_name.length < 1){
+        alert('Driver Name is required!');
+        $('#Driver_Name').focus();
+        return false;
+      }
+
+      if(driver_licence(DLN) == false) {
+            $('#Driver_Licence_No').focus();
+    		return false; 
+      }
+
+      if(div_reg.length < 1){
+        alert('Division/Region is required!');
+        $('#Division_Region').focus();
+        return false;
+      }
+     
+      if(ccn.length < 4){
+        alert('Cost Center No. should be 4 Digits!');
+        $('#Cost_Centre_No').focus();
+        return false;
+      }
+
+    });
+    
+    
+    
+	function driver_licence(str)
+	{
+	    var characters = 0;
+	    var numerics = 0;
+	    if(str.length >3 && str.length <21)
+	    {
+	        for(i = 0 ; i < str.length ; i++)
+	        {               
+	            if(str.charCodeAt(i) > 47 && str.charCodeAt(i) < 58)
+	            {
+	                numerics++
+	            }
+	            else
+	            {
+	                characters++
+	            }                       
+	         }
+	         if(characters>2 && numerics<4)
+	         {
+	            alert('Invalid Driver License');
+	         }
+	         else
+	         {
+	            if(str.charCodeAt(2)>47 && str.charCodeAt(2)< 58 && str.charCodeAt(3)>47 && str.charCodeAt(3)< 58)
+	            {
+	                return true;
+	            }
+	            else
+	            {
+	                alert('3rd and 4th position must be numeric in Driver License');
+	            }
+	         }
+	    }       
+	    else
+	    {
+	       alert('Invalid Driver License');
+	    }
+	    return false;    
+	}    
+    
+    
+</script>
+
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Pool Car Booking Form
+{% endblock %}
+
+{% block layout_page_buttons %}
+
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>No Description.</p>
+</div>
+<form class="form-horizontal" action="/poolcarbooks/add" method="post">
+    <div class="well">
+        <fieldset>
+            <div class="control-group">
+                <label class="control-label" for="Driver_Name">Driver Name </label>
+                <div class="controls">
+                    <input type="text" class="span6" id="Driver_Name" name="Driver_Name" placeholder='Person who will be driving the car' required/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Driver_Licence_No">Driver Licence No. </label>
+                <div class="controls">
+                    <input type="text" class="span5" id="Driver_Licence_No" name="Driver_Licence_No" maxlength='20' required />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Division_Region">Division/Region </label>
+                <div class="controls">
+                    <input type="text" class="span5" id="Division_Region" name="Division_Region" required />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Cost_Centre_No">Cost Centre No. </label>
+                <div class="controls">
+                    <input type="text" class="numbersOnly span5" id="Cost_Centre_No" name="Cost_Centre_No" maxlength='4' required />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Authorising_Line_Manager">Authorising Line Manager </label>
+                <div class="controls">
+                    <input type="text" class="span5 global-address" id="Authorising_Line_Manager" name="Authorising_Line_Manager" required />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Line_Manager_Pos">Authorising Line Manager Position </label>
+                <div class="controls">
+                    <input type="text" class="span5" id="Line_Manager_Pos" name="Line_Manager_Pos" required />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Start_Date_Time_Journey">Start Date & Time of Journey</label>
+                <div class="controls">
+                    <input type="text" class="span5" id="Start_Date_Time_Journey" name="Start_Date_Time_Journey" value='{{j_sdate}}' readonly />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="End_Date_Time_Journey">End Date & Time of Journey </label>
+                <div class="controls">
+                    <input type="text" class="span5" id="End_Date_Time_Journey" name="End_Date_Time_Journey" value='{{j_edate}}'readonly />
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="Purpose_of_Journey">Purpose of Journey</label>
+                <div class="controls">
+                    <textarea rows="5" class="span6" name="Purpose_of_Journey" style="resize:none" placeholder="Please fill out the purpose of your journey" required></textarea>
+                </div>
+            </div>
+        </fieldset>
+        <div class="control-group">
+            <div align="right">
+                <input type="submit" class="btn btn-primary createReqBtn" value="Create Request">
+                <a href="{{this.uri('poolcarbooks:list', key=form_key)}}" class="btn btn-primary">Cancel</a>
+                <input type='hidden' name='form_key' value='{{form_key}}'>
+            </div>
+        </div>
+    </div>
+    {% include "includes/global_address_modal.html" %}  
+</form>
+{% endblock %}

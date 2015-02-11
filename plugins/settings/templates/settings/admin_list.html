@@ -1,0 +1,23 @@
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends s.admin_or_default() %}
+
+{% block layout_content %}
+
+<h3>Current Configuration</h3>
+
+<ul>
+{% for name, values in settings|dictsort %}
+    <li>
+        {{name}}
+        <ul>
+            {% for key, value in values|dictsort %}           
+                <li>
+                    {{key}} : {{value}}
+                </li>
+            {% endfor %}
+        </ul>
+    </li>
+{% endfor %}
+</ul>
+
+{% endblock %}
