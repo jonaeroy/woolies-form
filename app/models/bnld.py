@@ -15,9 +15,6 @@ class Bnld(BasicModel):
     Please_attach_the_New_Line_Submission_Sheet_to_this_Form_Below = ndb.BlobKeyProperty()
     Status = ndb.IntegerProperty(default=1)
 
-    @classmethod
-    def all(cls):
-        return cls.query()
 
     class Meta:
         behaviors = (Searchable,)
@@ -32,3 +29,11 @@ class Bnld(BasicModel):
     @classmethod
     def list_all(cls):
         return cls.query()
+
+    @classmethod
+    def update(self, params):
+        self.populate(**params)
+        self.put()
+
+    def delete(self):
+        ndb.delete_multi(ndb.Query(ancestor=self.key).iter(keys_only=True))
