@@ -12,7 +12,12 @@ angular.module('app.controllers').controller('BnldsCtrl', function($scope, Bnlds
 	    })
     };
     
-  
+  $scope.items = [
+      {id: 1, name: 'Yes'}
+      {id: 2, name: 'No'}
+      {id: 3, name: 'N/A'}
+
+  ];
  
 
 
@@ -30,3 +35,4 @@ angular.module('app.controllers').controller('BnldsListCtrl', function($scope, B
 	}
     
 });
+
