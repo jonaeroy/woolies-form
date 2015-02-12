@@ -1,5 +1,8 @@
 handlers:
 
+-url: /ngcomponents
+  static_dir: angular-app/components
+
 - url: /ngroutes
   static_dir: angular-app/routes
 
