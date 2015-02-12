@@ -1,4 +1,4 @@
-from ferris import Controller, scaffold,route, route_with
+from ferris import Controller, scaffold,route, route_with, messages
 from ferris.components.pagination import Pagination
 from ferris.components.upload import Upload
 from google.appengine.api import users
@@ -18,7 +18,7 @@ class Bnlds(Controller):
 
     class Meta:
         prefix = ('api',)
-        components = (scaffold.Scaffolding, SplitView, Pagination, Upload, Drafts)
+        components = (scaffold.Scaffolding, SplitView, Pagination, Upload, Drafts, messages.Messaging)
         pagination_limit = 10
         sv_result_variable = 'bnlds'
         sv_status_field = 'Status'
@@ -29,16 +29,33 @@ class Bnlds(Controller):
             'Date','Merchandise_Manager','Number_of_Items','Include_Any_Comments_Below')
 
     ######RESTFUL functions####################
+
+    @route_with('/api/bnlds', methods=['GET'])
+    def api_list_all(self):
+        self.context['data'] = Bnld.list_all()
+
     @route_with('/api/bnlds', methods=['POST'])
-    def create(self):
+    def api_create(self):
         params = json.loads(self.request.body)
         print repr(params)
         self.context['data'] = Bnld.create(params)
 
-    @route_with('/api/bnlds', methods=['GET'])
-    def list_all(self):
-        self.context['data'] = Bnld.list_all()
-        
+    @route_with('/api/bnlds:<key>', methods=['GET'])
+    def api_get(self, key):
+        self.context['data'] = self.util.decode_key(key).get()
+
+    @route_with('/api/agents/:<key>', methods=['POST'])
+    def api_update(self, key):
+        params = json.loads(self.request.body)
+        bnld = self.util.decode_key(key).get()
+        bnld.update(params)
+        self.context['data'] = bnld
+
+    @route_with('/api/bnlds:<key>', methods=['DELETE'])
+    def api_delete(self, key):
+        bnld = self.util.decode_key(key).get()
+        bnld.delete()
+        return 200
 
     ##########################################
     
