@@ -1,19 +1,11 @@
 angular.module('app.services').
-factory('Location', function($location, $route) {
+service('BnldsSvc', function($http) {
+    this.list = function(){
+	return $http.get('/api/bnlds');
+    }
 
-    var factory  = {};
+    this.create = function(params){
+	return $http.post('/api/bnlds', params);
+    }
 
-    factory.change = function(loc) {
-    	$location.path(loc);
-    };
-
-    factory.current = function() {
-    	return $location.path();
-    };
-
-    factory.reload = function() {
-        $route.reload();
-    };
-
-    return factory;
 });
