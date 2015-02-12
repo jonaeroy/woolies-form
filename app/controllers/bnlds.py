@@ -28,6 +28,20 @@ class Bnlds(Controller):
         display_properties = ('created_by', 'created', 'Buyer_or_BAA_Name',
             'Date','Merchandise_Manager','Number_of_Items','Include_Any_Comments_Below')
 
+    ######RESTFUL functions####################
+    @route_with('/api/bnlds', methods=['POST'])
+    def create(self):
+        params = json.loads(self.request.body)
+        print repr(params)
+        self.context['data'] = Bnld.create(params)
+
+    @route_with('/api/bnlds', methods=['GET'])
+    def list_all(self):
+        self.context['data'] = Bnld.list_all()
+        
+
+    ##########################################
+    
     @route
     def draft_action(self):
         self.components.drafts.save(self.request.params)

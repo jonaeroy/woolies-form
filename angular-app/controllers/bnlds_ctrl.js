@@ -18,7 +18,7 @@ angular.module('app.controllers').controller('BnldsCtrl', function($scope, Bnlds
 
 angular.module('app.controllers').controller('BnldsListCtrl', function($scope, BnldsSvc){
     $scope.bnlds_items = [];
-    BnldsSvc.list_all()
+    BnldsSvc.list()
 	.success(function(data, status){
 	    $scope.bnlds_items = data.items;
 	})
