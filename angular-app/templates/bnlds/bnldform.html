@@ -1,24 +1,24 @@
 <div ng-controller="BndlsCtrl">
-<form class="form-horizontal" action="{{ upload_url }}" method="post" enctype="multipart/form-data">
+<form class="form" ng-submit="create()" enctype="multipart/form-data">
     <div class="well">
         <fieldset>
             <div class="control-group">
                 <label class="control-label" for="Buyer_or_BAA_Name">Buyer's Email Address:</label>
                 <div class="controls">
-                    <input type="text" class="span8" id="Buyer_or_BAA_Name" name="Buyer_or_BAA_Name" value="{{user}}" required readonly/>
+                    <input ng-model="bnlds.Buyer_or_BAA_Name" type="text" class="form-control" name="Buyer_or_BAA_Name" required = "True">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="Merchandise_Manager">Merchandise Manager:</label>
                 <div class="controls">
-                    <input type="email" class="span8 global-address" id="Merchandise_Manager" name="Merchandise_Manager" single-select="True" required />
+                    <input ng-model="bnlds.Merchandise_Manager" type="email" class="span8 global-address" name="Merchandise_Manager" single-select="True" required="True" />
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="datepicker">Date:</label>
                 <div class="controls">
                     <div class="input-append">
-                        <input class="span8" type="text" value="" name="Date" id="date" required readonly>
+                        <input ng-model="bnlds.Date" class="span8" type="text" value="" name="Date"  required="True" readonly>
                         <span class="add-on"> <i class="icon-th"></i>
                         </span>
                     </div>
@@ -27,7 +27,7 @@
             <div class="control-group">
                 <label class="control-label" for="Number_of_Items">Number of Item(s):</label>
                 <div class="controls">
-                    <input type="text" class="numbersOnly span2" id="Number_of_Items" name="Number_of_Items" required />
+                    <input ng-model="bnlds.Number_of_Items" type="text" class="numbersOnly span2" id="Number_of_Items" name="Number_of_Items" required />
                 </div>
             </div>
         </fieldset>

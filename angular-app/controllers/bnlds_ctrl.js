@@ -11,6 +11,9 @@ angular.module('app.controllers').controller('BnldsCtrl', function($scope, Bnlds
 		
 	    })
     };
+    
+  
+ 
 
 
 });
