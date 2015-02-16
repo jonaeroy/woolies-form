@@ -7,18 +7,18 @@ angular.module('app.controllers').controller('BnldsCtrl', function($scope, Bnlds
     $scope.choices = ["Yes", "No","N/A"];
     //ng-options = "choice for choice in choices track by choice" ng-model="default_choice"
     $scope.create = function() {
-	BnldsSvc.create($scope.bnlds)
-	    .success(function(data, status){
-		console.log(data.items);
-	    })
-	    .error(function(data, status){
-		
-	    })
-    };
-    
- 
+    	BnldsSvc.create($scope.bnlds)
+    	    .success(function(data, status){
+    		console.log(data.items);
+    	    })
+    	    .error(function(data, status){
 
- 
+    	    })
+    };
+
+
+
+
 
 
 });
@@ -33,6 +33,6 @@ angular.module('app.controllers').controller('BnldsListCtrl', function($scope, B
 	.error(function(data, status)){
 	    alert("Error Occured!");
 	}
-    
+
 });
 

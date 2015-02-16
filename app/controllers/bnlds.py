@@ -9,6 +9,7 @@ from ..models.bnld import Bnld
 import logging
 from ferris.core.ndb import ndb
 import datetime
+import json
 
 from app.component.drafts import Drafts
 from app.component.split_view import SplitView
@@ -44,7 +45,7 @@ class Bnlds(Controller):
     def api_get(self, key):
         self.context['data'] = self.util.decode_key(key).get()
 
-    @route_with('/api/agents/:<key>', methods=['POST'])
+    @route_with('/api/bnlds/:<key>', methods=['POST'])
     def api_update(self, key):
         params = json.loads(self.request.body)
         bnld = self.util.decode_key(key).get()
@@ -58,7 +59,7 @@ class Bnlds(Controller):
         return 200
 
     ##########################################
-    
+
     @route
     def draft_action(self):
         self.components.drafts.save(self.request.params)

@@ -12,3 +12,4 @@ App.config(['$routeProvider',
 			redirectTo: '/add_form'
 		    });
 	    }]);
+
