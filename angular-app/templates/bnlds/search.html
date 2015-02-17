@@ -1,9 +1,7 @@
-
 {% import "scaffolding/list.html" as scaffold with context %}
 {% import 'scaffolding/macros.html' as s with context %}
 {% extends 'layouts/main.html' %}
 
-<div ng-controller="BndlsCtrl">
 {% block layout_head %}
 
     <script type="text/javascript">
@@ -46,7 +44,6 @@
             var attchmnt = $(this).data('attchmnt');
             var status = $(this).data('status');
             var keyid = $(this).data('keyid');
-
             $(".modal-body #to").val(to);
             $(".modal-body #buyer").val(buyer);
             $(".modal-body #merchmngr").val(merchmngr);
@@ -66,7 +63,7 @@
             var data = $(this).attr('key');
             del = confirm('Deletion means request cancellation. Are you sure you want to cancel request?');
             if(del) {
-                document.location.href="/bnlds/delete/" + data + "?key={{frmkey}}";
+                document.location.href="/bnlds/delete/" + data;
             }
             return false;
         });
@@ -83,12 +80,12 @@
         });
 
     });
-
+        
     </script>
 
     <style type="text/css">
         table#list {
-            border-collapse: collapse;
+            border-collapse: collapse;   
         }
         #list td:hover {
             cursor: pointer;
@@ -102,11 +99,16 @@ Buyer's New Line Declaration Request List
 {% endblock %}
 
 {% block layout_page_buttons %}
+<!-- page specific buttons here, buttons specify here will be added in the btn group -->
+<a class="btn-flat primary " href="/bnlds/bnldform"><i class="icon-plus"></i> Add Buyer's New Line Declaration Form Request</a>   
 
 {% endblock %}
 
 {% block layout_content %}
-    <!-- <form action="/bnlds/search" method="post" class="form-inline">
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>When a new product is going to be brought in to MASTERS.</p>
+</div>
+    <form action="/bnlds/search" method="post" class="form-inline">
         <div class="row-fluid">
             Search Rrequests:
                 <input type="text" class="span6" id="searchtxt" name="searchtxt" placeholder="Search requests by keywords" class="input-medium search-query">
@@ -125,11 +127,7 @@ Buyer's New Line Declaration Request List
                 </select>
                 <input type="submit" class="btn btn-primary" value="Search">
         </div>
-    </form> -->
-    <button ng-click="loadPage()">New Form</button>
-    <div class="form-description">
-        <p><i class="icon-pencil"></i>When a new product is going to be brought in to MASTERS.</p>
-    </div>
+    </form>
     <div class="well">
         {% import "scaffolding/macros.html" as scaffold with context %}
         {% import 'macros/search.html' as search with context %}
@@ -140,21 +138,15 @@ Buyer's New Line Declaration Request List
                         <!-- Header Sortings -->
                         {% set order_by_created = request.GET['order_by_created']=='desc' and 'asc' or 'desc'  %}
                         {% set order_by_date = request.GET['order_by_date']=='desc' and 'asc' or 'desc'  %}
-                        {% set order_by_status = request.GET['order_by_status']=='desc' and 'asc' or 'desc'  %}
+                        {% set order_by_status = request.GET['order_by_status']=='desc' and 'asc' or 'desc'  %}                       
                         <th>
-                            <a href="/bnlds?order_by_created={{ order_by_created }}&key={{frmkey}}">Created By
-                                <b class="caret c-custom {% if order_by_created == 'asc' %}caret-up{% endif %}"></b>
-                            </a>
+                            <a href="/bnlds?order_by_created={{ order_by_created }}">Created By</a>
                         </th>
                         <th>
-                            <a href="/bnlds?order_by_date={{ order_by_date }}&key={{frmkey}}">Creation Date
-                                <b class="caret c-custom {% if order_by_date == 'asc' %}caret-up{% endif %}"></b>
-                            </a>
+                            <a href="/bnlds?order_by_date={{ order_by_date }}">Creation Date</a>
                         </th>
                         <th>
-                            <a href="/bnlds?order_by_status={{ order_by_status }}&key={{frmkey}}">Status
-                                <b class="caret c-custom {% if order_by_status == 'asc' %}caret-up{% endif %}"></b>
-                            </a>
+                            <a href="/bnlds?order_by_status={{ order_by_status }}">Status</a>
                         </th>
                         <th>
                             Request Cancellation
@@ -166,45 +158,52 @@ Buyer's New Line Declaration Request List
                 </thead>
                 {% for bnld in bnlds %}
                 <tr>
-                    <td>{{bnld.created_by}}<a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe(), frmkey=frmkey)}}"></a></td>
-                    <td>{{localize_datetime(bnld.created)}}<a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe(), frmkey=frmkey)}}"></a></td>
+                    <td>{{bnld.created_by}}<a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe())}}"></a></td>
+                    <td>{{bnld.created.strftime('%b %d, %Y %I:%M %p')}}<a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe())}}"></a></td>
 
                     <!-- STATUS Conditions -->
                     {% if int(bnld.Status) == 1 %}
-                    <td><span class="label label-warning">Pending Approval</span><a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe(), frmkey=frmkey)}}"></a></td>
+                    <td><span class="label label-warning">Pending Approval</span><a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe())}}"></a></td>
                     {% endif %}
                     {% if int(bnld.Status) == 2 %}
-                    <td><span class="label label-info">Temporarily Approved</span><a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe(), frmkey=frmkey)}}"></a></td>
+                    <td><span class="label label-info">Temporarily Approved</span><a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe())}}"></a></td>
                     {% endif %}
                     {% if int(bnld.Status) == 3 %}
-                    <td><span class="label label-success">Approved</span><a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe(), frmkey=frmkey)}}"></a></td>
+                    <td><span class="label label-success">Approved</span><a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe())}}"></a></td>
                     {% endif %}
                     {% if int(bnld.Status) == 4 %}
-                    <td><span class="label label-danger">Rejected</span><a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe(), frmkey=frmkey)}}"></a></td>
+                    <td><span class="label label-danger">Rejected</span><a href="{{this.uri('bnlds:view', key=bnld.key.urlsafe())}}"></a></td>
                     {% endif %}
 
-
-                    {% if str(user) == str(bnld.created_by) and int(bnld.Status) < 2 %}
+                    <!-- DELETE Button Conditions -->
+                    {% if (str(user) == str(bnld.created_by)) and int(bnld.Status) > 2 %}
+                    <td><a href="#" class="btn btn-danger" disabled >Delete</a></td>
+                    {% elif str(user) == str(bnld.created_by)%}
                     <td><a href="#" key={{bnld.key.urlsafe()}} class="btn btn-danger delete-button">Delete</a></td>
                     {% else %}
-                    <td>&nbsp;</td>
+                    <td><a href="#" class="btn btn-danger" disabled >Delete</a></td>
                     {% endif %}
 
                     <!-- APPROVE and REJECT Button conditions -->
-                    {% if str(user) == str(bnld.Merchandise_Manager) and int(bnld.Status) < 2 %}
+                    {% if (str(user) == str(bnld.Merchandise_Manager)) and int(bnld.Status) == 2 %}
+                    <td><a href="#" class="btn btn-primary" disabled>Approve/Reject</a></td>
+                    {% elif (is_second_group_approver) and int(bnld.Status) == 1 %}
+                    <td><a href="#" class="btn btn-primary" disabled>Approve/Reject</a></td>
+                    {% elif ((str(user) == str(bnld.Merchandise_Manager)) or is_second_group_approver) 
+                    and int(bnld.Status) < 3 %}
                     <td>
-                        <a href="#actionModal" role="button"
+                        <a href="#actionModal" role="button" 
                         data-to={{bnld.Merchandise_Manager}}
                         data-merchmngr={{bnld.Merchandise_Manager}}
-                        data-buyer={{bnld.Buyer_or_BAA_Name}}
-                        data-date='{{localize_datetime(bnld.created)}}'
-                        data-numitems={{bnld.Number_of_Items}}
-                        data-anlpv ={{bnld.All_New_Lines_Passed_Validation}}
-                        data-qa ={{bnld.QA_Acceptance}}
-                        data-msds  ={{bnld.MSDS_Report_Loaded_onto_Chemwatch_for_all_Applicable_Lines}}
-                        data-attchmnt={{bnld.Please_attach_the_New_Line_Submission_Sheet_to_this_Form_Below}}
-                        data-comments ='{{bnld.Include_Any_Comments_Below}}'
-                        data-status ={{bnld.Status}}
+                        data-buyer={{bnld.Buyer_or_BAA_Name}} 
+                        data-date ={{bnld.Date}} 
+                        data-numitems={{bnld.Number_of_Items}} 
+                        data-anlpv ={{bnld.All_New_Lines_Passed_Validation}}  
+                        data-qa ={{bnld.QA_Acceptance}}  
+                        data-msds  ={{bnld.MSDS_Report_Loaded_onto_Chemwatch_for_all_Applicable_Lines}}  
+                        data-attchmnt={{bnld.Please_attach_the_New_Line_Submission_Sheet_to_this_Form_Below}}  
+                        data-comments={{bnld.Include_Any_Comments_Below}} 
+                        data-status={{bnld.Status}}
                         data-keyid={{bnld.key.urlsafe()}}
                         class="open-modal btn btn-primary" data-toggle="modal">Approve/Reject</a>
 
@@ -219,74 +218,17 @@ Buyer's New Line Declaration Request List
                                         <fieldset>
                                             <table align="center">
                                                 <!-- For Merchandise Manager Approval -->
+                                                {% if (str(user) == str(bnld.Merchandise_Manager)) %}
                                                 <tr>
                                                     <td>
-                                                        An e-mail will be sent to the person that completed the 'Buyer's New Line Declaration Form' and to <strong>Merchandise Support</strong> to action
+                                                        An e-mail will be sent to the person that completed the 'Buyer's New Line Declaration Form' and to the <strong>{{ second_group_approver.name }}</strong>
                                                     </td>
                                                     <td>
                                                         <input type="submit" class="settapprove btn btn-primary" value="Approve"></td>
                                                 </tr>
-                                                <tr>
-                                                    <td>
-                                                        An e-mail will be sent to the person  that completed the 'Buyer's New Line Declaration Form'
-                                                    </td>
-                                                    <td>
-                                                        <input type="submit" class="setreject btn btn-primary" value="Reject    "></td>
-                                                </tr>
-                                            </table>
-                                            <br/>
-                                            <div align="left" class="control-group">
-                                                <label class="control-label" for="merchManger">Additional Comments:</label>
-                                                <div class="controls">
-                                                    <textarea class="span12" rows="5" name="addcomments" style="resize:none"></textarea>
-                                                </div>
-                                            </div>
-                                            <input type="hidden" id="action" name="action" value="">
-                                            <input type="hidden" id="buyer" name="buyer" value="">
-                                            <input type="hidden" id="merchmngr" name="merchmngr" value="">
-                                            <input type="hidden" id="date" name="date" value="">
-                                            <input type="hidden" id="to" name="to" value="">
-                                            <input type="hidden" id="numitems" name="numitems" value="">
-                                            <input type="hidden" id="comments" name="comments" value="">
-                                            <input type="hidden" id="status" name="status" value="">
-                                            <input type="hidden" id="anlpv" name="anlpv" value="">
-                                            <input type="hidden" id="qa" name="qa" value="">
-                                            <input type="hidden" id="msds" name="msds" value="">
-                                            <input type="hidden" id="attchmnt" name="attchmnt" value="">
-                                            <input type="hidden" id="keyid" name="keyid" value="">
-                                        </fieldset>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </td>
-                    {% elif is_second_group_approver and int(bnld.Status) == 2 %}
-                    <td>
-                        <a href="#actionModal" role="button"
-                        data-to={{bnld.Merchandise_Manager}}
-                        data-merchmngr={{bnld.Merchandise_Manager}}
-                        data-buyer={{bnld.Buyer_or_BAA_Name}}
-                        data-date='{{localize_datetime(bnld.created)}}'
-                        data-numitems={{bnld.Number_of_Items}}
-                        data-anlpv ={{bnld.All_New_Lines_Passed_Validation}}
-                        data-qa ={{bnld.QA_Acceptance}}
-                        data-msds  ={{bnld.MSDS_Report_Loaded_onto_Chemwatch_for_all_Applicable_Lines}}
-                        data-attchmnt={{bnld.Please_attach_the_New_Line_Submission_Sheet_to_this_Form_Below}}
-                        data-comments ='{{bnld.Include_Any_Comments_Below}}'
-                        data-status ={{bnld.Status}}
-                        data-keyid={{bnld.key.urlsafe()}}
-                        class="open-modal btn btn-primary" data-toggle="modal">Approve/Reject</a>
-
-                        <div id="actionModal" class="modal hide fade" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                <h4 id="myModalLabel">Approval/Rejections</h4>
-                            </div>
-                            <div class="modal-body">
-                                <form class="form-horizontal" action="/bnlds/sendNotif" method="post">
-                                    <div class="well">
-                                        <fieldset>
-                                            <table align="center">
+                                                {% endif %}
+                                                <!-- For Merchnadising Team Approval -->
+                                                {% if is_second_group_approver %}
                                                 <tr>
                                                     <td>
                                                         An e-mail will be sent to the person that completed the 'Buyer's New Line Declaration Form'
@@ -294,6 +236,7 @@ Buyer's New Line Declaration Request List
                                                     <td>
                                                         <input type="submit" class="setapprove btn btn-primary" value="Approve"></td>
                                                 </tr>
+                                                {% endif %}
                                                 <tr>
                                                     <td>
                                                         An e-mail will be sent to the person  that completed the 'Buyer's New Line Declaration Form'
@@ -328,8 +271,10 @@ Buyer's New Line Declaration Request List
                             </div>
                         </div>
                     </td>
-                    {% else %}
+                    {% elif not ((str(user) == str(bnld.Merchandise_Manager)) or is_second_group_approver) %}
                     <td>&nbsp;</td>
+                    {% else %}
+                    <td><a href="#" class="btn btn-primary" disabled>Approve/Reject</a></td>
                     {% endif %}
                 </tr>
                 {% endfor %}
@@ -338,5 +283,3 @@ Buyer's New Line Declaration Request List
         </fieldset>
     </div>
 {% endblock %}
-
-</div>

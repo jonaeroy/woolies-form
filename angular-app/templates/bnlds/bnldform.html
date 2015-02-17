@@ -35,32 +35,19 @@
             <legend></legend>
             <div class="control-group">
                 <label class="control-label" for="ANLPV">All New Lines Passed Validation:</label>
-                <div class="controls">
-                    <select class="span4 selectpicker" id="ANLPV" name="All_New_Lines_Passed_Validation" required>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                        <option value="N/A">N/A</option>
-                    </select>
+                <div  ng-options = "choice for choice in choices track by choice" ng-model="default_choice">
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="QAA">QA Acceptance:</label>
-                <div class="controls">
-                    <select class="span4 selectpicker" id="QAA" name="QA_Acceptance" required>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                        <option value="N/A">N/A</option>
-                    </select>
+                <div ng-options = "choice for choice in choices track by choice" ng-model="default_choice">
+
                 </div>
             </div>
             <div class="control-group">
                 <label class="control-label" for="MSDS">MSDS Report Loaded onto Chemwatch for all Applicable Lines:</label>
-                <div class="controls">
-                    <select class="span4 selectpicker" id="MSDS" name="MSDS_Report_Loaded_onto_Chemwatch_for_all_Applicable_Lines" required>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                        <option value="N/A">N/A</option>
-                    </select>
+                <div ng-options = "choice for choice in choices track by choice" ng-model="default_choice">
+
                 </div>
             </div>
         </fieldset>

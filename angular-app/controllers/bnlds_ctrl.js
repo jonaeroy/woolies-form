@@ -1,6 +1,8 @@
-angular.module('app.controllers').controller('BnldsCtrl', function($scope, BnldsSvc){
+angular.module('app.controllers').controller('BnldsCtrl', function($scope, $location, BnldsSvc){
     "use strict";
     //variables
+
+    console.log('Test!!!!');
 
     $scope.bnlds = {};
     //select options variables
@@ -16,10 +18,9 @@ angular.module('app.controllers').controller('BnldsCtrl', function($scope, Bnlds
     	    })
     };
 
-
-
-
-
+    $scope.loadPage = function(){
+        $location.path("newbnldsrequest");
+    };
 
 });
 

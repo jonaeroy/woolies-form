@@ -1,0 +1,75 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<script type='text/javascript' src='/js/utils.js'></script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Buyer's New Line Declaration Request Details
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>When a new product is going to be brought in to MASTERS.</p>
+</div>
+    <div class="well">
+        <fieldset>
+            {% import "scaffolding/macros.html" as scaffold with context %}
+            {% import 'macros/search.html' as search with context %}
+            <table class="table table-striped">
+                {% if status == 'Rejected' or status =='Approved' %}
+                <tr>
+                    <td>Status:</td>
+                    <td>
+                        {{status}} by {{modified_by}} on {{localize_datetime(modified)}}
+                    </td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <td>Buyer:</td>
+                    <td>{{buyer}}</td>
+                </tr>
+                <tr>
+                    <td>Merchandise Manager Name:</td>
+                    <td>{{merchMngr}}</td>
+                </tr>
+                <tr>
+                    <td>Date:</td>
+                    <td>{{cdate.strftime('%b %d, %Y')}}</td>
+                </tr>
+                <tr>
+                    <td>Number of Item(s):</td>
+                    <td>{{numitems}}</td>
+                </tr>
+                <tr>
+                    <td>All New Lines Passed Validation:</td>
+                    <td>{{anlpv}}</td>
+                </tr>
+                <tr>
+                    <td>QA Acceptance:</td>
+                    <td>{{qa}}</td>
+                </tr>
+                <tr>
+                    <td>MSDS Report Loaded onto Chemwatch for all Applicable Lines:</td>
+                    <td>{{msds}}</td>
+                </tr>
+                <tr>
+                    <td>Comments:</td>
+                    <td>{{comments}}</td>
+                </tr>
+                <tr>
+                    <td>Attachments:</td>
+                    <td>{{download_link}}</td>
+                </tr>
+            </table>
+            <div align="right">
+                {% if intStatus == 1 and is_requestor %}
+                    <a href="/bnlds/page/edit/{{keyid}}/{{frmkey}}" class="btn btn-primary">Edit</a>
+                {% endif %}
+                <input type="button" class="btn btn-primary" id="backHistory" value="Back"></div>
+        </fieldset>
+    </div>
+{% endblock %}

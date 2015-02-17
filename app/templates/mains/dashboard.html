@@ -1,7 +1,7 @@
 {% extends 'layouts/main.html' %}
 
 {% block layout_head %}
-    
+
 <!-- page specific scripts/css should be added in this block -->
 <style>
 .list-form  {
@@ -55,7 +55,7 @@ margin: 20px 10px;
     </h1>
 
     <h2>
-    {% if user_isGoogleAdmin %} 
+    {% if user_isGoogleAdmin %}
         Super Admin
       {% else %}
         {% if user_isAdmin %}
@@ -63,7 +63,7 @@ margin: 20px 10px;
         {% else %}
             {% if user_isFormAdmin %}
                 Form Administrator
-            {% else %}            
+            {% else %}
                 {% if user_isFormApprover %}
                     Form Approver
                 {% endif %}
@@ -73,14 +73,13 @@ margin: 20px 10px;
     <h2>
 </div>
 
-
 <div class="well">
 
 
 	{% if user_isFormAdmin %}
-	
+
 	<div class="list-form-container">
-	   
+
 	    <h4><em><i class=icon-edit></i> <strong>Below are the list of Forms that you can Administrate : </strong></em></h4>
 	    <div class=list-form>
 	        <ul>
@@ -93,18 +92,18 @@ margin: 20px 10px;
 	                        {% endif %}
 	                    {% endfor %}
 	                {% endif %}
-	            {% endfor %}    
+	            {% endfor %}
 	            </ul>
 	        </ul>
 	    </div>
 	</div>
 	{% endif %}
-	
-	
+
+
 	{% if user_isFormApprover %}
-	
+
 	<div class="list-form-container">
-	   
+
 	    <h4><em><i class=icon-edit></i> <strong>Below are the list of Forms that you can manage : </strong></em></h4>
 	    <div class=list-form>
 	        <ul>
@@ -115,7 +114,7 @@ margin: 20px 10px;
 	                        {% if group.urlsafe() == woolies_form.first_level_manager.urlsafe() %}
 	                            <li><a href='/{{ woolies_form.list_url}}?key={{woolies_form.key.urlsafe()}}'><i class=icon-envelope></i> {{ woolies_form.name }}</a></li>
 	                        {% endif %}
-	
+
 	                        {% if woolies_form.second_level_manager %}
 	                            {% if group.urlsafe() == woolies_form.second_level_manager.urlsafe() %}
 	                            <li><a href='/{{ woolies_form.list_url}}?key={{woolies_form.key.urlsafe()}}'><i class=icon-envelope></i> {{ woolies_form.name }}</a></li>
@@ -123,13 +122,13 @@ margin: 20px 10px;
 	                        {% endif %}
 	                    {% endfor %}
 	                {% endif %}
-	            {% endfor %}    
+	            {% endfor %}
 	            </ul>
 	        </ul>
 	    </div>
 	</div>
-	
-	
+
+
 	{% endif %}
 
 
@@ -152,17 +151,17 @@ margin: 20px 10px;
 				</tr>
 
 				<!--  Display form status -->
-				{% for formStat in formStats %} 
+				{% for formStat in formStats %}
 				    {% if formStat.locatedData() == True %}
 						<tr>
 							<td>{{formStat.formDescription}}</td>
-							<td>{{formStat.numberOfActions}}</td> 
-							
+							<td>{{formStat.numberOfActions}}</td>
+
 							 {% for statusCount in formStat.statusCounts %}
-							     <td>{{statusCount}}</td> 
+							     <td>{{statusCount}}</td>
 							 {% endfor %}
 						</tr>
-		      		{% endif %} 
+		      		{% endif %}
 		      	{% endfor %}
 			</thead>
 		</table>

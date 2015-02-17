@@ -9,8 +9,11 @@ angular.module('app.controllers', ['app.services',]);
 angular.module('app.directives', ['cs.utilities']);
 
 
+
 /* Main Application Module */
 var App = angular.module('app', ['app.services', 'app.directives', 'app.controllers', 'ngRoute', 'angular-cookies', 'ui.select', 'ngSanitize', 'ngAnimate', '720kb.tooltips']).run(function($log, passive_messenger, $timeout){
-    $log.info('Angular App Loaded');
+    //$log.info('Angular App Loaded');
+    console.log('Angular App Loaded');
     $timeout(function(){ passive_messenger.success('Loaded'); });
 });
+

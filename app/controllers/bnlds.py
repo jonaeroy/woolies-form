@@ -10,10 +10,8 @@ import logging
 from ferris.core.ndb import ndb
 import datetime
 import json
-<<<<<<< HEAD
 
-=======
->>>>>>> 98cf8c8a2ea5eada8818a4ab8403b79de80f3ade
+
 from app.component.drafts import Drafts
 from app.component.split_view import SplitView
 from google.appengine.ext import blobstore
@@ -263,7 +261,7 @@ class Bnlds(Controller):
         self.context['user'] = self.session.get('user_email')
         self.context['frmkey']  = self.request.params['key']
 
-         #show all queries if manager of the form
+
         showAll = self.context.get('user_isManager')
         logging.info('show All ==========> ' + str(showAll))
         if self.request.get('order_by_created'):

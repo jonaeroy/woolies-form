@@ -1,4 +1,4 @@
-AppCore.config(['$routeProvider','$locationProvider', '$httpProvider',
+App.config(['$routeProvider','$locationProvider', '$httpProvider',
     function($routeProvider, $locationProvider, $httpProvider) {
         $routeProvider.
            // when('/requests', {
@@ -16,13 +16,17 @@ AppCore.config(['$routeProvider','$locationProvider', '$httpProvider',
 	    controller : 'BnldsCtrl'
 	});
 
-	.when('/create', {
-	    templateUrl : 'ng/templates/bnlds/bnldsform.html'
+	.when('/newbnldsrequest', {
+	    templateUrl : 'ng/templates/bnlds/bnldsform.html',
 	    controller : 'BnldsCtrl'
 	});
 	.when('/list', {
-	    templateUrl : 'ng/templates/bnlds/list.html'
+	    templateUrl : 'ng/templates/bnlds/list.html',
 	    controller : 'BnldsCtrl'
+	});
+
+	otherwise({
+	    redirect: 'ng-view'
 	});
 
         $locationProvider.html5Mode(true);

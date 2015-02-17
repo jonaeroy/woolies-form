@@ -15,7 +15,8 @@ builtins:
 
 
 includes:
-- packages/include.yaml
+- ferris/include.yaml
+- plugins/angular/include.yaml
 
 libraries:
 - name: jinja2
