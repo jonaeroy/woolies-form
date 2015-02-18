@@ -9,8 +9,6 @@ routing.auto_route()
 # routing.route_controller(Oauth)
 
 
-routing.redirect('/', to='ng-view')
-
-
+routing.redirect('/', to='/ng-view')
 
 plugins.enable('angular')

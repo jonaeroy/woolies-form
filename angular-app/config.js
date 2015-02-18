@@ -11,22 +11,18 @@ App.config(['$routeProvider','$locationProvider', '$httpProvider',
 
         // $route, $routeParams, $location
 
-        .when('/ng-view', {
-	    templateUrl : 'ng/templates/main.html'
-	    controller : 'BnldsCtrl'
-	});
 
 	.when('/newbnldsrequest', {
-	    templateUrl : 'ng/templates/bnlds/bnldsform.html',
+	    templateUrl : '/ng/templates/bnlds/bnldsform.html',
 	    controller : 'BnldsCtrl'
 	});
 	.when('/list', {
-	    templateUrl : 'ng/templates/bnlds/list.html',
+	    templateUrl : '/ng/templates/bnlds/list.html',
 	    controller : 'BnldsCtrl'
 	});
 
 	otherwise({
-	    redirect: 'ng-view'
+	    redirect: '/ng-view'
 	});
 
         $locationProvider.html5Mode(true);

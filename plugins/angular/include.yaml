@@ -1,6 +1,7 @@
 handlers:
+
 - url: /ng
   static_dir: angular-app
   application_readable: true
-  login: required
+
 
