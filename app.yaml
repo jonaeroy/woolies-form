@@ -9,14 +9,11 @@ api_version: 1
 threadsafe: yes
 
 builtins:
-- deferred: on
-- remote_api: on
-#- appstats: on
-
 
 includes:
-- ferris/include.yaml
+# If plugins require includes, put them here.
 - plugins/angular/include.yaml
+
 
 libraries:
 - name: jinja2

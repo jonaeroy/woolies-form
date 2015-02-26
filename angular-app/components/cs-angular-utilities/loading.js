@@ -7,16 +7,21 @@ directive('loading', ['$compile', function ($compile) {
       'instance': '=loading'
     },
     link: function($scope, elem, attrs){
-      var $elem = $(elem);
-      $elem.html('<div class="loader"><div class="spinner"><div class="spinner-container container1"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div><div class="circle4"></div></div><div class="spinner-container container2"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div><div class="circle4"></div></div><div class="spinner-container container3"><div class="circle1"></div><div class="circle2"></div><div class="circle3"></div><div class="circle4"></div></div></div></div>');
+      var $elem = $(elem),
+        src = attrs.src || '/img/loading.gif';
+
+      $elem.html(
+        '<img src="'+src+'">'
+      );
       $elem.addClass('loading');
       $elem.addClass('hidden');
+
       $scope.$watch('instance.is_loading', function(v){
-          if(v){
-              $elem.removeClass('hidden');
-          } else {
-              $elem.addClass('hidden');
-          }
+        if(v){
+          $elem.removeClass('hidden');
+        } else {
+          $elem.addClass('hidden');
+        }
       });
     }
   };

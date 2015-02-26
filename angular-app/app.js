@@ -7,13 +7,10 @@ angular.module('cs.utilities', ['cs.pubsub', 'cs.passive-messenger', 'cs.loading
 angular.module('app.services', ['cs.utilities',]);
 angular.module('app.controllers', ['app.services',]);
 angular.module('app.directives', ['cs.utilities']);
-
-
+angular.module('app.routes', ['ngRoute']);
 
 /* Main Application Module */
-var App = angular.module('app', ['app.services', 'app.directives', 'app.controllers', 'ngRoute', 'angular-cookies', 'ui.select', 'ngSanitize', 'ngAnimate', '720kb.tooltips']).run(function($log, passive_messenger, $timeout){
-    //$log.info('Angular App Loaded');
-    console.log('Angular App Loaded');
+var App = angular.module('app', ['app.services', 'app.directives', 'app.controllers', 'app.routes']).run(function($log, passive_messenger, $timeout){
+    $log.info('Angular App Loaded');
     $timeout(function(){ passive_messenger.success('Loaded'); });
 });
-

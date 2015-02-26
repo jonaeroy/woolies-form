@@ -1,45 +1,67 @@
-from ferris import Controller, scaffold,route, route_with, messages
+from ferris import Controller, messages, route_with
 from ferris.components.pagination import Pagination
 from ferris.components.upload import Upload
+from app.models.bnld import Bnld
+import json
+'''
 from google.appengine.api import users
 from ..controllers.users import Users
 from ferris.core import mail
 from ..controllers.utils import Utils
-from ..models.bnld import Bnld
+
 import logging
 from ferris.core.ndb import ndb
+'''
 import datetime
-import json
 
-
+'''
 from app.component.drafts import Drafts
 from app.component.split_view import SplitView
 from google.appengine.ext import blobstore
+'''
 
 class Bnlds(Controller):
 
     class Meta:
-        prefix = ('api',)
-        components = (scaffold.Scaffolding, SplitView, Pagination, Upload, Drafts, messages.Messaging)
+        prefixes = ('api',)
+        components = (messages.Messaging, )
         pagination_limit = 10
+        '''
         sv_result_variable = 'bnlds'
         sv_status_field = 'Status'
         action_form = 'bnldform'
+        '''
+        Model = Bnld
 
+
+        
+    '''
     class Scaffold:
         display_properties = ('created_by', 'created', 'Buyer_or_BAA_Name',
             'Date','Merchandise_Manager','Number_of_Items','Include_Any_Comments_Below')
+    '''
+    '''
+    @route_with('/api/messages/store:<store_num>/<department>/<location>/sort_by:<sort_by>/from:<start_date>/to:<end_date>', methods=['GET'])
+   @route_with('/api/messages/store:<store_num>/<department>/<location>/sort_by:<sort_by>', methods=['GET'])
+   @route_with('/api/messages/store:<store_num>/<department>/<location>/from:<start_date>/to:<end_date>', methods=['GET'])
+   @route_with('/api/messages/store:<store_num>/<department>/<location>', methods=['GET'])
+   def api_list_store_department(self, store_num, department, location, sort_by=None, start_date=None, end_date=None):
+    
+    '''
+    
 
-    ######RESTFUL functions####################
+    
+    @route_with('/bnlds/list', methods=['GET'])
+    def list(self):
+        self.meta.view.template_name = 'angular/bnlds/list.html'
 
     @route_with('/api/bnlds', methods=['GET'])
-    def api_list_all(self):
+    def api_list(self):
         self.context['data'] = Bnld.list_all()
 
     @route_with('/api/bnlds', methods=['POST'])
     def api_create(self):
         params = json.loads(self.request.body)
-        print repr(params)
         self.context['data'] = Bnld.create(params)
 
     @route_with('/api/bnlds:<key>', methods=['GET'])
@@ -58,9 +80,10 @@ class Bnlds(Controller):
         bnld = self.util.decode_key(key).get()
         bnld.delete()
         return 200
-    ##################TASK
-    ##########################################
 
+
+
+    '''
     @route
     def draft_action(self):
         self.components.drafts.save(self.request.params)
@@ -261,7 +284,7 @@ class Bnlds(Controller):
         self.context['user'] = self.session.get('user_email')
         self.context['frmkey']  = self.request.params['key']
 
-
+         #show all queries if manager of the form
         showAll = self.context.get('user_isManager')
         logging.info('show All ==========> ' + str(showAll))
         if self.request.get('order_by_created'):
@@ -287,6 +310,7 @@ class Bnlds(Controller):
                 self.context['bnlds'] = query
 
             self.context['sv_bnlds'] = self.context['bnlds']
+            
 
     def view(self,key):
 
@@ -1065,3 +1089,5 @@ class Bnlds(Controller):
 
 
         mail.send(to, subject, msg_body, str(users.get_current_user()))
+
+    '''

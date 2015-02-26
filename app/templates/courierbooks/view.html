@@ -1,0 +1,158 @@
+{% import "scaffolding/list.html" as scaffold with context %}
+{% import 'scaffolding/macros.html' as s with context %}
+{% extends 'layouts/main.html' %}
+
+{% block layout_head %}
+<script type='text/javascript' src='/js/utils.js'></script>
+{% endblock %}
+
+{% block layout_page_title %}
+<!-- page title here -->
+Stock Reject Details
+{% endblock %}
+
+{% block layout_content %}
+<div class="form-description fd-form-view" id="form-description">
+    <p><i class="icon-pencil"></i>Users request courier booking for goods delivery. The store fills out the form to order courier to pick up/drop off product.</p>
+</div>
+    <div class="well">
+        <fieldset>
+            {% import "scaffolding/macros.html" as scaffold with context %}
+            {% import 'macros/search.html' as search with context %}
+            <table class="table table-striped">
+                <tr>
+                    <td><strong>BOOKING DETAILS</strong></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Requestor:</td>
+                    <td>{{courierbook.Full_Name}}</td>
+                </tr>
+                <tr>
+                    <td>Contact number:</td>
+                    <td>{{courierbook.Contact_Number}}</td>
+                </tr>
+                <tr>
+                    <td><strong>PICK UP STORE</strong></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Store No.:</td>
+                    <td>{{courierbook.Store_No_Pick_Up}}</td>
+                </tr>
+                <tr>
+                    <td>Store Name:</td>
+                    <td>{{courierbook.Store_Name_Pick_Up}}</td>
+                </tr>
+                <tr>
+                    <td>Address 1:</td>
+                    <td>{{courierbook.Address1_Pick_Up}}</td>
+                </tr>
+                <tr>
+                    <td>Address 2:</td>
+                    <td>{{courierbook.Address2_Pick_Up}}</td>
+                </tr>
+                <tr>
+                    <td>Suburb:</td>
+                    <td>{{courierbook.Suburb_Pick_Up}}</td>
+                </tr>
+                <tr>
+                    <td>State:</td>
+                    <td>{{courierbook.State_Pick_Up}}</td>
+                </tr>
+                <tr>
+                    <td>Postcode:</td>
+                    <td>{{courierbook.Post_Code_Pick_Up}}</td>
+                </tr>
+                <tr>
+                    <td><strong>DESTINATION STORE</strong></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Store No.:</td>
+                    <td>{{courierbook.Store_No_Dest}}</td>
+                </tr>
+                <tr>
+                    <td>Store Name:</td>
+                    <td>{{courierbook.Store_Name_Dest}}</td>
+                </tr>
+                <tr>
+                    <td>Address 1:</td>
+                    <td>{{courierbook.Address1_Dest}}</td>
+                </tr>
+                <tr>
+                    <td>Address 2:</td>
+                    <td>{{courierbook.Address2_Dest}}</td>
+                </tr>
+                <tr>
+                    <td>Suburb:</td>
+                    <td>{{courierbook.Suburb_Dest}}</td>
+                </tr>
+                <tr>
+                    <td>State:</td>
+                    <td>{{courierbook.State_Dest}}</td>
+                </tr>
+                <tr>
+                    <td>Postcode:</td>
+                    <td>{{courierbook.Post_Code_Dest}}</td>
+                </tr>
+                <tr>
+                    <td>Reason for Courier:</td>
+                    <td>{{courierbook.Reason_For_Courier}}</td>
+                </tr>
+                <tr>
+                    <td>Cost Centre:</td>
+                    <td>{{costcentres.number}} - {{courierbook.Cost_Centre}}</td>
+                </tr>
+                <tr>
+                    <td><strong>PACKAGE DETAILS</strong></td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Description of Package:</td>
+                    <td>{{courierbook.Description_of_Package}}</td>
+                </tr>
+                <tr>
+                    <td>Length:</td>
+                    <td>{{courierbook.Length}}</td>
+                </tr>
+                <tr>
+                    <td>Width:</td>
+                    <td>{{courierbook.Width}}</td>
+                </tr>
+                <tr>
+                    <td>Height:</td>
+                    <td>{{courierbook.Height}}</td>
+                </tr>
+                <tr>
+                    <td>Weight:</td>
+                    <td>{{courierbook.Weight}}</td>
+                </tr>
+                <tr>
+                    <td>Quantity:</td>
+                    <td>{{courierbook.Quantity}}</td>
+                </tr>
+                <tr>
+                    <td>Insurance required:</td>
+                    <td>{{courierbook.Insurance_required}}</td>
+                </tr>
+                <tr>
+                    <td>Ready to be collected:</td>
+                    <td>{{courierbook.Ready_to_be_collected}}</td>
+                </tr>
+                <tr>
+                    <td>From:</td>
+                    <td>{{courierbook.From}}</td>
+                </tr>
+                <tr>
+                    <td>Courier Vehicle size:</td>
+                    <td>{{courierbook.Please_select_the_Courier_Vehicle_size_required}}</td>
+                </tr>
+            </table>
+            <div align="right">
+                <!-- <a href="{{this.uri('courierbooks:update', key=courierbook.key.urlsafe(), frmkey=frmkey)}}" class="btn btn-primary">Edit</a> -->
+                <a href="{{this.uri('courierbooks:list', key=frmkey)}}" class="btn btn-primary">Back</a>
+            </div>
+        </fieldset>
+    </div>
+{% endblock %}

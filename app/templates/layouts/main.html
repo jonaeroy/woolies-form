@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<head>
+<title>Woolworths Forms |  {{ PAGE_TITLE }}</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+<meta http-equiv="Pragma" content="no-cache" />
+<meta http-equiv="Expires" content="0" />
+<META NAME="AUTHOR" CONTENT="Sugar Ray Tenorio, Christian Talampas, Deejay Tagubasi, Cloudsherpas - Google Development Team" />
+<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=UTF-8" />
+
+<link rel="stylesheet" type="text/css" href="/static/package/bootstrap/css/bootstrap.css">
+<script type="text/javascript" src="/static/package/jquery-1.10.2/jquery.min.js"></script>
+<script type="text/javascript" src="/ferris/js/bootstrap.min.js"></script>
+
+<script type="text/javascript" src="/static/package/bootstrap-select/bootstrap-select.min.js"></script>
+<script src="/static/package/hogan/hogan-2.0.0.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/static/package/bootstrap-select/bootstrap-select.min.css">
+
+<script type="text/javascript" src="/static/js/crypto-js.js"></script>
+<script type="text/javascript" src="/static/js/app/forms.js"></script>
+<script type="text/javascript" src="/static/js/app/email-autocomplete.js"></script>
+<script type="text/javascript" src="/static/js/app/sidebar.js"></script>
+<script type="text/javascript" src="/static/js/app/live-filter.js"></script>
+
+{% if has_draft_component %}
+<!-- do not modify. for save as draft feature, this needs to be on top of drafts.js-->
+<!----
+<script>
+var DRAFT_DATA = '{{draft_data}}';
+var DRAFT_ACTION_URL = '{{draft_action_url}}';
+var CLEAR_DRAFT_ACTION_URL = '{{clear_draft_action_url}}';
+var LIST_ACTION_URL = '{{list_action_url}}';
+var CONTROLLER_NAME = '{{controller_name}}';
+</script>
+<script type="text/javascript" src="/static/js/app/drafts.js"></script>
+{% endif %}
+
+
+{% if has_splitview_component %}
+<script>
+var FULL_URL = '{{full_url}}';
+</script>
+<script type="text/javascript" src="/static/js/app/list-segregate.js"></script>
+{% endif %}
+---->
+{% block layout_head %}
+{% endblock %}
+
+<link rel="stylesheet" type="text/css" href="/static/css/dashboard/bootstrap-overrides.css" />
+<link rel="stylesheet" type="text/css" href="/static/package/font-awesome/css/font-awesome.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/dashboard/index.css" />
+
+<!-- layout-->
+<link rel="stylesheet" type="text/css" href="/static/css/dashboard/layout.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/dashboard/elements.css" />
+<link rel="stylesheet" type="text/css" href="/static/css/dashboard/icons.css" />
+
+<!--[if lt IE 9]>
+  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+
+{% if user_favorites|length > 0 %}
+    <script type="text/javascript">
+       $(document).ready(function(){
+
+
+        //TOGGLE FAVORITE TAGGING
+            var array = [
+               {% for faves in user_favorites %}
+                    "{{faves}}",
+               {% endfor %}
+            ]
+
+            var re = new RegExp(array.join("|"), "i");
+
+            $('#dashboard-menu li .row-fluid').each(function(){
+                var links = $(this).attr('href');
+                var hit = re.test(links);
+
+                if(hit) {
+                    $(this).prev().children().eq(0).addClass('favorite');
+                    $('#dashboard-menu').find('.favorite').closest('li').addClass('form-favorite').appendTo('#favorites-menu');
+                }
+            });
+
+            $('#dashboard-menu-nav li a').each(function(){
+                var links = $(this).attr('href');
+                var hit = re.test(links);
+
+                if(hit) {
+                    $(this).parent().eq(0).addClass('favorite');
+                    //$('#dashboard-menu-nav').find('.favorite').closest('li').addClass('form-favorite').appendTo('#favorites-menu');
+                }
+            });
+        //end TOGGLE FAVE
+
+       });//end ready
+    </script>
+
+{% endif %}
+<!----
+<script type="text/javascript">
+   $(document).ready(function(){
+
+    //TOGGLE SHOW FAVORITES ONLY with LIVE FILTER
+        //Initialize live filter
+        $('#dashboard-menu-nav').liveFilter('#filter-dashboard-menu-nav', 'li', {
+                filterChildSelector: 'a'
+        });
+
+        var sel = $('#favorite_select').val();
+        if (sel=='All Forms') {
+            $('#favorites-menu, #dashboard-menu').liveFilter('#filter-dashboard-menu', 'li', {
+                    filterChildSelector: 'span'
+            });
+        }//end live filter
+
+        $('#favorite_select').change(function() {
+            var sel = $('#favorite_select').val();
+            var frmfave= $('.form-favorite');
+            if (sel=='Favorites Only') {
+                $('#dashboard-menu').css('display','none');
+                $('#favorites-menu').liveFilter('#filter-dashboard-menu', 'li', {
+                        filterChildSelector: 'span'
+                });
+            }
+            if (sel=='All Forms') {
+                $('#dashboard-menu').css('display','block');
+                $('#favorites-menu, #dashboard-menu').liveFilter('#filter-dashboard-menu', 'li', {
+                        filterChildSelector: 'span'
+                });
+            }
+        });
+
+        //Display No results found
+        $('#filter-dashboard-menu').keyup(function() {
+            $(function(){
+                var count = $('#favorites-menu,#dashboard-menu').find(".dm-list:visible").length;
+                if (count==0) {
+                    $('#filter-message').text('No results found');
+                }
+                else {
+                   $('#filter-message').text('');
+                }
+            });
+        });//end No
+
+    //end SHOW FAVORITES
+
+    //TOGGLE SHOW FAVORITES ONLY IN NAVBAR
+        $('#favorite-toggle-nav').click(function(){
+            var obj = $(this).children();
+            var listnotfave = $('#dashboard-menu-nav li').not('.favorite');
+            var toghasclass = $('#favorite-toggle-nav').children().hasClass('show-favorites');
+
+            obj.toggleClass('show-favorites');
+            console.log(toghasclass);
+
+            if (toghasclass) {
+                listnotfave.show();
+            }
+            else {
+                listnotfave.hide();
+                $('#display-always').show();
+            }
+        });
+    //end TOGGLE SHOW FAVORITES
+
+
+
+   });//end ready
+</script>
+---->
+<!-- transfer Form List Controls to Content Container on List View-->
+{% if route == 'list' %}
+<script>
+    $(document).ready(function(){
+        $('.form-list-controls').appendTo('.form-list-container-holder').css('display','inline-block');
+        $('.form-list-controls').find('a').removeClass('btn-block');
+        $('.form-list-controls').find('i').css('font-size','10px');
+    });
+</script>
+{% endif %}
+
+{% if route == 'delete_suc' %}
+<script>
+    $(document).ready(function(){
+        $('#form-description').appendTo('#sidebar-nav');
+    });
+</script>
+{% endif %}
+
+</head>
+<body>
+    <!-- navbar -->
+    <div class="navbar navbar-inverse">
+        <div class="navbar-inner">
+
+            <a class="brand" href="/">
+                <i class="icon-file-text"></i>
+                <span style="color: #fff; font-weight:normal; font-size: 24px; font-family:'Open Sans', sans-serif">WoolWorths Forms</span>
+            </a>
+
+            <div class="pull-right">
+
+            </div>
+
+            <ul class="nav pull-right">
+                {% if route != 'dashboard' %}
+                <li class="dropdown">
+                    <a href="#" class="favorite-toggle-nav" id="favorite-toggle-nav" title="Toggle to Show Only Favorites">
+                        <i class='icon-star icon-2x'></i>
+                    </a>
+                   <a href="#" class="dropdown-toggle hidden-phone" data-toggle="dropdown">
+                        SELECT A FORM
+                        <b class="caret"></b>
+                    </a>
+                    <ul id="dashboard-menu-nav" class="dropdown-menu">
+                        <li class="dm-list" id="display-always" style="border-bottom: 1px solid #d3d3d3;">
+                            <a href="http://ncdwcogwbp0001/userprovisioningportal" target="_blank" class="dmn-new">
+                                New User, Application Access, Changes and Termination forms
+                            </a>
+                        </li>
+
+
+                      {% for form in woolies_forms %}
+                        <li class="dm-list">
+			  <a href="/{{ form.list_url }}">{{ form.name }}</a>
+                          <!---<a href="/{{ form.list_url }}?key={{form.key.urlsafe()}}">{{ form.name }}</a>--->
+                        </li>
+                      {% endfor %}
+
+
+
+
+
+                    </ul>
+                </li>
+                {% endif %}
+
+                {%  if  route=='list' or route=='dashboard' or route == 'display' %}
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle hidden-phone" data-toggle="dropdown"><i class='icon-link icon-2x'></i>
+                        <span style="display: inline-block; margin: -15px 0 0 10px; vertical-align: middle;">BANNERS</span>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if user_banner_category %}
+                        <li><a href="/banners"><i class=icon-list-alt></i> &nbsp; Banner Links List View</a></li>
+                        {% endif %}
+                        <li><a href="/banners/display"><i class=icon-external-link></i> &nbsp; Banner Links Display</a></li>
+                    </ul>
+
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle hidden-phone" data-toggle="dropdown"><i class='icon-cog icon-2x'></i>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        {% if user_fullname   %}
+                            <li><a href="#"><i class=icon-gear></i> &nbsp; {{ user_fullname }}</a></li>
+                        {% endif %}
+                        <li><a href="#"><i class=icon-briefcase></i> &nbsp; {{ user_email }}</a></li>
+
+                        <li role="presentation" class="divider"></li>
+                        <li>
+                            <a href="#"><i class=icon-male></i> &nbsp; Groups</a>
+
+                        </li>
+                        <li>
+                            <ul style="padding-left:20px">
+                            {% if user_group %}
+                                {% for u_group in user_group %}
+                                    {% for group in group_list %}
+                                         {% if group != None and group.key != None and u_group != None and group.key.urlsafe() == u_group.urlsafe()  %}
+                                            {% set group_name = group.name %}
+                                            <li>{{ group.name }}</li>
+                                         {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                            {% else %}
+                                Normal user
+                            {% endif %}
+                            </ul>
+                        </li>
+
+
+                        <!-- <li><a href="#"><i class=icon-cog></i> &nbsp; Account settings</a></li>
+                        <li><a href="#"><i class=icon-wrench></i> &nbsp; Send feedback</a></li> -->
+                        {%  if  user_isAdmin %}
+                        <li role="presentation" class="divider"></li>
+                        <li><a href="/users" class="trigger"><i class="icon-user"></i> &nbsp;  Manage Users</a></li>
+                        <li>
+                            <a href="/groups" class="trigger">
+                                <i class="icon-group"></i> &nbsp;
+                                <span class="">Manage Groups</span>
+                            </a>
+                        </li>
+                        {% endif %}
+                        {%  if  user_isGoogleAdmin %}
+                        <li>
+                            <a href="/woolies_forms" class="trigger">
+                                <i class="icon-copy"></i> &nbsp;
+                                <span class="">Manage Forms</span>
+                            </a>
+                        </li>
+
+                        {% endif %}
+                        <li role="presentation" class="divider"></li>
+                        <li>
+                            <a href="{{ logout }}" class="trigger">
+                                <i class="icon-signout"></i> &nbsp;
+                                <span class="">Sign out</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                {% endif %}
+
+                {% if route != 'dashboard' %}
+                <li class="hidden-phone">
+                    <a href="javascript:history.go(-1)" class="trigger">
+                        <i class="icon-chevron-left"></i>
+                        <span class="">Back</span>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+    <!-- end navbar -->
+
+    <!-- sidebar -->
+    {%  if route == 'dashboard' or route == 'list' or form_entity %}
+    <div id="sidebar-nav">
+        {%  if route == 'dashboard' %}
+        <div class="filter-display">
+            <span>Display</span>
+            <select id="favorite_select">
+                <option>All Forms</option>
+                <option>Favorites Only</option>
+            </select>
+
+            <input id="filter-dashboard-menu" class="search-filter" type="text" placeholder="Search forms..." />
+            <div id="filter-message"></div>
+        </div>
+
+        <div class="dashboard-menu-container">
+            <ul id="favorites-menu" class="dashboard-menu">
+                <li class="dm-list" id="always-on-top">
+                    <a href="#" class="nav-bar-icon"><i class="icon-info-sign"></i></a>
+                    <a class="row-fluid" href="http://ncdwcogwbp0001/userprovisioningportal" target="_blank">
+                        <span class="pull-left">New User, Application Access, Changes and Termination forms</span>
+                    </a>
+                </li>
+
+                <!--
+                <li class="dm-list" id="leave_app_external">
+                    <a href="#" class="nav-bar-icon"><i class="icon-info-sign"></i></a>
+                    <a class="row-fluid" href="http://3-00.woolworths-forms.appspot.com/leave_requests" style="background:#3b9ff3; font-weight:bold; color:#fff" >
+                    <span class="pull-left">Leave requests</span></a>
+                </li>
+                -->
+
+                <li class="dm-list" id="leave_app_external">
+                    <a href="#" class="nav-bar-icon"><i class="icon-info-sign"></i></a>
+                    <a class="row-fluid" href="http://3-00.woolworths-forms.appspot.com/leave_requests" target="_blank">
+                        <span class="pull-left">Leave requests</span>
+                    </a>
+                </li>
+
+            </ul>
+            <ul id="dashboard-menu" class="dashboard-menu">
+
+                {% for form in woolies_forms %}
+                <li class="dm-list">
+                    {% if form.list_url=='travel_authorisations' %}
+                        <a href="#" class="nav-bar-icon"><i class="icon-star"></i></a>
+                        <a class="row-fluid" href="http://1-6-9-release.woolworths-forms.appspot.com/{{ form.list_url }}?key={{form.key.urlsafe()}}" {% if form_key ==  form.key.urlsafe()%} style="background:#3b9ff3; font-weight:bold; color:#fff" {% endif %}>
+                        <span class="pull-left">{{ form.name }}</span></a>
+                    {% else %}
+                        <a href="#" class="nav-bar-icon"><i class="icon-star"></i></a>
+			<a class="row-fluid" href="/{{ form.list_url }}" {% if form_key ==  form.key.urlsafe()%} style="background:#3b9ff3; font-weight:bold; color:#fff" {% endif %}>
+                            <span class="pull-left">{{ form.name }}</span>
+                        </a>
+			<!---
+                        <a class="row-fluid" href="/{{ form.list_url }}?key={{form.key.urlsafe()}}" {% if form_key ==  form.key.urlsafe()%} style="background:#3b9ff3; font-weight:bold; color:#fff" {% endif %}>
+                            <span class="pull-left">{{ form.name }}</span>
+                        </a>--->
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {%  endif %}
+
+
+        {% if form_entity %}
+        <div class="form-list-controls">
+            {%  if  user_isAdmin and form_entity %}
+                <a class="btn-flat danger btn-block" id="add_new_admin_btn"><i class="icon-unlock-alt icon-large adj"></i><span>ASSIGN FORM ADMINISTRATOR</span></a>
+            {% endif %}
+
+            {%  if  user_isFormAdmin and form_entity %}
+                <a class="btn-flat success btn-block" id="add_new_manager_btn"><i class="icon-group icon-large adj"></i><span>ASSIGN FIRST LEVEL FORM APPROVERS</span></a>
+            {% endif %}
+
+            {%  if  user_isFormAdmin and form_entity %}
+                <a class="btn-flat success btn-block" id="add_new_second_manager_btn"><i class="icon-group icon-large adj"></i><span>ASSIGN SECOND LEVEL FORM APPROVERS</span></a>
+            {% endif %}
+
+            {% if route == 'view' %}
+                <a class="btn-flat success btn-block" id="savePDF"><i class="icon-file-text icon-large adj"></i> Save to PDF</a>
+            {% endif %}
+        </div>
+
+        <div id="alert_container" class="alert-container">
+            {%  if  first_group_approver %}
+            <div class="alert-sub-container">
+                <div class=" " style="font-size: 12px">
+                    <i class='icon-gear'></i>
+                    <strong>
+                        For more information about this form/process, contact
+                        <a href="#" id='popoever1'><span style='color: #333' data-toggle="tooltip"  class="group_name_class" group_key="{{ first_group_approver.key.urlsafe() }}">
+                            {{ first_group_approver.name }}</span> </a>
+                        {%  if  second_group_approver  %}
+                            and
+                            <a href="#" id='popoever2'><span style='color: #333' data-toggle="tooltip"  class="group_name_class" group_key="{{ second_group_approver.key.urlsafe() }}">
+                                {{ second_group_approver.name }}</span></a>
+                        {% endif %}.
+                    </strong>
+                </div>
+            </div>
+            {% else %}
+                {%  if form_entity  %}
+                <div class="alert-sub-container">
+                    <div class="" style="font-size: 12px; color: red">
+
+                        <i class='icon-exclamation-sign'></i>
+                        <strong>
+                            No Approvers has been set for this Form. You won't be able to create a new Request. <br />Please contact Form Administrator.
+                        </strong>
+                    </div>
+                </div>
+                {% endif %}
+            {% endif %}
+
+
+            {%  if user_isFormAdmin and route=='list' %}
+            <div>
+                <div class="" style="font-size: 12px; color: #3b9ff3">
+                    <i class='icon-check-sign'></i>
+                    <strong>
+                        You can assign users/groups to Manage/Approve this Form.
+                    </strong>
+                </div>
+            </div>
+            {% endif %}
+
+            {%  if (is_first_group_approver or is_second_group_approver) and route=='list' %}
+            <div>
+                <div class="" style="font-size: 12px; color: #3b9ff3">
+                    <i class='icon-check-sign'></i>
+                    <strong>
+                        You can Approve/Reject  Form Requests on this list.
+                    </strong>
+                </div>
+            </div>
+            {% endif %}
+
+        </div>
+        <!-- Alert Container -->
+        {% endif %}
+
+    </div>
+    {%  endif %}
+    <!-- end sidebar -->
+
+
+    <!-- main container -->
+    <div class="content" {% if route == 'list' and route !='dashboard' %}style="margin-left: 0 !important;" {% endif %}>
+        <div class="container-fluid">
+            {%  if  user_isAdmin %}
+            <!-- upper main stats
+            COMMENTED 7/27/2013 - Ray
+            <div id="main-stats">
+                <div class="row-fluid stats-row">
+                    <div class="span3 stat">
+                        <div class="data">
+                            <span class="number">0</span>
+                            pending
+                        </div>
+
+                    </div>
+                    <div class="span3 stat">
+                        <div class="data">
+                            <span class="number">0</span>
+                            approved
+                        </div>
+
+                    </div>
+                    <div class="span3 stat">
+                        <div class="data">
+                            <span class="number">0</span>
+                            declined
+                        </div>
+
+                    </div>
+                    <div class="span3 stat last">
+                        <div class="data">
+                            <span class="number">0</span>
+                            users
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            -->
+            {% endif %}
+
+
+            <div id="pad-wrapper">
+                <div class="row-fluid chart">
+                    <div style='font-size: 24px'>
+
+                        <div class="btn-group pull-right form-list-container-holder" style="margin-top: 15px;">
+
+                            {%  if  route!='list' and route != 'view' and has_draft_component and route!='edit_data' and route !='update' and route != 'delete_suc' and route != 'teststoreallocate' and route != 'replenishmentapprovalform' and route !='poolcarbookform' %}
+
+                                <button type="button" class="btn info " id="save_as_draft_btn" disabled><i class="icon-save">
+                                    </i> SAVE AS DRAFT
+                                </button>
+
+                                <button type="button" class="btn info " id="clear_draft_btn"><i class="icon-trash">
+                                    </i> DISCARD DRAFT
+                                </button>
+
+                            {% endif %}
+
+                            {% block layout_page_buttons %}
+                            {% endblock %}
+
+                            {% set form_entity_name = form_entity.name|replace("Request", "")|replace("Requests", "")|replace("request", "")|replace("requests", "")|replace("Form", "") %}
+
+                            {% if route == 'list' and form_entity %}
+                                {% if first_group_approver and str(form_entity) != 'Pool Car Booking Form' %}
+                                    <a class="btn-flat primary " id="new_req" href="/{{form_entity.add_url}}?key={{form_entity.key.urlsafe()}}">
+                                        {% if has_draft_data%}
+                                            <em style="color:orange; font-weight: bold; font-size:15px">Saved</em>
+                                        {% else %}
+                                            <i class="icon-plus"></i> New
+                                        {% endif %}
+                                        {{ form_entity_name }} Request
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+
+                        </div>
+
+                        <div class="form-title-container" id='form_title' style="margin: 20px 0; clear: both;">
+                            <!--
+                            {% if route == 'list' and route != 'view' or str(form_entity) != 'None' %}
+                            <a href="#" class="form-title-fave-tag"><i class="icon-star-empty"></i></a>
+                            {% endif %} -->
+                            <h2>
+                                {% if form_entity or route != 'dashboard' %}
+                                    {% if route=='list' %}
+                                    Your {{ form_entity_name }} Requests
+                                    {% else %}
+                                        {% if request.GET['key'] %}
+                                        New {{ form_entity_name }} Requests
+
+                                        {% else %}
+                                            {{ form_entity_name }} Details
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+
+                                {% if not form_entity %}
+                                    {% block layout_page_title %}
+                                    {% endblock %}
+                                {% endif %}
+                            </h2>
+                        </div>
+
+                    </div>
+                    <div class="span12">
+                        <div id="page-container">
+                            {% block layout_content %}
+                            {% endblock %}
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    {% include "includes/form_approver_modal.html" %}
+
+    <form id="form_credentials">
+    <input type="hidden" value="http://{{ DOMAIN_PATH }}/"  id="APP_DOMAIN" name="APP_DOMAIN" />
+    <input type="hidden" value="{{ request.GET['key'] }}" id="FORM_KEY" name="FORM_KEY" />
+    <input type="hidden" value="{{ request.GET['key'] }}" id="GROUP_KEY_FOR_ADD_USER" name="GROUP_KEY_FOR_ADD_USER" />
+    </form>
+    {% if form_admin %}
+    <input type="hidden" value="{{ form_admin.urlsafe() }}" id="admin_group_key" />
+    {% endif %}
+
+    {% if first_group_approver %}
+    <input type="hidden" value="{{ first_group_approver.key.urlsafe() }}" id="First_approver_group_key" />
+    {% endif %}
+
+    {% if second_group_approver %}
+    <input type="hidden" value="{{ second_group_approver.key.urlsafe() }}" id="Second_approver_group_key" />
+    {% endif %}
+
+    {% if user_group %}
+        {% for u_group in user_group %}
+            <input type="hidden" value="{{ u_group.urlsafe() }}" id="GROUP_KEY_{{ u_group.name }}" />
+        {% endfor %}
+    {% endif %}
+
+    {% if route %}
+    <input type="hidden" value="{{ route }}" id="ROUTE" />
+    {% endif %}
+
+    {% if form_entity %}
+    <input type="hidden" value="{{ form_entity.add_url }}" id="ADD_URL" />
+    {% endif %}
+
+{% block layout_footer %}
+{% endblock %}
+
+<!-- open sans font -->
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+<!-- lato font -->
+<link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900,300italic,400italic,700italic,900italic' rel='stylesheet' type='text/css'>
+
+</body>
+</html>

@@ -1,39 +1,44 @@
-angular.module('app.controllers').controller('BnldsCtrl', function($scope, $location, BnldsSvc){
-    "use strict";
-    //variables
+angular.module('app.controllers').controller('newBnldsRequestCtrl', function($scope, $location, BnldsSvc){
+    "use.strict"
 
-    console.log('Test!!!!');
+    $scope.bnlds={};
+    $scope.choices=["Yes","No","N/A"];
 
-    $scope.bnlds = {};
-    //select options variables
-    $scope.choices = ["Yes", "No","N/A"];
-    //ng-options = "choice for choice in choices track by choice" ng-model="default_choice"
-    $scope.create = function() {
-    	BnldsSvc.create($scope.bnlds)
-    	    .success(function(data, status){
-    		console.log(data.items);
-    	    })
-    	    .error(function(data, status){
+    
+    $scope.create = function(){
+        BnldsSvc.create($scope.bnlds)
+            .success(function(data, status){
+                console.log(data.items);
+            })
+            .error(function(data,status){
 
-    	    })
+            })
+
     };
-
-    $scope.loadPage = function(){
-        $location.path("newbnldsrequest");
+    
+    
+    $scope.bnlds_list = [];
+    
+    $scope.list_all = function(){
+	BnldsSvc.list_all()
+	    .success(function(data, status){
+		$scope.bnlds_list = data.items;
+		console.log(data.items);
+	    })
+	    .error(function(data, status){
+		alert('Error Accessing BNLDS Request Lists!');
+	    })
     };
-
 });
 
 
-angular.module('app.controllers').controller('BnldsListCtrl', function($scope, BnldsSvc){
-    $scope.bnlds_items = [];
-    BnldsSvc.list()
-	.success(function(data, status){
-	    $scope.bnlds_items = data.items;
-	})
-	.error(function(data, status)){
-	    alert("Error Occured!");
-	}
-
-});
-
+// angular.module('app.controllers').controller('BnldsListCtrl', function($scope, BnldsSvc){
+//     $scope.bnlds_items = [];
+//     BnldsSvc.list()
+// 	.success(function(data, status){
+//             $scope.bnlds_items = data.items;
+// 	})
+// 	.error(function(data, status)){
+//             alert("Error Occured!");
+// 	}
+// });

@@ -1,0 +1,11 @@
+  /home/jbayron/Documents/google_appengine/wool_worths/angular-app/templates/bnlds:
+  total used in directory 60 available 126796888
+  drwxrwxr-x 2 jbayron jbayron  4096 Feb 26 13:47 .
+  drwxrwxr-x 5 jbayron jbayron  4096 Feb 24 12:29 ..
+  -rw-rw-r-- 1 jbayron jbayron  4179 Feb 24 22:03 bnldform.html
+  -rw-rw-r-- 1 jbayron jbayron   759 Feb 23 17:10 delete_suc.html
+  -rw-rw-r-- 1 jbayron jbayron   629 Feb 23 17:10 edit_locked.html
+  -rw-rw-r-- 1 jbayron jbayron  4067 Feb 26 13:18 list.html
+  -rw-rw-r-- 1 jbayron jbayron 15324 Feb 23 17:10 search.html
+  -rw-rw-r-- 1 jbayron jbayron  7965 Feb 23 17:10 update.html
+  -rw-rw-r-- 1 jbayron jbayron  2723 Feb 23 17:10 view.html

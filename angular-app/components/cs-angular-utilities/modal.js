@@ -34,9 +34,6 @@ angular.module('cs.modal', ['ng']).
                 Array.prototype.slice.call(arguments)));
             if(callback) callback.apply(this, arguments);
             scope.modal.hide();
-            // force remove the backdrop
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
           };
 
           // Call on show to inform the controller that the modal has been shown.
@@ -55,13 +52,9 @@ angular.module('cs.modal', ['ng']).
           hide: function(){
             if(scope.on_hide) scope.on_hide();
             $elm.modal('hide');
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
           },
           temporary_hide: function(){
             $elm.modal('hide');
-            $('body').removeClass('modal-open');
-            $('.modal-backdrop').remove();
           },
           temporary_show: function(){
             $elm.modal('show');

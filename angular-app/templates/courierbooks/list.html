@@ -19,7 +19,7 @@
 
 <style type="text/css">
     table#list {
-        border-collapse: collapse;   
+        border-collapse: collapse;
     }
     #list td:hover {
         cursor: pointer;
@@ -46,6 +46,45 @@ Dan Murphy's Courier Booking List
     <div class="form-description">
         <p><i class="icon-pencil"></i>Users request courier booking for goods delivery. The store fills out the form to order courier to pick up/drop off product.</p>
     </div>
+
+<!-- start of angular injection -->
+
+<!-- <script src="ng/angular/1.2.27/angular.min.js"></script> -->
+<script src="ng/angular/1.2.27/angular.js"></script>
+<!-- <script src="ng/angular/1.2.27/angular-route.min.js"></script> -->
+<script src="ng/angular/1.2.27/angular-route.js"></script>
+
+
+
+ <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.19/angular-cookies.js"></script>
+
+
+
+<script src="http://angular-ui.github.io/bootstrap/ui-bootstrap-tpls-0.12.0.js"></script>
+<link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+
+<script src="ng/app.js"></script>
+<script src="ng/config.js"></script>
+
+
+        <!--    rest api         -->
+<script src="ng/providers/newrequestrest.js"></script>
+
+        <!-- angular controller -->
+<script src="ng/controllers/newrequest.js"></script>
+<script src="ng/controllers/page.js"></script>
+<!-- end of angular injection -->
+
+<!-- start of UI with angular -->
+<div ng-app="app">
+<div ng-controller="newRequestCtrl">
+<button type="button" ng-click="showRequestForm()">NEW REQUEST FORM</button>
+<div ng-view></div>
+
+<!-- end of UI with angular -->
+
+
+
     <div class="well">
         {% import "scaffolding/macros.html" as scaffold with context %}
         {% import 'macros/search.html' as search with context %}
@@ -55,7 +94,7 @@ Dan Murphy's Courier Booking List
                     <tr>
                     {% set order_by_created = request.GET['order_by_created']=='desc' and 'asc' or 'desc'  %}
                         {% set order_by_date = request.GET['order_by_date']=='desc' and 'asc' or 'desc'  %}
-                        {% set order_by_status = request.GET['order_by_status']=='desc' and 'asc' or 'desc'  %}                       
+                        {% set order_by_status = request.GET['order_by_status']=='desc' and 'asc' or 'desc'  %}
                         <th>
                             <a href="/courierbooks?order_by_created={{ order_by_created }}&key={{frmkey}}">Created By</a>
                             <b class="caret c-custom {% if order_by_created == 'asc' %}caret-up{% endif %}"></b>
@@ -76,4 +115,8 @@ Dan Murphy's Courier Booking List
             {{s.next_page_link()}}
         </fieldset>
     </div>
+
+</div>
+</div>
+
 {% endblock %}

@@ -1,18 +1,10 @@
 {
-  "name": "Ferris Angular App",
-  "dependencies": {
-    "jquery": "2.1.x",
-    "angular": "1.2.x",
-    "angular-sanitize": "1.2.x",
-    "angular-mocks": "1.2.x",
-    "cs-angular-utilities": "git@bitbucket.org:cloudsherpas/angular-utilities.git#master",
-    "lazy.js": "~0.3.2",
-    "angular-route": "~1.2.x",
-    "momentjs": "~2.8.4",
-    "angular-ui-select": "~0.9.0",
-    "select2": "~3.5.2",
-    "angular-tooltips": "~0.1.1",
-    "angular-animate": "1.2.x",
-    "bower-angular-cookies": "1.2.x"
-  }
+    "name": "Ferris Angular App",
+    "dependencies": {
+        "jquery": "2.0.x",
+        "angular": "1.2.x",
+        "angular-sanitize": "1.2.x",
+        "angular-mocks": "1.2.x",
+        "cs-angular-utilities": "git@bitbucket.org:cloudsherpas/angular-utilities.git#master"
+    }
 }

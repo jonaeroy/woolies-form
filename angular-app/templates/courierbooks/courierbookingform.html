@@ -2,9 +2,9 @@
 
 {% block layout_head %}
 <!-- page specific scripts/css should be added in this block -->
-<link rel="stylesheet" href="/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
-<script src="/js/jquery/ui/1_10_3/jquery-ui.js"></script>
-<script type='text/javascript' src='/js/utils.js'></script>
+<link rel="stylesheet" href="../static/css/jquery/ui/1_10_3/themes/smoothness/jquery-ui.css" />
+<script src="../static/js/jquery/ui/1_10_3/jquery-ui.js"></script>
+<script type='text/javascript' src='../static/js/utils.js'></script>
 
 <script type="text/javascript">
 $(document).ready(function() {
@@ -15,8 +15,8 @@ $(document).ready(function() {
     console.log(stores);
 
     $.each(stores, function() {
-        $("#Store_No_Pick_Up").append("<option value="+this.number+">"+this.number+"</option>")
-        $("#Store_No_Dest").append("<option value="+this.number+">"+this.number+"</option>")
+        $("#store_no_pick_up").append("<option value="+this.number+">"+this.number+"</option>")
+        $("#store_no_dest").append("<option value="+this.number+">"+this.number+"</option>")
         var store = {
             number : this.number,
             name : this.name,
@@ -29,7 +29,7 @@ $(document).ready(function() {
         stores_list[this.number] = store
     });
 
-    $('#Store_No_Pick_Up').change(function() {
+    $('#store_no_pick_up').change(function() {
         var store_number = $(this).val();
         var name = stores_list[store_number].name;
         var address1 = stores_list[store_number].address1;
@@ -84,7 +84,7 @@ Dan Murphy's Courier Booking Form
 <div class="form-description fd-form-view" id="form-description">
     <p><i class="icon-pencil"></i>Users request courier booking for goods delivery. The store fills out the form to order courier to pick up/drop off product.</p>
 </div>
-<form class="form-horizontal" action="/courierbooks/add" method="post">
+<form class="form-horizontal" action="/courierbooks/add" method="post" style="border: 2px solid red;">
     <div class="well">
         <fieldset>
             <fieldset>
@@ -102,15 +102,15 @@ Dan Murphy's Courier Booking Form
                         <td width="18%">Contact No.</td>
                         <td width="2%"/>
                         <td width="15%">
-                            <input type="text" class="span11 numbersOnly" style="color:black" name="Contact_Number" id="Contact_Number" required/>  
+                            <input type="text" class="span11 numbersOnly" style="color:black" name="Contact_Number" id="Contact_Number" required/>
                         </td>
                          <td width="15%"/>
                     </tr>
-                    
+
                     <tr>
                         <td>Cost Centre</td>
                         <td/>
-                        
+
                         <td>
 		                      <select class="span5 selectpicker" name="Cost_Centre" id="Cost_Centre" required>
 		                          {% for costcentre in costcentres %}
@@ -134,81 +134,67 @@ Dan Murphy's Courier Booking Form
                     <td width="30%">&nbsp;</td>
                 </tr>
                 <tr>
-                    <td>Store No.</td>
-                    <td>
-                        <select class="span11" id="Store_No_Pick_Up" name="Store_No_Pick_Up" required>
-                            <option value="">Select</option>
-                        </select>
-                    </td>
-                    <td>Store No.</td>
-                    <td>
-                        <select class="span11" name="Store_No_Dest" id="Store_No_Dest" required>
-                            <option value="">Select</option>
-                        </select>
-                    </td>
-                </tr>
-                <tr>
                     <td>Store Name</td>
                     <td>
-                        <input type="text" class="span11" style="color:black" id="Store_Name_Pick_Up" name="Store_Name_Pick_Up" readonly/>                    
+                        <input type="text" class="span11" style="color:black" id="store_name_pick_up" ng-model="store_name_pick_up" name="store_name_pick_up" readonly/>
                     </td>
                     <td>Store Name</td>
                     <td>
-                        <input type="text" class="span11" style="color:black" id="Store_Name_Dest" name="Store_Name_Dest" readonly/>                    
+                        <input type="text" class="span11" style="color:black" id="store_name_dest" ng-model="store_name_dest" name="store_name_dest" readonly/>
                     </td>
                 </tr>
                 <tr>
                     <td>Address 1</td>
                     <td>
-                        <input type="text" class="span11" style="color:black" name="Address1_Pick_Up" id="Address1_Pick_Up" readonly/>                
+                        <input type="text" class="span11" style="color:black" name="address1_pick_up" ng-model="address1_pick_up" id="address1_pick_up" readonly/>
                     </td>
                     <td>Address 1</td>
                     <td>
-                        <input type="text" class="span11" style="color:black" name="Address1_Dest" id="Address1_Dest" readonly/>
+                        <input type="text" class="span11" style="color:black" name="address1_dest" ng-model="address1_dest" id="address1_dest" readonly/>
                     </td>
                 </tr>
                 <tr>
                     <td>Address 2</td>
                     <td>
-                        <input type="text" class="span11" style="color:black" name="Address2_Pick_Up" id="Address2_Pick_Up" readonly/>                
+                        <input type="text" class="span11" style="color:black" name="address2_pick_up" ng-model="address2_pick_up" id="address2_pick_up" readonly/>
                     </td>
                     <td>Address 2</td>
                     <td>
-                        <input type="text" class="span11" style="color:black" name="Address2_Dest" id="Address2_Dest" readonly/>
+                        <input type="text" class="span11" style="color:black" name="address2_dest" ng-model="address2_dest"id="address2_dest" readonly/>
                     </td>
                 </tr>
                 <tr>
                     <td>Suburb</td>
                     <td>
-                        <input type="text" class="span6" style="color:black" name="Suburb_Pick_Up" id="Suburb_Pick_Up" readonly/> 
+                        <input type="text" class="span6" style="color:black" name="suburb_pick_up" ng-model="suburb_pick_up" id="suburb_pick_up" readonly/>
                     </td>
-                    
+
                     <td>Suburb</td>
                     <td>
-                        <input type="text" class="span6" style="color:black" name="Suburb_Dest" id="Suburb_Dest" readonly/>
+                        <input type="text" class="span6" style="color:black" name="suburb_dest" id="suburb_dest" ng-model="suburb_dest" readonly/>
                     </td>
                 </tr>
                 <tr>
                     <td>State</td>
                     <td>
-                        <input type="text" class="span4" style="color:black" name="State_Pick_Up" id="State_Pick_Up" readonly/> 
+                        <input type="text" class="span4" style="color:black" name="state_pick_up" ng-model="state_pick_up" id="state_pick_up" readonly/>
                     </td>
                     <td>State</td>
                     <td>
-                        <input type="text" class="span4" style="color:black" name="State_Dest" id="State_Dest" readonly/> 
+                        <input type="text" class="span4" style="color:black" name="state_dest" ng-model="state_dest" id="state_dest" readonly/>
                     </td>
                 </tr>
                 <tr>
                     <td>Postcode</td>
                     <td>
-                        <input type="text" class="span4" style="color:black" name="Post_Code_Pick_Up" id="Post_Code_Pick_Up" readonly/>                
+                        <input type="text" class="span4" style="color:black" name="post_code_pick_up" ng-model="post_code_pick_up" id="post_code_pick_up" readonly/>
                     </td>
                     <td>Postcode</td>
                     <td>
-                        <input type="text" class="span4" style="color:black" name="Post_Code_Dest" id="Post_Code_Dest" readonly/>
+                        <input type="text" class="span4" style="color:black" name="post_code_dest" ng-model="post_code_dest" id="post_code_dest" readonly/>
                     </td>
                 </tr>
-            </table> 
+            </table>
             </fieldset><br>
             <fieldset>
                 <legend>
@@ -298,4 +284,11 @@ Dan Murphy's Courier Booking Form
         <center>If you have any inquiries, please call - 03 9497 6035</center>
     </div>
 </form>
+
+
+
 {% endblock %}
+
+
+
+

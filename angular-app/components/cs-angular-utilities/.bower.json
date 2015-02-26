@@ -1,17 +1,10 @@
 {
   "name": "cs-angular-utilities",
-  "main": [
-    "pubsub.js",
-    "loading.js",
-    "modal.js",
-    "passive-messenger.js",
-    "passive-messenger.css"
-  ],
-  "_release": "e0e18e9ef3",
+  "_release": "750c11e2f8",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "e0e18e9ef3f5031292b086ed863fec8fe2f3a77a"
+    "commit": "750c11e2f84e506892ec2a905229c377493bfd4f"
   },
   "_source": "git@bitbucket.org:cloudsherpas/angular-utilities.git",
   "_target": "master",
