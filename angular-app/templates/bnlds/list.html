@@ -117,7 +117,7 @@ Buyer's New Line Declaration Request List
       </thead>
       <tbody>
 	<tr ng-repeat="bnld in bnlds_list">
-	  <td ng-bind="bnld.created_by">
+	  <td ng-bind="bnld.created_by.email">
 	  </td>
 	  <td ng-bind="bnld.created"></td>
 	  <td ng-if="bnld.Status == 1">

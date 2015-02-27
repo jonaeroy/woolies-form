@@ -66,6 +66,7 @@ class Bnlds(Controller):
     @route_with('/api/bnlds', methods=['POST'])
     def api_create(self):
         params = json.loads(self.request.body)
+        params['Number_of_Items'] = int(params['Number_of_Items']) 
         self.context['data'] = Bnld.create(params)
 
     @route_with('/api/bnlds:<key>', methods=['GET'])

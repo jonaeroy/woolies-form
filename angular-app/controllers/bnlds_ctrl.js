@@ -3,12 +3,16 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 
     $scope.bnlds={};
     $scope.choices=["Yes","No","N/A"];
+    $scope.anlpv_def = $scope.choices[2];
+    $scope.qa_def = $scope.choices[2];
+    $scope.msds_def = $scope.choices[2];
 
     
     $scope.create = function(){
         BnldsSvc.create($scope.bnlds)
             .success(function(data, status){
-                console.log(data.items);
+                console.log(data);
+		$scope.list_all();
             })
             .error(function(data,status){
 
@@ -29,10 +33,6 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 		alert('Error Accessing BNLDS Request Lists!');
 	    })
     };
-
-    $scope.click = function(){
-	alert("Add Form");
-    }
 
 });
 
