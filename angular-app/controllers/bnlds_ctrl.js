@@ -29,6 +29,11 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 		alert('Error Accessing BNLDS Request Lists!');
 	    })
     };
+
+    $scope.click = function(){
+	alert("Add Form");
+    }
+
 });
 
 

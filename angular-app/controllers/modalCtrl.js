@@ -1,23 +1,43 @@
-angular.module('app.controllers').controller('ModalController', function($scope, $modal){
-    
-    $scope.items = {};
+angular.module('app.controllers').controller('ModalCtrl', function ($scope, $modal, $log) {
 
-    $scope.openmodal = function (size){
-	
-	var modal = $modal.open({
-	    templateUrl: 'ng/templates/bnlds/bnldform.html',
-	    controller: 'BnldsCtrl',
-	    size:size,
+    $scope.items = ['item1', 'item2', 'item3'];
+
+    $scope.open = function (size) {
+	alert("modal");
+	var modalInstance = $modal.open({
+	    templateUrl: '/ng/templates/modal/bnldform.html',
+	    controller: 'ModalInstanceCtrl',
+	    size: size,
 	    resolve: {
-		items: function(){
+		items: function () {
 		    return $scope.items;
 		}
 	    }
+	});
 
-	})
+	modalInstance.result.then(function (selectedItem) {
+	    $scope.selected = selectedItem;
+	}, function () {
+	    $log.info('Modal dismissed at: ' + new Date());
+	});
+    };
+});
 
-    }
+// Please note that $modalInstance represents a modal window (instance) dependency.
+// It is not the same as the $modal service used above.
 
+angular.module('app.controllers').controller('ModalInstanceCtrl', function ($scope, $modalInstance, items) {
 
+    $scope.items = items;
+    $scope.selected = {
+	item: $scope.items[0]
+    };
 
+    $scope.ok = function () {
+	$modalInstance.close($scope.selected.item);
+    };
+
+    $scope.cancel = function () {
+	$modalInstance.dismiss('cancel');
+    };
 });

@@ -1,4 +1,4 @@
-from ferris import Controller, messages, route_with
+from ferris import Controller, messages, route_with, route
 from ferris.components.pagination import Pagination
 from ferris.components.upload import Upload
 from app.models.bnld import Bnld
@@ -54,6 +54,10 @@ class Bnlds(Controller):
     @route_with('/bnlds/list', methods=['GET'])
     def list(self):
         self.meta.view.template_name = 'angular/bnlds/list.html'
+
+    @route
+    def form(self):
+        self.meta.view.template_name = 'angular/bnlds/bnldform.html'
 
     @route_with('/api/bnlds', methods=['GET'])
     def api_list(self):
