@@ -118,7 +118,7 @@ Buyer's New Line Declaration Request List
 	  <th>STATUS</th>
 	</thead>
 	<tbody>
-	  <tr ng-repeat="bnld in bnlds_list">
+	  <tr ng-repeat="bnld in sliced_bnlds_list">
 	    <td ng-bind="bnld.created_by.email">
 	    </td>
 	    <td ng-bind="bnld.created"></td>
@@ -138,10 +138,10 @@ Buyer's New Line Declaration Request List
 	</tbody>
       </table>
     </fieldset>
-    <!---
+
     <div style="text-align:center">
-      <pagination total-items="total_items" ng-model="current_page" max-size="max_size" class="pagination-sm" items-per-page="current_page" boundary-links="true" rotate="false" num-pages="4"></pagination>
-    </div>--->
+      <pagination total-items="total_items" ng-model="current_page" ng-change="pageChange()" max-size="max_size" class="pagination-sm" items-per-page="items_per_page" boundary-links="true" rotate="false"></pagination>
+    </div>
   </div>
 </div>
 
