@@ -1,7 +1,7 @@
 <div class="modal-header">
   <h3 class="modal-title">Buyer's New Line Declaration Request Request Form</h3>
 </div>
-<form ng-controller="newBnldsRequestCtrl" class="form" ng-submit="create()" enctype="multipart/form-data">
+<form class="form" enctype="multipart/form-data">
   <div class="modal-body">
     <div class="well">
       <fieldset>
@@ -84,7 +84,7 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" type="submit">Create Request</button>
+    <button class="btn btn-primary" ng-click="ok()">Create Request</button>
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
   </div>
 </form>
