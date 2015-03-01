@@ -1,88 +1,91 @@
-<div ng-controller="newRequestCtrl">
-<form class="form" ng-submit="create()" enctype="multipart/form-data">
-    <div class="well">
-        <fieldset>
-            <div class="control-group">
-                <label class="control-label" for="Buyer_or_BAA_Name">Buyer's Email Address:</label>
-                <div class="controls">
-                    <input ng-model="bnlds.Buyer_or_BAA_Name" type="text" class="form-control" name="Buyer_or_BAA_Name" required = "True">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="Merchandise_Manager">Merchandise Manager:</label>
-                <div class="controls">
-                    <input ng-model="bnlds.Merchandise_Manager" type="email" class="span8 global-address" name="Merchandise_Manager" single-select="True" required="True" />
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="datepicker">Date:</label>
-                <div class="controls">
-                    <div class="input-append">
-                        <input ng-model="bnlds.Date" class="span8" type="text" value="" name="Date"  required="True" readonly>
-                        <span class="add-on"> <i class="icon-th"></i>
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="Number_of_Items">Number of Item(s):</label>
-                <div class="controls">
-                    <input ng-model="bnlds.Number_of_Items" type="text" class="numbersOnly span2" id="Number_of_Items" name="Number_of_Items" required />
-                </div>
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend></legend>
-            <div class="control-group">
-                <label class="control-label" for="ANLPV">All New Lines Passed Validation:</label>
-                <div  ng-options = "choice for choice in choices track by choice" ng-model="default_choice">
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="QAA">QA Acceptance:</label>
-                <div ng-options = "choice for choice in choices track by choice" ng-model="default_choice">
-
-                </div>
-            </div>
-            <div class="control-group">
-                <label class="control-label" for="MSDS">MSDS Report Loaded onto Chemwatch for all Applicable Lines:</label>
-                <div ng-options = "choice for choice in choices track by choice" ng-model="default_choice">
-
-                </div>
-            </div>
-        </fieldset>
-        <fieldset>
-            <legend></legend>
-            <table width=70% align="left">
-                <tr>
-                    <td>
-                        Include Any Comments Below:
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan=2>
-                        <textarea rows="5" class="span10" name="Include_Any_Comments_Below" style="resize:none"></textarea>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Please attach the New Line Submission Sheet to this Form Below:
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-
-                        <input class="span6 field-type-blob-key-field" id="Please_attach_the_New_Line_Submission_Sheet_to_this_Form_Below" name="Please_attach_the_New_Line_Submission_Sheet_to_this_Form_Below" type="file"></td>
-                </tr>
-            </table>
-        </fieldset>
-         <div class="control-group">
-                <div align="right">
-                    <input type="submit" class="btn btn-primary" value="Create Request">
-                    <input type="button" class="btn" value="Cancel" id="backHistory">
-                </div>
-            </div>
-    </div>
-    {% include "includes/global_address_modal.html" %}
-</form>
+<div class="modal-header">
+  <h3 class="modal-title">Buyer's New Line Declaration Request Form</h3>
 </div>
+<form class="form" enctype="multipart/form-data">
+  <div class="modal-body">
+    <div class="well">
+      <fieldset>
+        <div class="control-group">
+          <label class="control-label" for="Buyer_or_BAA_Name">Buyer's Email Address:</label>
+          <div class="controls">
+            <input ng-model="bnlds.Buyer_or_BAA_Name" type="text" class="form-control" name="Buyer_or_BAA_Name" required = "True">
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="Merchandise_Manager">Merchandise Manager:</label>
+          <div class="controls">
+            <input ng-model="bnlds.Merchandise_Manager" type="email" class="span8 global-address" name="Merchandise_Manager" single-select="True" required="True" />
+          </div>
+        </div>
+	<!---
+        <div class="control-group">
+          <label class="control-label" for="datepicker">Date:</label>
+          <div class="controls">
+            <div class="input-append">
+              <input ng-model="bnlds.Date" class="span8" type="text" value="" name="Date"  required="True" readonly>
+              <span class="add-on"> <i class="icon-th"></i>
+              </span>
+            </div>
+          </div>
+        </div>
+	--->
+        <div class="control-group">
+          <label class="control-label" for="Number_of_Items">Number of Item(s):</label>
+          <div class="controls">
+            <input ng-model="bnlds.Number_of_Items" type="text" class="numbersOnly span2" id="Number_of_Items" name="Number_of_Items" required />
+          </div>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend></legend>
+        <div class="control-group">
+          <label class="control-label" for="ANLPV">All New Lines Passed Validation:</label>
+          <select ng-options = "choice for choice in choices track by choice" ng-model="bnlds.All_New_Lines_Passed_Validation">
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="QAA">QA Acceptance:</label>
+          <select ng-options = "choice for choice in choices track by choice" ng-model="bnlds.QA_Acceptance">
+
+          </select>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="MSDS">MSDS Report Loaded onto Chemwatch for all Applicable Lines:</label>
+          <select ng-options = "choice for choice in choices track by choice" ng-model="bnlds.MSDS_Report_Loaded_onto_Chemwatch_for_all_Applicable_Lines">
+
+          </select>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend></legend>
+        <table width=70% align="left">
+          <tr>
+            <td>
+              Include Any Comments Below:
+            </td>
+          </tr>
+          <tr>
+            <td colspan=2>
+              <textarea rows="5" class="span10" ng-model="bnlds.Include_Any_Comments_Below"  style="resize:none"></textarea>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Please attach the New Line Submission Sheet to this Form Below:
+            </td>
+          </tr>
+          <tr>
+            <td>
+
+              <input class="span6 field-type-blob-key-field" id="Please_attach_the_New_Line_Submission_Sheet_to_this_Form_Below" name="Please_attach_the_New_Line_Submission_Sheet_to_this_Form_Below" type="file"></td>
+          </tr>
+        </table>
+      </fieldset>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ok()">Create Request</button>
+    <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+  </div>
+</form>
+

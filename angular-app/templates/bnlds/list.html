@@ -118,7 +118,7 @@ Buyer's New Line Declaration Request List
 	  <th>STATUS</th>
 	</thead>
 	<tbody>
-	  <tr ng-repeat="bnld in sliced_bnlds_list">
+	  <tr ng-repeat="bnld in sliced_bnlds_list" ng-click="view(bnld.key.urlsafe, 'md')">
 	    <td ng-bind="bnld.created_by.email">
 	    </td>
 	    <td ng-bind="bnld.created"></td>

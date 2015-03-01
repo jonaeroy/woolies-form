@@ -22,15 +22,35 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 
     };
 
-    $scope.view = function(key){
-	$scope.bnld_details = {};
-	BnldsSvc.get(key)
-	    .success(function(data, status){
-		$scope.bnld_details = data;
-	    })
-	    .error(function(data, status){
-		
-	    })
+    $scope.view = function(key, size){
+	var modalInstance = $modal.open({
+	    templateUrl: '/ng/templates/bnlds/view.html',
+	    controller: 'BnldDetailsCtrl',
+	    size: size,
+	    resolve: {
+		key: function () {
+		    return key;
+		}
+	    }
+	});
+
+	modalInstance.result.then(function (bnlds_list) {
+	    $scope.bnlds_list = bnlds_list;
+	    $scope.list_all();
+	}, function () {
+	    $log.info('Modal dismissed at: ' + new Date());
+	    $scope.list_all();
+	});
+	/*$scope.bnld_details = {};
+	  BnldsSvc.get(key)
+	  .success(function(data, status){
+	  $scope.bnld_details = data;
+	  $log.log(data);
+	  })
+	  .error(function(data, status){
+	  
+	  })
+	*/
     };
     
     
@@ -62,7 +82,7 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
     /*create request form modal*/
     $scope.open = function (size) {
 	var modalInstance = $modal.open({
-	    templateUrl: '/ng/templates/modal/bnldform.html',
+	    templateUrl: '/ng/templates/bnlds/bnldform.html',
 	    controller: 'BnldFormCtrl',
 	    size: size,
 	    resolve: {
@@ -80,9 +100,6 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 	    $scope.list_all();
 	});
     };
-
-    
-
 
 });
 
@@ -120,11 +137,12 @@ angular.module('app.controllers').controller('BnldFormCtrl', function ($scope, $
 });
 
 
-angular.module('app.controllers').controller('BnldDetailsCtrl', function ($scope, $modalInstance, items, BnldsSvc) {
+angular.module('app.controllers').controller('BnldDetailsCtrl', function ($scope, $modalInstance, key, BnldsSvc) {
     $scope.bnld_details = {};
 
     BnldsSvc.get(key)
         .success(function(data, status){
+	    $scope.bnlds_details = data;
             console.log(data);
         })
         .error(function(data,status){
@@ -134,25 +152,7 @@ angular.module('app.controllers').controller('BnldDetailsCtrl', function ($scope
     
     
     $scope.ok = function () {
-	//do create new request service here
-	BnldsSvc.create($scope.bnlds)
-            .success(function(data, status){
-                console.log(data);
-            })
-            .error(function(data,status){
-
-            });
-
-	BnldsSvc.list_all()
-	    .success(function(data, status){
-		$scope.bnlds_list = data.items;
-		console.log(data.items);
-	    })
-	    .error(function(data, status){
-		alert('Error Accessing BNLDS Request Lists!');
-	    });
-	
-	$modalInstance.close($scope.bnlds_list);
+	$modalInstance.close(key);
     };
 
     $scope.cancel = function () {
