@@ -76,7 +76,15 @@ class Bnlds(Controller):
 
     @route_with('/api/bnlds/:<key>', methods=['POST'])
     def api_update(self, key):
-        params = json.loads(self.request.body)
+        temp_params = json.loads(self.request.body)
+        params = {'Buyer_or_BAA_Name': temp_params['Buyer_or_BAA_Name'],
+                  'Merchandise_Manager':temp_params['Merchandise_Manager'],
+                  'Number_of_Items': int(temp_params['Number_of_Items']),
+                  'All_New_Lines_Passed_Validation': temp_params['All_New_Lines_Passed_Validation'],
+                  'QA_Acceptance': temp_params['QA_Acceptance'],
+                  'MSDS_Report_Loaded_onto_Chemwatch_for_all_Applicable_Lines': temp_params['MSDS_Report_Loaded_onto_Chemwatch_for_all_Applicable_Lines'],
+                  'Include_Any_Comments_Below': temp_params['Include_Any_Comments_Below']
+        }
         bnld = self.util.decode_key(key).get()
         bnld.update(params)
         self.context['data'] = bnld

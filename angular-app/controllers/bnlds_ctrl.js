@@ -120,6 +120,8 @@ angular.module('app.controllers').controller('BnldFormCtrl', function ($scope, $
     $scope.bnlds = {};
     $scope.choices=["Yes","No","N/A"];
     $scope.bnlds_list = [];
+    $scope.mode = 'add';
+    
     $scope.ok = function () {
 	//do create new request service here
 	BnldsSvc.create($scope.bnlds)
@@ -168,10 +170,12 @@ angular.module('app.controllers').controller('BnldDetailsCtrl', function ($scope
 });
 
 
-angular.module('app.controllers').controller('BnldEditCtrl', function ($scope, $modalInstance, key, BnldsSvc) {
+angular.module('app.controllers').controller('BnldEditCtrl', function ($scope, $modalInstance, $log, key, BnldsSvc) {
     $scope.bnlds = {};
     $scope.choices = ["Yes","No","N/A"];
     $scope.bnlds_list = [];
+    $scope.mode = 'edit';
+    
     BnldsSvc.get(key)
         .success(function(data, status){
 	    $scope.bnlds = data;
@@ -180,10 +184,9 @@ angular.module('app.controllers').controller('BnldEditCtrl', function ($scope, $
         .error(function(data,status){
 
         });
-
-    
     
     $scope.ok = function () {
+	$log.log($scope.bnlds);
 	BnldsSvc.update($scope.bnlds)
 	    .success(function(data,status){
 		

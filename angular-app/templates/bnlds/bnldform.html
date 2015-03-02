@@ -84,7 +84,8 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" ng-click="ok()">Create Request</button>
+    <button class="btn btn-primary" id="submit_request" ng-click="ok()" ng-if="mode == 'add'">Create Request</button>
+    <button class="btn btn-primary" id="submit_request" ng-click="ok()" ng-if="mode == 'edit'">Update Request</button>
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
   </div>
 </form>
