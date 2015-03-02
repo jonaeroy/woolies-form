@@ -21,7 +21,7 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
             });
 
     };
-
+    
     //view
 
     $scope.view = function(key, size){
@@ -82,6 +82,20 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 
     };
 
+    //delete
+    $scope.delete = function(key){
+	BnldsSvc.delete(key)
+	    .success(function(data, status){
+		if(status==200){
+		    alert('Request was succesfully deleted!');
+		}
+		$scope.list_all();
+	    })
+	    .error(function(data, status){
+		
+	    });
+    };
+
     //request list pagination
     $scope.pageChange = function(){
 	var start = ($scope.current_page-1)*$scope.items_per_page;
@@ -115,12 +129,22 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 });
 
 
-angular.module('app.controllers').controller('BnldFormCtrl', function ($scope, $modalInstance, items, BnldsSvc) {
+angular.module('app.controllers').controller('BnldFormCtrl', function ($scope, $modalInstance, $log, items, BnldsSvc) {
 
     $scope.bnlds = {};
     $scope.choices=["Yes","No","N/A"];
     $scope.bnlds_list = [];
     $scope.mode = 'add';
+
+    BnldsSvc.get_user()
+	.success(function(data, status){
+	    $scope.bnlds['Buyer_or_BAA_Name'] = data.email;
+	    $log.log(data);
+	})
+	.error(function(data, status){
+	});
+    
+    
     
     $scope.ok = function () {
 	//do create new request service here

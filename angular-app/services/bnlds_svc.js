@@ -1,23 +1,27 @@
 angular.module('app.services').
     service('BnldsSvc', function($http) {
 
-    this.list_all = function(){
-        return $http.get('/api/bnlds');
-    }
+	this.list_all = function(){
+            return $http.get('/api/bnlds');
+	}
 
-    this.create = function(params){
-        return $http.post('/api/bnlds', params);
-    }
+	this.create = function(params){
+            return $http.post('/api/bnlds', params);
+	}
 
-    this.get = function(key){
-        return $http.get('/api/bnlds:' + key);
-    }
+	this.get = function(key){
+            return $http.get('/api/bnlds:' + key);
+	}
 
-    this.update = function(params){
-        return $http.post('/api/bnlds/:' + params.key.urlsafe, params);
-    }
+	this.update = function(params){
+            return $http.post('/api/bnlds/:' + params.key.urlsafe, params);
+	}
 
-    this.delete = function(key){
-        return $http.delete('/api/bnlds/:' + key);
-    }
-});
+	this.delete = function(key){
+            return $http.delete('/api/bnlds/:' + key);
+	}
+	this.get_user = function(){
+	    return $http.get('/api/get_user');
+	}
+	    
+    });

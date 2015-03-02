@@ -95,8 +95,14 @@ class Bnlds(Controller):
         bnld.delete()
         return 200
 
+    @route_with('/api/get_user', methods=['GET'])
+    def api_get_user(self):
+        msg = CurrentUser(email= self.session.get('user_email'))
+        self.context['data'] = msg
 
 
+class CurrentUser(messages.Message):
+    email = messages.StringField(1)
     '''
     @route
     def draft_action(self):

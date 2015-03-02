@@ -137,7 +137,9 @@ Buyer's New Line Declaration Request List
 	      <span class="label label-danger">Rejected</span><a href=""></a>
 	    </td>
 	    <td align="right">
-	      <a href="" ng-click="edit(bnld.key.urlsafe)" ng-if="bnld.Status == 1"><span class="glyphicon glyphicon-edit"></span></a>
+	      <a href="" ng-click="edit(bnld.key.urlsafe)" ng-if="bnld.Status == 1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span>&nbsp;Edit</a>
+	      &nbsp;
+	      <a href="" ng-click="delete(bnld.key.urlsafe)" ng-if="bnld.Status == 1" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>&nbsp;Delete</a>
 	    </td>
 	  </tr>
 	</tbody>
