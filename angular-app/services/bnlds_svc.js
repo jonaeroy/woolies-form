@@ -14,10 +14,10 @@ angular.module('app.services').
     }
 
     this.update = function(params){
-        return $http.post('/api/bnlds:' + params.key.urlsafe, params);
+        return $http.post('/api/bnlds/:' + params.key.urlsafe, params);
     }
 
     this.delete = function(key){
-        return $http.delete('/api/bnlds:' + key);
+        return $http.delete('/api/bnlds/:' + key);
     }
 });

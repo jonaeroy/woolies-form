@@ -22,6 +22,8 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 
     };
 
+    //view
+
     $scope.view = function(key, size){
 	var modalInstance = $modal.open({
 	    templateUrl: '/ng/templates/bnlds/view.html',
@@ -35,24 +37,11 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 	});
 
 	modalInstance.result.then(function (bnlds_list) {
-	    $scope.bnlds_list = bnlds_list;
-	    $scope.list_all();
 	}, function () {
 	    $log.info('Modal dismissed at: ' + new Date());
-	    $scope.list_all();
 	});
-	/*$scope.bnld_details = {};
-	  BnldsSvc.get(key)
-	  .success(function(data, status){
-	  $scope.bnld_details = data;
-	  $log.log(data);
-	  })
-	  .error(function(data, status){
-	  
-	  })
-	*/
     };
-    
+
     
     $scope.bnlds_list = [];
     $scope.sliced_bnlds_list
@@ -70,6 +59,28 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 	    });
     };
 
+    //edit
+    $scope.edit = function(key){
+	var modalInstance = $modal.open({
+	    templateUrl: '/ng/templates/bnlds/bnldform.html',
+	    controller: 'BnldEditCtrl',
+	    size: 'md',
+	    resolve: {
+		key: function () {
+		    return key;
+		}
+	    }
+	});
+
+	modalInstance.result.then(function (bnlds_list) {
+	    $scope.bnlds_list = bnlds_list;
+	    $scope.list_all();
+	}, function () {
+	    $log.info('Modal dismissed at: ' + new Date());
+	    $scope.list_all();
+	});
+
+    };
 
     //request list pagination
     $scope.pageChange = function(){
@@ -151,7 +162,45 @@ angular.module('app.controllers').controller('BnldDetailsCtrl', function ($scope
 
     
     
+    $scope.cancel = function () {
+	$modalInstance.dismiss('cancel');
+    };
+});
+
+
+angular.module('app.controllers').controller('BnldEditCtrl', function ($scope, $modalInstance, key, BnldsSvc) {
+    $scope.bnlds = {};
+    $scope.choices = ["Yes","No","N/A"];
+    $scope.bnlds_list = [];
+    BnldsSvc.get(key)
+        .success(function(data, status){
+	    $scope.bnlds = data;
+            console.log(data);
+        })
+        .error(function(data,status){
+
+        });
+
+    
+    
     $scope.ok = function () {
+	BnldsSvc.update($scope.bnlds)
+	    .success(function(data,status){
+		
+	    })
+	    .error(function(data, status){
+
+	    });
+
+	BnldsSvc.list_all()
+	    .success(function(data, status){
+		$scope.bnlds_list = data.items;
+		console.log(data.items);
+	    })
+	    .error(function(data, status){
+		alert('Error Accessing BNLDS Request Lists!');
+	    });
+
 	$modalInstance.close(key);
     };
 
@@ -159,4 +208,3 @@ angular.module('app.controllers').controller('BnldDetailsCtrl', function ($scope
 	$modalInstance.dismiss('cancel');
     };
 });
-

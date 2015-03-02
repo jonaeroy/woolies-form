@@ -30,8 +30,6 @@ class Bnld(BasicModel):
         item.put()
         return item
 
-
-    @classmethod
     def update(self, params):
         self.populate(**params)
         self.put()

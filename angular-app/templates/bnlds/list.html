@@ -107,7 +107,7 @@ Buyer's New Line Declaration Request List
 {% block layout_content %}
 <div ng-controller="newBnldsRequestCtrl">
   <div class="well">
-    <button class="btn btn-primary btn-sm" ng-click="open('lg')">Add New Requests</button>
+    <button class="btn btn-primary btn-sm" ng-click="open('lg')"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;New Requests</button>
     <!---{% import "scaffolding/macros.html" as scaffold with context %}--->
     <!---{% import 'macros/search.html' as search with context %}--->
     <fieldset>
@@ -116,10 +116,12 @@ Buyer's New Line Declaration Request List
 	  <th>CREATED BY</th>
 	  <th>CREATION DATE</th>
 	  <th>STATUS</th>
+	  <th align="right">Options</th>
 	</thead>
 	<tbody>
-	  <tr ng-repeat="bnld in sliced_bnlds_list" ng-click="view(bnld.key.urlsafe, 'md')">
-	    <td ng-bind="bnld.created_by.email">
+	  <tr ng-repeat="bnld in sliced_bnlds_list" >
+	    <td>
+	      <a href="" ng-click="view(bnld.key.urlsafe, 'md')" ng-bind="bnld.created_by.email"></a>
 	    </td>
 	    <td ng-bind="bnld.created"></td>
 	    <td ng-if="bnld.Status == 1">
@@ -133,6 +135,9 @@ Buyer's New Line Declaration Request List
 	    </td>
 	    <td ng-if="bnld.Status == 4">
 	      <span class="label label-danger">Rejected</span><a href=""></a>
+	    </td>
+	    <td align="right">
+	      <a href="" ng-click="edit(bnld.key.urlsafe)" ng-if="bnld.Status == 1"><span class="glyphicon glyphicon-edit"></span></a>
 	    </td>
 	  </tr>
 	</tbody>

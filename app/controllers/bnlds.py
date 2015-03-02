@@ -81,7 +81,7 @@ class Bnlds(Controller):
         bnld.update(params)
         self.context['data'] = bnld
 
-    @route_with('/api/bnlds:<key>', methods=['DELETE'])
+    @route_with('/api/bnlds/:<key>', methods=['DELETE'])
     def api_delete(self, key):
         bnld = self.util.decode_key(key).get()
         bnld.delete()
