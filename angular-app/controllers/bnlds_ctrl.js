@@ -87,7 +87,7 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 	BnldsSvc.delete(key)
 	    .success(function(data, status){
 		if(status==200){
-		    alert('Request was succesfully deleted!');
+		    
 		}
 		$scope.list_all();
 	    })
