@@ -20,10 +20,13 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
         BnldsSvc.create($scope.bnlds)
             .success(function(data, status){
                 console.log(data);
+                $location.path('#list');
+                $scope.list_all();
             })
             .error(function(data,status){
 
             });
+
 
     };
 
@@ -63,8 +66,12 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 	BnldsSvc.list_all()
 	    .success(function(data, status){
 		$scope.bnlds_list = data.items;
-		$scope.total_items = data.items.length;
-		$scope.pageChange();
+        $scope.sliced_bnlds_list=data.items;
+        // if (Object.keys(data.items).length === 0){
+		  //$scope.total_items = data.items.length;
+		 // $scope.pageChange();
+       // }
+        //console.log(data);
 		console.log($scope.total_items);
 	    })
 	    .error(function(data, status){
@@ -74,7 +81,7 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 
  //    //edit
  //    $scope.edit = function(key){
-	// var modalInstance = $modal.open({
+	// var modalInstance = $modal.open({s
 	//     templateUrl: '/ng/templates/bnlds/bnldform.html',
 	//     controller: 'BnldEditCtrl',
 	//     size: 'md',
@@ -100,9 +107,10 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 	BnldsSvc.delete(key)
 	    .success(function(data, status){
 		if(status==200){
-
+      alert('success');
+      $scope.list_all();
 		}
-		$scope.list_all();
+
 	    })
 	    .error(function(data, status){
 
@@ -154,10 +162,11 @@ angular.module('app.controllers').controller('editBnldsCtrl', function($scope, $
 
             });
 
-    $scope.create = function(){
-        BnldsSvc.create($scope.bnlds)
+    $scope.edit = function(){
+        BnldsSvc.update($scope.bnlds)
             .success(function(data, status){
                 console.log(data);
+                $location.path('#list');
             })
             .error(function(data,status){
 
@@ -170,8 +179,8 @@ angular.module('app.controllers').controller('editBnldsCtrl', function($scope, $
 });
 
 
-// angular.module('app.controllers').controller('BnldFormCtrl', function ($scope,  $log, items, BnldsSvc) {
-  //  };
+/* view form controller*/
+
 
     /*create request form modal*/
 //     $scope.mode = 'add';
