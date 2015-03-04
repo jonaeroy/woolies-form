@@ -20,11 +20,12 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
         BnldsSvc.create($scope.bnlds)
             .success(function(data, status){
                 console.log(data);
+                $location.path('#list');
             })
             .error(function(data,status){
 
             });
-            location.path
+
 
     };
 
@@ -101,9 +102,10 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 	BnldsSvc.delete(key)
 	    .success(function(data, status){
 		if(status==200){
-
+      alert('success');
+      $scope.list_all();
 		}
-		$scope.list_all();
+
 	    })
 	    .error(function(data, status){
 
@@ -173,8 +175,6 @@ angular.module('app.controllers').controller('editBnldsCtrl', function($scope, $
 
 
 /* view form controller*/
-
-angular.mocdule('app.controllers').controller('')
 
 
     /*create request form modal*/
