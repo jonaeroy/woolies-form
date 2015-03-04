@@ -20,6 +20,11 @@ angular.module('app.routes', ['ngRoute'])
         templateUrl: '/ng/templates/bnlds/bnldform.html',
         controller:'editBnldsCtrl'
         })
+        .when('/view/:key', {
+        templateUrl: '/ng/templates/bnlds/view.html',
+        controller:'viewBnldsCtrl'
+        })
+
 	    .otherwise({
 		redirectTo: '/list'
 	    });

@@ -14,14 +14,14 @@ class Bnld(BasicModel):
     Include_Any_Comments_Below = ndb.TextProperty()
     Please_attach_the_New_Line_Submission_Sheet_to_this_Form_Below = ndb.BlobKeyProperty()
     Status = ndb.IntegerProperty(default=1)
-    
+
     class Meta:
         behaviors = (Searchable,)
 
 
     @classmethod
     def list_all(cls):
-        return cls.query()
+        return cls.query().order(-cls.modified)
 
     @classmethod
     def create(cls, params):
