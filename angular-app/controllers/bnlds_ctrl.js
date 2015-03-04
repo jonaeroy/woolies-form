@@ -21,6 +21,7 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
             .success(function(data, status){
                 console.log(data);
                 $location.path('#list');
+                $scope.list_all();
             })
             .error(function(data,status){
 
@@ -65,8 +66,12 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 	BnldsSvc.list_all()
 	    .success(function(data, status){
 		$scope.bnlds_list = data.items;
-		$scope.total_items = data.items.length;
-		$scope.pageChange();
+        $scope.sliced_bnlds_list=data.items;
+        // if (Object.keys(data.items).length === 0){
+		  //$scope.total_items = data.items.length;
+		 // $scope.pageChange();
+       // }
+        //console.log(data);
 		console.log($scope.total_items);
 	    })
 	    .error(function(data, status){
@@ -76,7 +81,7 @@ angular.module('app.controllers').controller('newBnldsRequestCtrl', function($sc
 
  //    //edit
  //    $scope.edit = function(key){
-	// var modalInstance = $modal.open({
+	// var modalInstance = $modal.open({s
 	//     templateUrl: '/ng/templates/bnlds/bnldform.html',
 	//     controller: 'BnldEditCtrl',
 	//     size: 'md',
