@@ -34,7 +34,7 @@ class Bnlds(Controller):
         Model = Bnld
 
 
-        
+
     '''
     class Scaffold:
         display_properties = ('created_by', 'created', 'Buyer_or_BAA_Name',
@@ -46,14 +46,14 @@ class Bnlds(Controller):
    @route_with('/api/messages/store:<store_num>/<department>/<location>/from:<start_date>/to:<end_date>', methods=['GET'])
    @route_with('/api/messages/store:<store_num>/<department>/<location>', methods=['GET'])
    def api_list_store_department(self, store_num, department, location, sort_by=None, start_date=None, end_date=None):
-    
-    '''
-    
 
-    
+    '''
+
+
+
     @route_with('/bnlds/list', methods=['GET'])
     def list(self):
-        self.meta.view.template_name = 'angular/bnlds/list.html'
+        self.meta.view.template_name = 'angular/bnlds/index.html'
 
     @route
     def form(self):
@@ -67,7 +67,7 @@ class Bnlds(Controller):
     def api_create(self):
         params = json.loads(self.request.body)
         print repr(params)
-        params['Number_of_Items'] = int(params['Number_of_Items']) 
+        params['Number_of_Items'] = int(params['Number_of_Items'])
         self.context['data'] = Bnld.create(params)
 
     @route_with('/api/bnlds:<key>', methods=['GET'])
@@ -330,7 +330,7 @@ class CurrentUser(messages.Message):
                 self.context['bnlds'] = query
 
             self.context['sv_bnlds'] = self.context['bnlds']
-            
+
 
     def view(self,key):
 

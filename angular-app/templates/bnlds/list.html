@@ -1,117 +1,12 @@
-{% extends 'layouts/main.html' %}
-
-{% block layout_head %}
-
-<!----
-
-    <script type="text/javascript">
-      $(document).ready(function(){
-
-      function setTempApprove(){
-      document.getElementById('action').value = "tempapprove";
-      }
-
-      $(document).on("click", ".settapprove", function (){
-      setTempApprove();
-      });
-
-      function setApprove(){
-      document.getElementById('action').value = "approve";
-      }
-
-      $(document).on("click", ".setapprove", function (){
-      setApprove();
-      });
-
-      function setReject(){
-      document.getElementById('action').value = "reject"
-      }
-
-      $(document).on("click", ".setreject", function (){
-      setReject();
-      });
-
-      $(document).on("click", ".open-modal", function () {
-      var to = $(this).data('to');
-      var buyer = $(this).data('buyer');
-      var merchmngr = $(this).data('merchmngr');
-      var date = $(this).data('date');
-      var numitems = $(this).data('numitems');
-      var anlpv = $(this).data('anlpv');
-      var qa = $(this).data('qa');
-      var msds = $(this).data('msds');
-      var comments = $(this).data('comments');
-      var attchmnt = $(this).data('attchmnt');
-      var status = $(this).data('status');
-      var keyid = $(this).data('keyid');
-
-      $(".modal-body #to").val(to);
-      $(".modal-body #buyer").val(buyer);
-      $(".modal-body #merchmngr").val(merchmngr);
-      $(".modal-body #date").val(date);
-      $(".modal-body #anlpv").val(anlpv);
-      $(".modal-body #numitems").val(numitems);
-      $(".modal-body #qa").val(qa);
-      $(".modal-body #msds").val(msds);
-      $(".modal-body #comments").val(comments);
-      $(".modal-body #attchmnt").val(attchmnt);
-      $(".modal-body #status").val(status);
-      $(".modal-body #keyid").val(keyid);
-      });
-
-      $('.delete-button').on('click', function()    {
-
-      var data = $(this).attr('key');
-      del = confirm('Deletion means request cancellation. Are you sure you want to cancel request?');
-      if(del) {
-      document.location.href="/bnlds/delete/" + data + "?key={{frmkey}}";
-      }
-      return false;
-      });
-      });
-
-      /*script for making the table row clickable*/
-      $(document).ready(function() {
-
-      $('#list td').click(function() {
-      var href = $(this).find("a").attr("href");
-      if(href) {
-      window.location = href;
-      }
-      });
-
-      });
-      
-    </script>
-    ---->
-
-<style type="text/css">
-  table#list {
-  border-collapse: collapse;
-  }
-  #list td:hover {
-  cursor: pointer;
-  }
-</style>
-{% endblock %}
-
-{% block layout_page_title %}
-<!-- page title here -->
-Buyer's New Line Declaration Request List
-{% endblock %}
-
-{% block layout_page_buttons %}
-
-{% endblock %}
-
-{% block layout_content %}
 <div ng-controller="newBnldsRequestCtrl">
   <div class="well">
-    <button class="btn btn-primary btn-sm" ng-click="open('lg')"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;New Requests</button>
+    <a href = "#add" role = "button" class="btn btn-primary">+ New Buyer's New Line Declaration Request</a><br>
+
+    <!-- <button class="btn btn-primary btn-sm" ng-click="open('lg')"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;New Requests</button> -->
     <!---{% import "scaffolding/macros.html" as scaffold with context %}--->
-    <!---{% import 'macros/search.html' as search with context %}--->
+    <!---{% import 'macros/search.html' as search with context %}---->
     <fieldset>
-      <table class="table table-striped table-hover" id="list" ng-init="list_all()">
+      <table class="table table-striped table-hover" ng-init="list_all()">
 	<thead>
 	  <th>CREATED BY</th>
 	  <th>CREATION DATE</th>
@@ -137,7 +32,7 @@ Buyer's New Line Declaration Request List
 	      <span class="label label-danger">Rejected</span><a href=""></a>
 	    </td>
 	    <td align="right">
-	      <a href="" ng-click="edit(bnld.key.urlsafe)" ng-if="bnld.Status == 1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span>&nbsp;Edit</a>
+	      <a href="#edit/{{bnld.key.urlsafe}}" ng-if="bnld.Status == 1" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-edit"></span>&nbsp;Edit</a>
 	      &nbsp;
 	      <a href="" ng-click="delete(bnld.key.urlsafe)" ng-if="bnld.Status == 1" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-remove"></span>&nbsp;Delete</a>
 	    </td>
@@ -152,21 +47,5 @@ Buyer's New Line Declaration Request List
   </div>
 </div>
 
-  <!---angular components includes --->
-  <script type="text/javascript" src="/ng/components/angular/angular.min.js"></script>
-  <script type="text/javascript" src="/ng/components/angular-route/angular-route.min.js"></script>
-  <script type="text/javascript" src="/ng/components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
-  <script src="/ng/components/angular-modal-service/dst/angular-modal-service.min.js"></script>  
-  <script src="/ng/components/angular-sanitize/angular-sanitize.min.js"></script>
-  <!-- CS Utilities -->
-  <script src="/ng/components/cs-angular-utilities/loading.js"></script>
-  <script src="/ng/components/cs-angular-utilities/pubsub.js"></script>
-  <script src="/ng/components/cs-angular-utilities/modal.js"></script>
-  <script src="/ng/components/cs-angular-utilities/passive-messenger.js"></script>
-  <link rel="stylesheet" href="/ng/components/cs-angular-utilities/passive-messenger.css" type="text/css">
 
-  <script type="text/javascript" src="/ng/app.js"></script>
-  <script type="text/javascript" src="/ng/services/bnlds_svc.js"></script>
-  <script type="text/javascript" src="/ng/controllers/bnlds_ctrl.js"></script>
-  <script type="text/javascript" src="/ng/controllers/modalCtrl.js"></script>
-  {% endblock %}
+

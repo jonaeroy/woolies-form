@@ -1,3 +1,6 @@
+<a href = "#list" role = "button" class="btn btn-primary">View List</a><br>
+
+<div>
 <div class="modal-header">
   <h3 class="modal-title">Buyer's New Line Declaration Request Form</h3>
 </div>
@@ -28,7 +31,7 @@
             </div>
           </div>
         </div>
-	--->
+	---->
         <div class="control-group">
           <label class="control-label" for="Number_of_Items">Number of Item(s):</label>
           <div class="controls">
@@ -84,9 +87,10 @@
     </div>
   </div>
   <div class="modal-footer">
-    <button class="btn btn-primary" id="submit_request" ng-click="ok()" ng-if="mode == 'add'">Create Request</button>
-    <button class="btn btn-primary" id="submit_request" ng-click="ok()" ng-if="mode == 'edit'">Update Request</button>
+    <button class="btn btn-primary" id="submit_request" ng-click="create()" ng-if="mode == 'add'">Create Request</button>
+    <button class="btn btn-primary" id="submit_request" ng-click="edit(bnld.key.urlsafe)" ng-if="mode == 'edit'">Update Request</button>
     <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
   </div>
 </form>
 
+</div>

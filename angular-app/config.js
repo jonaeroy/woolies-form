@@ -7,12 +7,21 @@ angular.module('app.routes', ['ngRoute'])
 
     .config(function($routeProvider, $locationProvider) {
 	$routeProvider
-	    .when('/', {
-		templateUrl: '/ng/templates/layouts/dashboard.html',
-		controller: 'MainController'
+	    .when('/list', {
+		templateUrl: '/ng/templates/bnlds/list.html',
+		controller: 'newBnldsRequestCtrl'
 	    })
+        .when('/add', {
+        templateUrl: '/ng/templates/bnlds/bnldform.html',
+        controller:'newBnldsRequestCtrl'
+
+        })
+        .when('/edit/:key',{
+        templateUrl: '/ng/templates/bnlds/bnldform.html',
+        controller:'editBnldsCtrl'
+        })
 	    .otherwise({
-		redirectTo: '/'
+		redirectTo: '/list'
 	    });
 
 	// configure html5 to get links working on jsfiddle
