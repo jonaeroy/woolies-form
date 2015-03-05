@@ -2,9 +2,7 @@
   <div class="well">
     <a href = "#add" role = "button" class="btn btn-primary">+ New Buyer's New Line Declaration Request</a><br>
 
-    <!-- <button class="btn btn-primary btn-sm" ng-click="open('lg')"><span class="glyphicon glyphicon-plus-sign"></span>&nbsp;New Requests</button> -->
-    <!---{% import "scaffolding/macros.html" as scaffold with context %}--->
-    <!---{% import 'macros/search.html' as search with context %}---->
+
     <fieldset>
       <table class="table table-striped table-hover" ng-init="list_all()">
 	<thead>
@@ -16,7 +14,7 @@
 	<tbody>
 	  <tr ng-repeat="bnld in sliced_bnlds_list" >
 	    <td>
-	      <a href="" ng-click="view(bnld.key.urlsafe, 'md')" ng-bind="bnld.created_by.email"></a>
+	      <a href="#view/{{bnld.key.urlsafe}}" ng-click="view(bnld.key.urlsafe, 'md')" ng-bind="bnld.created_by.email"></a>
 	    </td>
 	    <td ng-bind="bnld.created"></td>
 	    <td ng-if="bnld.Status == 1">

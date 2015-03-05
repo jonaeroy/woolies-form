@@ -22,34 +22,6 @@
     <script type="text/javascript" src="/ng/components/js/app/sidebar.js"></script>
     <script type="text/javascript" src="/ng/components/js/app/live-filter.js"></script>
 
-    <!----
-	{% if has_draft_component %}
-	<!-- do not modify. for save as draft feature, this needs to be on top of drafts.js--->
-	<script>
-	  var DRAFT_DATA = '{{draft_data}}';
-	  var DRAFT_ACTION_URL = '{{draft_action_url}}';
-	  var CLEAR_DRAFT_ACTION_URL = '{{clear_draft_action_url}}';
-	  var LIST_ACTION_URL = '{{list_action_url}}';
-	  var CONTROLLER_NAME = '{{controller_name}}';
-	</script>
-	<script type="text/javascript" src="ng/components/js/app/drafts.js"></script>
-	{% endif %}
-
-
-	{% if has_splitview_component %}
-	<script>
-	  var FULL_URL = '{{full_url}}';
-	</script>
-	<script type="text/javascript" src="ng/components/js/app/list-segregate.js"></script>
-	{% endif %}
-
-	{% block layout_head %}
-	{% endblock %}
-
-	<link rel="stylesheet" type="text/css" href="/ng/components/css/dashboard/bootstrap-overrides.css" />
-	<link rel="stylesheet" type="text/css" href="/ng/components/package/font-awesome/css/font-awesome.css" />
-	<link rel="stylesheet" type="text/css" href="/ng/components/css/dashboard/index.css" />
-
 	<!-- layout-->
 	<link rel="stylesheet" type="text/css" href="/ng/components/css/dashboard/layout.css" />
 	<link rel="stylesheet" type="text/css" href="/ng/components/css/dashboard/elements.css" />
@@ -267,32 +239,8 @@
                   <span class="">Manage Groups</span>
                 </a>
               </li>
-              <li ng-if="dashboard_data.user_email"><!----user_isGoogleAdmin--->
-                <a href="/woolies_forms" class="trigger">
-                  <i class="icon-copy"></i> &nbsp;
-                  <span class="">Manage Forms</span>
-                </a>
-              </li>
-              <li role="presentation" class="divider"></li>
-              <li>
-                <a href="{{ logout }}" class="trigger">
-                  <i class="icon-signout"></i> &nbsp;
-                  <span class="">Sign out</span>
-                </a>
-              </li>
-            </ul>
-          </li>
+              <li ng-if="dashboard_data.user_email">
 
-          <li class="hidden-phone" ng-if="route != 'dashboard'">
-            <a href="javascript:history.go(-1)" class="trigger">
-              <i class="icon-chevron-left"></i>
-              <span class="">Back</span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <!-- end navbar -->
 
     <!-- sidebar -->
 
@@ -317,13 +265,7 @@
             </a>
           </li>
 
-          <!--
-              <li class="dm-list" id="leave_app_external">
-                <a href="#" class="nav-bar-icon"><i class="icon-info-sign"></i></a>
-                <a class="row-fluid" href="http://3-00.woolworths-forms.appspot.com/leave_requests" style="background:#3b9ff3; font-weight:bold; color:#fff" >
-                  <span class="pull-left">Leave requests</span></a>
-              </li>
-              -->
+
 
           <li class="dm-list" id="leave_app_external">
             <a href="#" class="nav-bar-icon"><i class="icon-info-sign"></i></a>
@@ -437,41 +379,7 @@
     <div class="content" {% if route == 'list' and route !='dashboard' %}style="margin-left: 0 !important;" {% endif %}>
       <div class="container-fluid">
         {%  if  user_isAdmin %}
-        <!-- upper main stats
-             COMMENTED 7/27/2013 - Ray
-             <div id="main-stats">
-               <div class="row-fluid stats-row">
-                 <div class="span3 stat">
-                   <div class="data">
-                     <span class="number">0</span>
-                     pending
-                   </div>
 
-                 </div>
-                 <div class="span3 stat">
-                   <div class="data">
-                     <span class="number">0</span>
-                     approved
-                   </div>
-
-                 </div>
-                 <div class="span3 stat">
-                   <div class="data">
-                     <span class="number">0</span>
-                     declined
-                   </div>
-
-                 </div>
-                 <div class="span3 stat last">
-                   <div class="data">
-                     <span class="number">0</span>
-                     users
-                   </div>
-
-                 </div>
-               </div>
-             </div>
-             -->
         {% endif %}
 
 
@@ -519,24 +427,7 @@
                     <a href="#" class="form-title-fave-tag"><i class="icon-star-empty"></i></a>
                     {% endif %} -->
                 <h2 ng-if="dashboard_data.route == 'list'">Your {{ form_entity_name }} Requests </h2>
-		<!----
-		{% if form_entity or route != 'dashboard' %}
-                  {% if route=='list' %}
-                  Your {{ form_entity_name }} Requests
-                  {% else %}
-                  {% if request.GET['key'] %}
-                  New {{ form_entity_name }} Requests
 
-                  {% else %}
-                  {{ form_entity_name }} Details
-                  {% endif %}
-                  {% endif %}
-                  {% endif %}
-
-                  {% if not form_entity %}
-                  {% block layout_page_title %}
-                  {% endblock %}
-                  {% endif %}---->
                 </h2>
               </div>
 
