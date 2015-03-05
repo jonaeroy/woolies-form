@@ -3,25 +3,18 @@ angular.module('app.controllers').controller('viewBnldsCtrl', function($scope, $
     "use.strict"
     $scope.choices=["Yes","No","N/A"];
     $scope.mode = "view";
-    $scope.bnlds = {};
-        BnldsSvc.get($routeParams.key)
-            .success(function(data, status){
-         $scope.bnlds = data;
-                console.log(data);
-            })
-            .error(function(data,status){
+    $scope.bnlds_details = {};
 
-            });
+    BnldsSvc.get($routeParams.key)
+        .success(function(data, status){
+            $scope.bnlds_details = data;
+            console.log(data);
+        })
+        .error(function(data,status){
 
-    $scope.view = function(){
-        BnldsSvc.update($scope.bnlds)
-            .success(function(data, status){
-                console.log(data);
-                $location.path('#view');
-            })
-            .error(function(data,status){
+        });
 
-            });
+    
 
-    };
+});
 
