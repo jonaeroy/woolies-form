@@ -103,6 +103,7 @@ angular.module('app.controllers').controller('editBnldsCtrl', function($scope, $
         BnldsSvc.update($scope.bnlds)
             .success(function(data, status){
                 console.log(data);
+		alert('updated item at the Top')
                 $location.path('#list');
             })
             .error(function(data,status){
