@@ -1,4 +1,4 @@
-from ferris import Controller, scaffold, route
+from ferris import Controller, scaffold, route, messages, route_with
 from ..models.store import Store
 from ..models.costcentre import Costcentre
 from ferris.components.pagination import Pagination
@@ -10,15 +10,106 @@ import logging
 import urllib2
 from plugins import directory
 from app.component.drafts import Drafts
+import json
+from ferris.core.json_util import stringify as json_stringify
+import datetime
+
 
 class Courierbooks(Controller):
 
     class Meta:
-        prefix = ('admin',)
-        components = (scaffold.Scaffolding,Pagination,Drafts)
+        prefixes = ('api',)
+        components = (scaffold.Scaffolding,Pagination,Drafts, messages.Messaging)
         pagination_limit = 10
         action_form = 'courierbookingform'
+        Model = Courierbook
 
+
+    @route_with('/api/courierbooks', methods=['GET'])
+    def api_list(self):
+        self.context['courierbooks'] = Courierbook.query()
+
+    @route_with('/courierbooks/list', methods=['GET'])
+    def list(self):
+        self.meta.view.template_name='angular/courierbooks/index.html'
+
+    @route_with('/api/courierbooks', methods=['POST'])
+    def api_create(self):
+        params = json.loads(self.request.body)
+        print repr(params)
+        #params['Number_of_Items'] = int(params['Number_of_Items'])
+        self.context['data'] = Courierbook.create(params)
+
+    @route_with('/api/courierbooks/costcentres')
+    def api_costcentres(self):
+        listCost = Costcentre.query().fetch()
+        logging.info('list =========================> ' + str(listCost))
+        return self.util.stringify_json(listCost)
+
+    @route
+    def api_get_store_details(self, store_num):
+        store = Store.query().filter(Store.number == int(store_num)).fetch()
+        logging.info('list =========================> ' + str(store))
+        return self.util.stringify_json(store)
+
+    @route_with('/api/courierbooks:<key>', methods=['GET'])
+    def api_get(self, key):
+        self.context['data'] = self.util.decode_key(key).get()
+
+
+    @route_with('/api/courierbooks/edit/:<key>', methods=['POST'])
+    def api_update(self, key):
+        temp_params = json.loads(self.request.body)
+        params = {
+            'Full_Name': temp_params['Full_Name'],
+            'Contact_Number': temp_params['Contact_Number'],
+            'store_name_pick_up': temp_params['store_name_pick_up'],
+            'address1_pick_up': temp_params['address1_pick_up'],
+            'address2_pick_up': temp_params['address2_pick_up'],
+            'suburb_pick_up': temp_params['suburb_pick_up'],
+            'state_pick_up': temp_params['state_pick_up'],
+            'post_code_pick_up': temp_params['post_code_pick_up'],
+            'store_name_dest': temp_params['store_name_dest'],
+            'address1_dest': temp_params['address1_dest'],
+            'address2_dest': temp_params['address2_dest'],
+            'suburb_dest': temp_params['suburb_dest'],
+            'state_dest': temp_params['state_dest'],
+            'post_code_dest': temp_params['post_code_dest'],
+            'Reason_For_Courier': temp_params['Reason_For_Courier'],
+            'Cost_Centre': temp_params['Cost_Centre'],
+            'Description_of_Package': temp_params['Description_of_Package'],
+            'Length': temp_params['Length'],
+            'Width': temp_params['Width'],
+            'Height': temp_params['Height'],
+            'Weight': temp_params['Weight'],
+            'Quantity': temp_params['Quantity'],
+            'Insurance_required': temp_params['Insurance_required'],
+            'Ready_to_be_collected': temp_params['Ready_to_be_collected'],
+            'From': temp_params['From'],
+            'Please_select_the_Courier_Vehicle_size_required': temp_params['Please_select_the_Courier_Vehicle_size_required']
+        }
+        items = self.util.decode_key(key).get()
+        # items.update(params)
+        items.update(params)
+        self.context['data'] = items
+
+        '''def after_save(controller, container, item):
+            form = self.request.params
+            user_email = self.session.get('user_email')
+            domainpath = self.session.get('DOMAIN_PATH')
+            tmp = self.context.get('first_group_approver').key.urlsafe()
+            to = Users.get_user_list_by_group(tmp)
+
+            #view_key = str(item.key.urlsafe())
+            #encoded_param = urllib2.unquote('%3A') + view_key + "?key=" + form_key
+            encoded_param = "?key=" + form_key
+            Courierbooks.sendNotif(form,to,user_email, domainpath, encoded_param)
+        self.events.scaffold_after_save += after_save
+        scaffold.add(self)
+        return self.redirect(self.uri(action='list', key=form_key))
+        '''
+
+    '''
     @route
     def draft_action(self):
         self.components.drafts.save(self.request.params)
@@ -693,3 +784,4 @@ class Courierbooks(Controller):
             domain_path, encoded_param,  domain_path, encoded_param)
 
         mail.send(To, Subject, msg_body, str(user_email))
+'''

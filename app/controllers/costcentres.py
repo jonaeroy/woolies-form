@@ -5,7 +5,7 @@ from ..models.costcentre import Costcentre
 class Costcentres(Controller):
 
     class Meta:
-        prefixes = ('admin',)
+        prefixes = ('api','admin')
         components = (scaffold.Scaffolding, messages.Messaging)
 
     def add(self):

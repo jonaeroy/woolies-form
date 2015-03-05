@@ -1,0 +1,235 @@
+<!--<div class="modal-header">
+  <h3 class="modal-title">Dan Murphys Courier Book Request Form</h3>
+</div>-->
+<!--<form class="form-horizontal" action="/courierbooks/add" method="post">-->
+<form class="form" enctype="multipart/form-data">
+
+    <div class="well">
+        <fieldset>
+            <fieldset>
+                <table width="100%">
+                    <tr>
+                        <td width="18%">Full name of person requesting courier <br/> (no nickname)</td>
+                        <td width="2%"/>
+                        <td width="30%">
+                            <input type="text" class="span11" name="Full_Name" id="Full_Name" ng-model="courierbook_details.Full_Name" required/>
+                            <input type="hidden" class="span9" id="dateSent" name="dateSent" value="">
+                        </td>
+                        <td width="18%">Contact No.</td>
+                        <td width="2%"/>
+                        <td width="15%">
+                            <input type="text" class="span11 numbersOnly" style="color:black" ng-model="courierbook_details.Contact_Number" id="Contact_Number" required/>
+                        </td>
+                         <td width="15%"/>
+                    </tr>
+
+                    <tr>
+                        <td>Cost Centre</td>
+                        <td/>
+
+                        <td>
+                              <!--<select class="span5 selectpicker" name="Cost_Centre" id="Cost_Centre" ng-option="c.key.urlsafe for c in Costcentres">
+                              </select>-->
+                              <select class="span5 selectpicker" ng-model="courierbook_details.Cost_Centre" name="Cost_Centre" id="Cost_Centre" required>
+                              <option ng-repeat="c in costcentres" ng-bind="c.number" ng-value="c.store_name" {{ 'selected' if c.number  == 'courierbook_details.store_name' else '' }}>
+                              </option>
+                              </select>
+                        </td>
+                    </tr>
+                </table>
+            </fieldset>
+            <br/>
+            <fieldset>
+                <legend>
+                    <h3>Pick Up and Destinations</h3>
+                </legend>
+                <table width="100%" cellpadding="5">
+                <tr>
+                    <td width="20%"><h4>PICK UP STORE</h4>
+
+                    </td>
+
+                    <td width="30%">&nbsp;</td>
+                    <td width="20%"><h4>DESTINATION STORE</h4>
+
+                    </td>
+                    <td width="30%">&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>Store No.</td>
+                    <td>
+                         <select class="span11 selectpicker" ng-model="courierbook_details.pickupstore_key" name="pickupstore_key" id="pickupstore_key" required>
+                              <option ng-repeat="d in store_details" ng-bind="d.number" ng-value="d.number" {{ 'selected' if d.number  == 'courierbook_details.number' else '' }}>
+                              </option>
+                              </select>
+                    </td>
+                    <td>Store No.</td>
+                    <td>
+                        <select class="span11 selectpicker" ng-model="destinationstore_key" name="destinationstore_key" id="destinationstore_key" required>
+                              <option ng-repeat="d in store_details" ng-bind="d.number" ng-value="d.number">
+                              </option>
+                              </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Store Name</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" id="store_name_pick_up" ng-model="courierbook_details.store_name_pick_up" name="store_name_pick_up" ng-value="store_name_pick_up" readonly/>
+                    </td>
+                    <td>Store Name</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" id="store_name_dest" ng-model="courierbook_details.store_name_dest" name="store_name_dest" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Address 1</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" name="address1_pick_up" ng-model="courierbook_details.address1_pick_up" id="address1_pick_up" readonly/>
+                    </td>
+                    <td>Address 1</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" name="address1_dest" ng-model="courierbook_details.address1_dest" id="address1_dest" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Address 2</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" name="address2_pick_up" ng-model="courierbook_details.address2_pick_up" id="address2_pick_up" readonly/>
+                    </td>
+                    <td>Address 2</td>
+                    <td>
+                        <input type="text" class="span11" style="color:black" name="address2_dest" ng-model="courierbook_details.address2_dest"id="address2_dest" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Suburb</td>
+                    <td>
+                        <input type="text" class="span6" style="color:black" name="suburb_pick_up" ng-model="courierbook_details.suburb_pick_up" id="suburb_pick_up" readonly/>
+                    </td>
+
+                    <td>Suburb</td>
+                    <td>
+                        <input type="text" class="span6" style="color:black" name="suburb_dest" id="suburb_dest" ng-model="courierbook_details.suburb_dest" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>State</td>
+                    <td>
+                        <input type="text" class="span4" style="color:black" name="state_pick_up" ng-model="courierbook_details.state_pick_up" id="state_pick_up" readonly/>
+                    </td>
+                    <td>State</td>
+                    <td>
+                        <input type="text" class="span4" style="color:black" name="state_dest" ng-model="courierbook_details.state_dest" id="state_dest" readonly/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Postcode</td>
+                    <td>
+                        <input type="text" class="span4" style="color:black" name="post_code_pick_up" ng-model="courierbook_details.post_code_pick_up" id="post_code_pick_up" readonly/>
+                    </td>
+                    <td>Postcode</td>
+                    <td>
+                        <input type="text" class="span4" style="color:black" name="post_code_dest" ng-model="courierbook_details.post_code_dest" id="post_code_dest" readonly/>
+                    </td>
+                </tr>
+            </table>
+            </fieldset><br>
+            <fieldset>
+                <legend>
+                    <h3>Reason for Courier</h3>
+                </legend>
+                <div class="navbar">
+                    <textarea rows="3" class="span12" ng-model="courierbook_details.Reason_For_Courier" name="Reason_For_Courier" id="Reason_For_Courier" style="resize:none" placeholder="eg. IBT's / Moving Fixtures" required></textarea>
+                </div>
+            </fieldset>
+            <br>
+            <fieldset>
+                <legend>
+                    <h3>Package Details</h3>
+                </legend>
+                <table width="100%" cellpadding="5">
+                    <tr>
+                        <td>Description of Package</td>
+                        <td colspan="3"><textarea rows="2" class="span12" ng-model="courierbook_details.Description_of_Package" value="{{courierbook_details.Description_of_Package}}" id="Description_of_Package" style="resize:none" placeholder="Please indicate if Full / Half Size Pallets" required></textarea></td>
+                    </tr>
+                    <tr>
+                        <td width="20%">Length
+                        </td>
+                        <td width="30%"><input type="text" class="span11 numbersOnly" ng-model="courierbook_details.Length" id="Length" placeholder="Enter length in centimetres(cm)" required/></td>
+                        <td width="20%">Width
+                        </td>
+                        <td width="30%"><input type="text" class="span11 numbersOnly" ng-model="courierbook_details.Width" id="Width" placeholder="Enter width in centimetres(cm)" required/></td>
+                    </tr>
+                    <tr>
+                        <td>Height
+                        </td>
+                        <td><input type="text" class="span11 numbersOnly" ng-model="courierbook_details.Height" id="Height" placeholder="Enter height in centimetres  (cm)" required/></td>
+                        <td >Weight
+                        </td>
+                        <td ><input type="text" class="span11 numbersOnly" ng-model="courierbook_details.Weight" id="Weight" placeholder="Estimate weight in whole kg" required/></td>
+                    </tr>
+                    <tr>
+                        <td>Quantity
+                        </td>
+                        <td><input type="text" class="span11" ng-model="courierbook_details.Quantity" id="Quantity" placeholder="Eg. 1 box / 1 pallet" required/></td>
+                        <td >Please select the Courier <br> Vehicle size required
+                        </td>
+                        <td >
+                            <select class="span11 selectpicker" ng-model="courierbook_details.Please_select_the_Courier_Vehicle_size_required" id="Please_select_the_Courier_Vehicle_size_required" required>
+                                <option value="">Select</option>
+                                <option value="Small Van 1.2m">Small Van 1.2m</option>
+                                <option value="1 Tonne Truck 1.2m (1 Pallet)">1 Tonne Truck 1.2m (1 Pallet)</option>
+                                <option value="2 Tonne Truck 1.2m (2 Pallets)">2 Tonne Truck1.2m (2 Pallets)</option>
+                                <option value="4 Tonne Truck 2.1m (3-6 Pallets)">4 Tonne Truck 2.1m (3-6 Pallets)</option>
+                                <option value="6 Tonne Truck 2.2m (7-8 Pallets)">6 Tonne Truck 2.2m (7-8 Pallets)</option>
+                                <option value="8 Tonne Truck 2.3m (8-10 Pallets)">8 Tonne Truck 2.3m (8-10 Pallets)</option>
+                                <option value="12 Tonne Truck 2.4m (10-12 Pallets)">12 Tonne Truck 2.4m (10-12 Pallets)</option>
+                                <option value="Semi Trailer 2.65m (20 Pallets)">Semi Trailer 2.65m (20 Pallets)</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Insurance required</td>
+                        <td>
+                            <select class="span11 selectpicker" ng-model="courierbook_details.Insurance_required" id="Insurance_required" required>
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                        <td >Ready to be collected</td>
+                        <td>
+                            <select class="span11 selectpicker" ng-model="courierbook_details.Ready_to_be_collected" id="Ready_to_be_collected" required>
+                                <option value="">Select</option>
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>From</td>
+                        <td colspan="3"><textarea rows="2" class="span12" ng-model="courierbook_details.From" id="From" style="resize:none" placeholder="Eg. Back Dock / Front Counter" required></textarea></td>
+                    </tr>
+                </table>
+            </fieldset>
+        </fieldset>
+        <br><br>
+        <div class="control-group">
+            <!--<div align="right">
+                <input type="submit" class="btn btn-primary" value="Create Request">
+                <input type="button" class="btn" id="backHistory" value="Cancel"></div>
+            </div>-->
+
+            <div align="right">
+            <!--{% if intStatus == 1 and is_requestor %}-->
+            <!-- {% endif %} -->
+            <button class="btn btn-success btn-sm" ng-click="update()">Save</button>
+            <a href="#courierbooks" class="btn btn-primary btn-sm" ng-click="cancel()">Close</a>
+            </div>
+        <center>If you have any inquiries, please call - 03 9497 6035</center>
+    </div>
+
+</form>
+
+
+

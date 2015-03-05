@@ -4,14 +4,19 @@ from ..models.store import Store
 class Stores(Controller):
 
     class Meta:
-        prefixes = ('admin',)
+        prefixes = ('api', 'admin',)
         components = (scaffold.Scaffolding, messages.Messaging)
+        Model = Store
 
     def add(self):
     	return scaffold.add(self)
 
     def list(self):
     	return scaffold.list(self)
+
+    @route
+    def api_list_all(self):
+        self.context['data'] = Store.all_stores()
 
     @route
     def save_import(self):
@@ -33,4 +38,4 @@ class Stores(Controller):
         store.put()
 
         result = True
-        return self.util.stringify_json(result);
+        return self.util.stringify_json(result)

@@ -7,7 +7,7 @@ angular.module('app.routes', ['ngRoute'])
 
     .config(function($routeProvider, $locationProvider) {
 	$routeProvider
-
+<<<<<<< HEAD
 	    .when('/list', {
 		templateUrl: '/ng/templates/bnlds/list.html',
 		controller: 'newBnldsRequestCtrl'

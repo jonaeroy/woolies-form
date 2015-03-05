@@ -3,28 +3,29 @@ from google.appengine.ext import ndb
 
 class Courierbook(BasicModel):
 
+
     #Contact Details
     Full_Name = ndb.StringProperty(required=True)
     Contact_Number = ndb.StringProperty(required=True)
     Requestor_store = ndb.StringProperty()
 
     #Pick Up Store
-    Store_No_Pick_Up = ndb.StringProperty()
-    Store_Name_Pick_Up = ndb.StringProperty()
-    Address1_Pick_Up = ndb.StringProperty()
-    Address2_Pick_Up = ndb.StringProperty()
-    Suburb_Pick_Up = ndb.StringProperty()
-    State_Pick_Up = ndb.StringProperty()
-    Post_Code_Pick_Up = ndb.StringProperty()
+    store_no_pick_up = ndb.StringProperty()
+    store_name_pick_up = ndb.StringProperty()
+    address1_pick_up = ndb.StringProperty()
+    address2_pick_up = ndb.StringProperty()
+    suburb_pick_up = ndb.StringProperty()
+    state_pick_up = ndb.StringProperty()
+    post_code_pick_up = ndb.StringProperty()
 
     #Destination Store
-    Store_No_Dest = ndb.StringProperty()
-    Store_Name_Dest = ndb.StringProperty()
-    Address1_Dest = ndb.StringProperty()
-    Address2_Dest = ndb.StringProperty()
-    Suburb_Dest = ndb.StringProperty()
-    State_Dest = ndb.StringProperty()
-    Post_Code_Dest = ndb.StringProperty()
+    store_no_dest = ndb.StringProperty()
+    store_name_dest = ndb.StringProperty()
+    address1_dest = ndb.StringProperty()
+    address2_dest = ndb.StringProperty()
+    suburb_dest = ndb.StringProperty()
+    state_dest = ndb.StringProperty()
+    post_code_dest = ndb.StringProperty()
 
     #Reason For Courier
     Reason_For_Courier = ndb.StringProperty(required=True)
@@ -41,3 +42,24 @@ class Courierbook(BasicModel):
     Ready_to_be_collected = ndb.StringProperty(required=True)
     From = ndb.StringProperty(required=True)
     Please_select_the_Courier_Vehicle_size_required = ndb.StringProperty(required=True)
+
+
+    @classmethod
+    def create(cls, params):
+        item = cls()
+        item.populate(**params)
+        item.put()
+        return item
+
+    @classmethod
+    def list_all(cls):
+        return cls.query()
+
+    def update(self, params):
+        self.populate(**params)
+        self.put()
+
+
+    @classmethod
+    def get(cls, key):
+        return cls(parent=key)

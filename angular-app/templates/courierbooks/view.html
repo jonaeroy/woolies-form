@@ -1,24 +1,13 @@
-{% import "scaffolding/list.html" as scaffold with context %}
-{% import 'scaffolding/macros.html' as s with context %}
-{% extends 'layouts/main.html' %}
-
-{% block layout_head %}
-<script type='text/javascript' src='/js/utils.js'></script>
-{% endblock %}
-
-{% block layout_page_title %}
-<!-- page title here -->
+<!--<div class="modal-header">
+  <h3 class="modal-title">Dan Murphy's Courier Book Request Details</h3>
+</div>-->
+<!--{% block layout_page_title %}
 Stock Reject Details
-{% endblock %}
-
-{% block layout_content %}
-<div class="form-description fd-form-view" id="form-description">
-    <p><i class="icon-pencil"></i>Users request courier booking for goods delivery. The store fills out the form to order courier to pick up/drop off product.</p>
-</div>
+{% endblock %}-->
     <div class="well">
         <fieldset>
-            {% import "scaffolding/macros.html" as scaffold with context %}
-            {% import 'macros/search.html' as search with context %}
+            <!--{% import "scaffolding/macros.html" as scaffold with context %}
+            {% import 'macros/search.html' as search with context %}-->
             <table class="table table-striped">
                 <tr>
                     <td><strong>BOOKING DETAILS</strong></td>
@@ -26,11 +15,11 @@ Stock Reject Details
                 </tr>
                 <tr>
                     <td>Requestor:</td>
-                    <td>{{courierbook.Full_Name}}</td>
+                    <td>{{courierbook_details.Full_Name}}</td>
                 </tr>
                 <tr>
                     <td>Contact number:</td>
-                    <td>{{courierbook.Contact_Number}}</td>
+                    <td>{{courierbook_details.Contact_Number}}</td>
                 </tr>
                 <tr>
                     <td><strong>PICK UP STORE</strong></td>
@@ -38,11 +27,11 @@ Stock Reject Details
                 </tr>
                 <tr>
                     <td>Store No.:</td>
-                    <td>{{courierbook.store_no_pick_up}}</td>
+                    <td>{{courierbook_details.store_no_pick_up}}</td>
                 </tr>
                 <tr>
                     <td>Store Name:</td>
-                    <td>{{courierbook.store_name_pick_up}}</td>
+                    <td>{{courierbook_details.store_name_pick_up}}</td>
                 </tr>
                 <tr>
                     <td>Address 1:</td>
@@ -50,19 +39,19 @@ Stock Reject Details
                 </tr>
                 <tr>
                     <td>Address 2:</td>
-                    <td>{{courierbook.address2_pick_up}}</td>
+                    <td>{{courierbook_details.address2_pick_up}}</td>
                 </tr>
                 <tr>
                     <td>Suburb:</td>
-                    <td>{{courierbook.suburb_pick_up}}</td>
+                    <td>{{courierbook_details.suburb_pick_up}}</td>
                 </tr>
                 <tr>
                     <td>State:</td>
-                    <td>{{courierbook.state_pick_up}}</td>
+                    <td>{{courierbook_details.state_pick_up}}</td>
                 </tr>
                 <tr>
                     <td>Postcode:</td>
-                    <td>{{courierbook.post_code_pick_up}}</td>
+                    <td>{{courierbook_details.post_code_pick_up}}</td>
                 </tr>
                 <tr>
                     <td><strong>DESTINATION STORE</strong></td>
@@ -70,39 +59,39 @@ Stock Reject Details
                 </tr>
                 <tr>
                     <td>Store No.:</td>
-                    <td>{{courierbook.store_no_dest}}</td>
+                    <td>{{courierbook_details.store_no_dest}}</td>
                 </tr>
                 <tr>
                     <td>Store Name:</td>
-                    <td>{{courierbook.store_name_dest}}</td>
+                    <td>{{courierbook_details.store_name_dest}}</td>
                 </tr>
                 <tr>
                     <td>Address 1:</td>
-                    <td>{{courierbook.address1_dest}}</td>
+                    <td>{{courierbook_details.address1_dest}}</td>
                 </tr>
                 <tr>
                     <td>Address 2:</td>
-                    <td>{{courierbook.address2_dest}}</td>
+                    <td>{{courierbook_details.address2_dest}}</td>
                 </tr>
                 <tr>
                     <td>Suburb:</td>
-                    <td>{{courierbook.suburb_dest}}</td>
+                    <td>{{courierbook_details.suburb_dest}}</td>
                 </tr>
                 <tr>
                     <td>State:</td>
-                    <td>{{courierbook.state_dest}}</td>
+                    <td>{{courierbook_details.state_dest}}</td>
                 </tr>
                 <tr>
                     <td>Postcode:</td>
-                    <td>{{courierbook.post_code_dest}}</td>
+                    <td>{{courierbook_details.post_code_dest}}</td>
                 </tr>
                 <tr>
                     <td>Reason for Courier:</td>
-                    <td>{{courierbook.Reason_For_Courier}}</td>
+                    <td>{{courierbook_details.Reason_For_Courier}}</td>
                 </tr>
                 <tr>
                     <td>Cost Centre:</td>
-                    <td>{{costcentres.number}} - {{courierbook.Cost_Centre}}</td>
+                    <td>{{costcentres.number}} - {{courierbook_details.Cost_Centre}}</td>
                 </tr>
                 <tr>
                     <td><strong>PACKAGE DETAILS</strong></td>
@@ -110,49 +99,50 @@ Stock Reject Details
                 </tr>
                 <tr>
                     <td>Description of Package:</td>
-                    <td>{{courierbook.Description_of_Package}}</td>
+                    <td>{{courierbook_details.Description_of_Package}}</td>
                 </tr>
                 <tr>
                     <td>Length:</td>
-                    <td>{{courierbook.Length}}</td>
+                    <td>{{courierbook_details.Length}}</td>
                 </tr>
                 <tr>
                     <td>Width:</td>
-                    <td>{{courierbook.Width}}</td>
+                    <td>{{courierbook_details.Width}}</td>
                 </tr>
                 <tr>
                     <td>Height:</td>
-                    <td>{{courierbook.Height}}</td>
+                    <td>{{courierbook_details.Height}}</td>
                 </tr>
                 <tr>
                     <td>Weight:</td>
-                    <td>{{courierbook.Weight}}</td>
+                    <td>{{courierbook_details.Weight}}</td>
                 </tr>
                 <tr>
                     <td>Quantity:</td>
-                    <td>{{courierbook.Quantity}}</td>
+                    <td>{{courierbook_details.Quantity}}</td>
                 </tr>
                 <tr>
                     <td>Insurance required:</td>
-                    <td>{{courierbook.Insurance_required}}</td>
+                    <td>{{courierbook_details.Insurance_required}}</td>
                 </tr>
                 <tr>
                     <td>Ready to be collected:</td>
-                    <td>{{courierbook.Ready_to_be_collected}}</td>
+                    <td>{{courierbook_details.Ready_to_be_collected}}</td>
                 </tr>
                 <tr>
                     <td>From:</td>
-                    <td>{{courierbook.From}}</td>
+                    <td>{{courierbook_details.From}}</td>
                 </tr>
                 <tr>
                     <td>Courier Vehicle size:</td>
-                    <td>{{courierbook.Please_select_the_Courier_Vehicle_size_required}}</td>
+                    <td>{{courierbook_details.Please_select_the_Courier_Vehicle_size_required}}</td>
                 </tr>
             </table>
-            <div align="right">
-                <!-- <a href="{{this.uri('courierbooks:update', key=courierbook.key.urlsafe(), frmkey=frmkey)}}" class="btn btn-primary">Edit</a> -->
-                <a href="{{this.uri('courierbooks:list', key=frmkey)}}" class="btn btn-primary">Back</a>
-            </div>
+             <div align="right">
+      <!--{% if intStatus == 1 and is_requestor %}-->
+      <!-- {% endif %} -->
+       <a href="#courierbooks" class="btn btn-primary btn-sm" ng-click="cancel()">Close</a>
+    </div>
         </fieldset>
     </div>
-{% endblock %}
+
